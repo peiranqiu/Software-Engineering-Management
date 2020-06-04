@@ -19,10 +19,10 @@ public interface GroupService {
    * if the System contains a {@link Group} object having the same name
    * as the parameter.
    *
-   * @param id The name of the user
+   * @param id The id of group
    * @return Optional object.
    */
-  Optional<Group> findGroupByName(Integer id);
+  Optional<Group> findGroupById(Integer id);
 
   /***
    * Tries to add a group in the system

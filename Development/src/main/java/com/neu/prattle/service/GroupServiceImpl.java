@@ -39,11 +39,11 @@ public class GroupServiceImpl implements GroupService {
    * if the System contains a {@link Group} object having the same name
    * as the parameter.
    *
-   * @param id The name of the group
+   * @param id The id of group
    * @return Optional object.
    */
   @Override
-  public Optional<Group> findGroupByName(Integer id) {
+  public Optional<Group> findGroupById(Integer id) {
     Group group = new Group(id);
     if (groupSet.contains(group)) {
       return Optional.of(group);
