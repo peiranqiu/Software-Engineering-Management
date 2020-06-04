@@ -1,5 +1,10 @@
 package com.neu.prattle.model;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.UUID;
+
 /***
  * A Basic POJO for Message.
  *
@@ -19,6 +24,14 @@ public class Message {
      * It represents the contents of the message.
      */
     private String content;
+    /***
+     * Unique id of the message
+     */
+    private String messageID;
+    /***
+     * The date of the message creation
+     */
+    private String messageDate;
 
     @Override
     public String toString() {
@@ -52,6 +65,18 @@ public class Message {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public void setMessageID() {this.messageID = UUID.randomUUID().toString();}
+
+    public String getMessageID() {return messageID;}
+
+    public void setMessageDate() {
+        DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        messageDate = mdy.format(now);
+    }
+
+    public String getMessageDate() {return messageDate;}
 
     public static MessageBuilder messageBuilder()   {
         return new MessageBuilder();
