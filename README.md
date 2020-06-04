@@ -1,4 +1,4 @@
-# A Messaging Application
+# Messaging Application
 
 Team 4, CS5500, summer I 2020
 
@@ -6,7 +6,7 @@ Collaborators: [@daniehao](https://github.ccs.neu.edu/daniehao)  [@yinrouni](htt
 
 ---
 
-This repository is for CS 5500 Foundation of Software Engineering*, Summer I 2020, team project. Below is our current development guideline.
+This repository is for CS 5500 Foundation of Software Engineering, Summer I 2020, team project. Below is our current development guideline.
 
 ## Branching
 
@@ -36,22 +36,17 @@ git commit -m "[issue-#] short description of the work"
 As you work through your issue and feel that you're done and ready to integrate:
 
 ```
-git push --set-upstream origin your_branch
+git push -u origin your_branch
 ```
 
 Open a PR to `develop` and select team members to request a code review. 
 
 ## Merging
 
-### For Approvers/Reviewers
-
-- It is recommended to `squash and merge` instead of  `create a merge commit`. This will keep the commit history clean/concise when pushing features into develop. Try to write a useful commit message for the merge commit so we know what the commit addresses and why.
-
-  - [How to Squash and Merge in GH](https://help.github.com/en/github/administering-a-repository/configuring-commit-squashing-for-pull-requests)
-  - [Example commit message](https://thoughtbot.com/blog/don-t-forget-the-silent-step-when-you-squash-and-merge), for a squash and merge.
+- It is recommended to `squash and merge` instead of `create a merge commit`. This will keep the commit history clean/concise when pushing features into develop. Try to write a useful commit message for the merge commit so we know what the commit addresses and why.
 
 - Delete the source branch once merged.
 
   
 
-For additional information on Project, check out **[Project's Wiki](https://github.ccs.neu.edu/cs5500-fse/team-4-su20/wiki)**.
+For additional information on the project, check out **[Project's Wiki](https://github.ccs.neu.edu/cs5500-fse/team-4-su20/wiki)**.

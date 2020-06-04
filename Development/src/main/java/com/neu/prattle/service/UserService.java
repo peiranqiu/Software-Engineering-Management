@@ -11,25 +11,23 @@ import java.util.Optional;
  * The controller is responsible for interfacing with this instance
  * to perform all the CRUD operations on user accounts.
  *
- * @author CS5500 Fall 2019 Teaching staff
- * @version dated 2019-10-06
- *
  */
 public interface UserService {
+
     /***
-     * Returns an optional object which might be empty or wraps an object
-     * if the System contains a {@link User} object having the same name
-     * as the parameter.
+     * Returns the user associated with the username.
      *
      * @param name The name of the user
-     * @return Optional object.
+     * @return the user if found.
      */
     Optional<User> findUserByName(String name);
 
     /***
-     * Tries to add a user in the system
+     * Create a new user.
+     *
      * @param user User object
+     * @return true if the user is created
      *
      */
-    void addUser(User user);
+    boolean addUser(User user);
 }
