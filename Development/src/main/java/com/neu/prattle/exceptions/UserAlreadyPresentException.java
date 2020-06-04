@@ -12,9 +12,7 @@ import com.neu.prattle.model.User;
  * @version dated 2019-10-06
  */
 public class UserAlreadyPresentException extends RuntimeException {
-    /**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -4845176561270017896L;
 
 	public UserAlreadyPresentException(String message)  {

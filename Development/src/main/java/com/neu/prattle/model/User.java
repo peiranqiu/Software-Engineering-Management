@@ -18,23 +18,26 @@ import javax.persistence.*;
 @Table(name = "user")
 public class User {
 
+  /** The id. */
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int _id;
 
+  /** The username should be unique. */
   @Column(unique = true)
   private String name;
 
+  /** The password. */
   private String password;
-  private String logins;
-  private String language;
 
-  @OneToMany(targetEntity = Message.class)
-  private List<Message> messages = new ArrayList<>();
+//  /** The user's avatar. */
+//  private String avatar;
 
+  /** The groups. */
   @OneToMany(targetEntity = Group.class)
   private List<Group> groups = new ArrayList<>();
 
+  /** The following list. */
   @OneToMany(targetEntity = User.class)
   @JoinTable(name = "user_follows_user",
           joinColumns = {
@@ -44,7 +47,7 @@ public class User {
   @JsonIgnore
   private List<User> following = new ArrayList<>();
 
-
+  /** The follower list. */
   @OneToMany(targetEntity = User.class)
   @JoinTable(name = "user_follows_user",
           joinColumns = {
@@ -54,87 +57,84 @@ public class User {
   @JsonIgnore
   private List<User> follower = new ArrayList<>();
 
-  private boolean isModerator;
-  private boolean watched;
-
+  /** Initiate a new user. */
   public User() {
 
   }
 
+  /** Initiate a new user with user name. */
   public User(String name) {
     this.name = name;
   }
 
+  /** Get the user's name. */
   public String getName() {
     return name;
   }
 
-  public void setName(String name) {
+  /** Set the user's name. */
+  public void setName(String userName) {
     this.name = name;
   }
 
+  /** Get the user's id. */
   public int get_id() {
     return _id;
   }
 
+  /** Set the user's id. */
   public void set_id(int _id) {
     this._id = _id;
   }
 
+  /** Get the user's password. */
   public String getPassword() {
     return password;
   }
 
+  /** Set the user's password. */
   public void setPassword(String password) {
     this.password = password;
   }
 
-  public String getLogins() {
-    return logins;
-  }
+//  /** Get the user's avatar. */
+//  public String getAvatar() {
+//    return avatar;
+//  }
+//
+//  /** Set the user's avatar. */
+//  public void setAvatar(String avatar) {
+//    this.avatar = avatar;
+//  }
 
-  public void setLogins(String logins) {
-    this.logins = logins;
-  }
-
-  public String getLanguage() {
-    return language;
-  }
-
-  public void setLanguage(String language) {
-    this.language = language;
-  }
-
-  public boolean isModerator() {
-    return isModerator;
-  }
-
-  public void setModerator(boolean moderator) {
-    isModerator = moderator;
-  }
-
-  public boolean isWatched() {
-    return watched;
-  }
-
-  public void setWatched(boolean watched) {
-    this.watched = watched;
-  }
-
+  /** Get the list of user the user is following. */
   public List<User> getFollowing() {
     return following;
   }
 
+  /** Set the user's following list. */
   public void setFollowing(List<User> following) {
     this.following = following;
   }
 
+  /** Get the user's follower list. */
   public List<User> getFollower() {
     return follower;
   }
 
+  /** Set the user's follower list. */
   public void setFollower(List<User> follower) {
     this.follower = follower;
+  }
+
+  /** Get the user's groups. */
+  public List<Group> getGroups() {
+    return groups;
+  }
+
+  /** Set the user's groups. */
+  public void setGroups(List<Group> groups) {
+    this.groups = groups;
   }
 
   /***
