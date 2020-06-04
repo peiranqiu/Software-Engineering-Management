@@ -16,7 +16,9 @@ import java.util.Set;
  * @author CS5500 Fall 2019 Teaching staff
  * @version dated 2019-10-06
  */
+
 public class UserServiceImpl implements UserService {
+
 
     /***
      * UserServiceImpl is a Singleton class.

@@ -1,4 +1,4 @@
 package com.neu.prattle.model;
 
-public class Member {
+public class Member extends User {
 }

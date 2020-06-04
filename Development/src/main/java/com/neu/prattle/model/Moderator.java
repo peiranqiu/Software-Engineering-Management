@@ -1,4 +1,4 @@
 package com.neu.prattle.model;
 
-public class Moderator {
+public class Moderator extends User {
 }
