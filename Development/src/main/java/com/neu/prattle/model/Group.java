@@ -7,10 +7,21 @@ import java.util.List;
  */
 
 public class Group {
-
+  /**
+   * the id of the group, which is unique
+   */
   private int groupId;
+  /**
+   * moderator list of this group. One group should have at least one moderator.
+   */
   private List<Moderator> moderators;
+  /**
+   * member list of this group.
+   */
   private List<Member> members;
+  /**
+   * a list of users who follow this group.
+   */
   private List<User> followers;
 
   public Group(int groupId) {

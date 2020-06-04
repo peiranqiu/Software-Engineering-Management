@@ -1,0 +1,34 @@
+package com.neu.prattle.service;
+
+import com.neu.prattle.model.Group;
+
+import java.util.Optional;
+
+public interface GroupService {
+  /***
+   * Acts as an interface between the data layer and the
+   * servlet controller.
+   *
+   * The controller is responsible for interfacing with this instance
+   * to perform all the CRUD operations on user accounts.
+   *
+   *
+   */
+  /***
+   * Returns an optional object which might be empty or wraps an object
+   * if the System contains a {@link Group} object having the same name
+   * as the parameter.
+   *
+   * @param id The name of the user
+   * @return Optional object.
+   */
+  Optional<Group> findGroupByName(Integer id);
+
+  /***
+   * Tries to add a group in the system
+   * @param group group object
+   *
+   */
+  void addGroup(Group group);
+
+}
