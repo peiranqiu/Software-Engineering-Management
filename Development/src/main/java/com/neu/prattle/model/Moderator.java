@@ -8,7 +8,7 @@ public class Moderator extends User {
   /**
    * Initiate a moderator.
    */
-  public Moderator(String name) {
-    super(name);
+  public Moderator() {
+    super();
   }
 }

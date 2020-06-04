@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User` (
   `logins` VARCHAR(45) NULL,
   `watched` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`User_id`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB;
 
 

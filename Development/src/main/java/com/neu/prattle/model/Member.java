@@ -8,7 +8,5 @@ public class Member extends User {
   /**
    * Initiate a member.
    */
-  public Member(String name) {
-    super(name);
-  }
+  public Member(){}
 }

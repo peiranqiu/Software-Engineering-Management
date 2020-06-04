@@ -1,140 +1,214 @@
 package com.neu.prattle.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /***
  * A User object represents a basic account information for a user.
  *
- * @author CS5500 Fall 2019 Teaching staff
- * @version dated 2019-10-06
  */
-
 @Entity
 @Table(name = "user")
 public class User {
 
-  /** The id. */
+  /**
+   * The id.
+   */
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int _id;
 
-  /** The username should be unique. */
+  /**
+   * The username should be unique.
+   */
   @Column(unique = true)
   private String name;
 
-  /** The password. */
+  /**
+   * The password.
+   */
   private String password;
 
-//  /** The user's avatar. */
-//  private String avatar;
+  /**
+   * The user's avatar.
+   */
+  private String avatar;
 
-  /** The groups. */
+  /**
+   * The groups.
+   */
   @OneToMany(targetEntity = Group.class)
   private List<Group> groups = new ArrayList<>();
 
-  /** The following list. */
+  /**
+   * The following list.
+   */
   @OneToMany(targetEntity = User.class)
-  @JoinTable(name = "user_follows_user",
-          joinColumns = {
-                  @JoinColumn(name = "FOLLOWEE_ID", referencedColumnName = "ID")},
-          inverseJoinColumns = {
-                  @JoinColumn(name = "FOLLOWER_ID", referencedColumnName = "ID")})
+  @JoinTable(name = "user_follows_user", joinColumns = {
+          @JoinColumn(name = "FOLLOWEE_ID", referencedColumnName = "ID"),
+          @JoinColumn(name = "FOLLOWER_ID", referencedColumnName = "ID")})
   @JsonIgnore
-  private List<User> following = new ArrayList<>();
+  private List<User> followedUser = new ArrayList<>();
 
-  /** The follower list. */
+  /**
+   * The follower list.
+   */
   @OneToMany(targetEntity = User.class)
   @JoinTable(name = "user_follows_user",
           joinColumns = {
-                  @JoinColumn(name = "FOLLOWER_ID", referencedColumnName = "ID")},
+                  @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),},
           inverseJoinColumns = {
-                  @JoinColumn(name = "FOLLOWEE_ID", referencedColumnName = "ID")})
+                  @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")})
   @JsonIgnore
   private List<User> follower = new ArrayList<>();
 
-  /** Initiate a new user. */
+  /**
+   * The list of group that the user is following.
+   */
+  @OneToMany(targetEntity = Group.class)
+  @JoinTable(name = "user_follows_group", joinColumns = {
+          @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
+          @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")})
+  @JsonIgnore
+  private List<Group> followedGroup = new ArrayList<>();
+
+  /**
+   * Initiate a new user.
+   */
   public User() {
 
   }
 
-  /** Initiate a new user with user name. */
+  /**
+   * Initiate a new user with user name.
+   */
   public User(String name) {
     this.name = name;
   }
 
-  /** Get the user's name. */
+  /**
+   * Get the user's name.
+   */
   public String getName() {
     return name;
   }
 
-  /** Set the user's name. */
-  public void setName(String userName) {
+  /**
+   * Set the user's name.
+   */
+  public void setName(String name) {
     this.name = name;
   }
 
-  /** Get the user's id. */
+  /**
+   * Get the user's id.
+   */
   public int get_id() {
     return _id;
   }
 
-  /** Set the user's id. */
+  /**
+   * Set the user's id.
+   */
   public void set_id(int _id) {
     this._id = _id;
   }
 
-  /** Get the user's password. */
+  /**
+   * Get the user's password.
+   */
   public String getPassword() {
     return password;
   }
 
-  /** Set the user's password. */
+  /**
+   * Set the user's password.
+   */
   public void setPassword(String password) {
     this.password = password;
   }
 
-//  /** Get the user's avatar. */
-//  public String getAvatar() {
-//    return avatar;
-//  }
-//
-//  /** Set the user's avatar. */
-//  public void setAvatar(String avatar) {
-//    this.avatar = avatar;
-//  }
-
-  /** Get the list of user the user is following. */
-  public List<User> getFollowing() {
-    return following;
+  /**
+   * Get the user's avatar.
+   */
+  public String getAvatar() {
+    return avatar;
   }
 
-  /** Set the user's following list. */
-  public void setFollowing(List<User> following) {
-    this.following = following;
+  /**
+   * Set the user's avatar.
+   */
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
   }
 
-  /** Get the user's follower list. */
+  /**
+   * Get the list of user the user is following.
+   */
+  public List<User> getFollowedUser() {
+    return followedUser;
+  }
+
+  /**
+   * Set the user's following list.
+   */
+  public void setFollowedUser(List<User> followedUser) {
+    this.followedUser = followedUser;
+  }
+
+  /**
+   * Get the user's follower list.
+   */
   public List<User> getFollower() {
     return follower;
   }
 
-  /** Set the user's follower list. */
+  /**
+   * Set the user's follower list.
+   */
   public void setFollower(List<User> follower) {
     this.follower = follower;
   }
 
-  /** Get the user's groups. */
+  /**
+   * Get the user's groups.
+   */
   public List<Group> getGroups() {
     return groups;
   }
 
-  /** Set the user's groups. */
+  /**
+   * Set the user's groups.
+   */
   public void setGroups(List<Group> groups) {
     this.groups = groups;
+  }
+
+  /**
+   * Get the user's followed groups.
+   */
+  public List<Group> getFollowedGroup() {
+    return followedGroup;
+  }
+
+  /**
+   * Set the groups that the user is following.
+   */
+  public void setFollowedGroup(List<Group> followedGroup) {
+    this.followedGroup = followedGroup;
   }
 
   /***
