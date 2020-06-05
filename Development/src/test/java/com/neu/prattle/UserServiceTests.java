@@ -99,7 +99,7 @@ public class UserServiceTests {
    * Test get current information for the user.
    */
   @Test
-  public void testRetrieveInformationForCurrentUser(){
+  public void testRetrieveInformationForCurrentUser() {
     assertEquals("HarryPotter1", user1.getName());
     assertEquals("User1Password", user1.getPassword());
   }
@@ -108,7 +108,7 @@ public class UserServiceTests {
    * Test user password update.
    */
   @Test
-  public void testUpdatePassword(){
+  public void testUpdatePassword() {
     user1.setPassword("Harry12345");
     assertEquals(userService.updateUser(user1).getName(), user1.getName());
   }
@@ -117,7 +117,7 @@ public class UserServiceTests {
    * Test user password update failure.
    */
   @Test(expected = UserNotFoundException.class)
-  public void testUpdatePasswordFail(){
+  public void testUpdatePasswordFail() {
     user2.setPassword("Emma12345");
     userService.updateUser(user2);
   }
@@ -126,7 +126,7 @@ public class UserServiceTests {
    * Close an API connection after all the tasks.
    */
   @Test
-  public void closeConnection(){
+  public void closeConnection() {
     UserAPI api = new UserAPI();
     api.closeConnection();
   }
