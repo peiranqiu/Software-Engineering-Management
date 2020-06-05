@@ -23,11 +23,25 @@ public interface UserService {
     Optional<User> findUserByName(String name);
 
     /***
+     * Update user profile.
+     *
+     * @param user The user to update
+     */
+    void updateUser(User user);
+
+    /***
      * Create a new user.
      *
      * @param user User object
-     * @return true if the user is created
      *
      */
-    boolean addUser(User user);
+    void addUser(User user);
+
+    /***
+     * A user follows another user.
+     *
+     * @param follower User as the follower
+     * @param followee User as the followee
+     */
+    void userFollowUser(User follower, User followee);
 }

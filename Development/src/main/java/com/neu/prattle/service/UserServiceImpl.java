@@ -4,6 +4,11 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -13,13 +18,18 @@ import java.util.Set;
  */
 public class UserServiceImpl implements UserService {
 
+    private final String URL = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
+    private final String USER = "mydb";
+    private final String PASSWORD = "CS5500team4";
+
     private static UserService userService;
-    private Set<User> userSet = new HashSet<>();
+    private Set<User> userSet;
 
     /***
      * UserServiceImpl is a Singleton class.
      */
     private UserServiceImpl() {
+        userSet = new HashSet<>();
 
     }
 
@@ -38,20 +48,53 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findUserByName(String name) throws UserNotFoundException {
         final User user = new User(name);
-        if (userSet.contains(user))
-            return Optional.of(user);
-        else
+        String query =
+                "SELECT User_id FROM User u WHERE u.name ='" + name + "'";
+        try {
+            Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(query);
+            if(result.next()) {
+                return Optional.of(user);
+            }
             return Optional.empty();
+        }
+        catch (SQLException e) {
+            throw new UserNotFoundException("User with username: "+ name + " not found.");
+        }
     }
 
     @Override
-    public synchronized boolean addUser(User user) throws UserAlreadyPresentException {
-        if (userSet.contains(user))
-            throw new UserAlreadyPresentException(String.format("User already present with name: %s", user.getName()));
+    public synchronized void addUser(User user) throws UserAlreadyPresentException {
 
-        userSet.add(user);
-        return true;
+        String query =
+                "INSERT INTO User (name, password) VALUES ('" + user.getName() + "', '" + user.getPassword() + "');";
+        try {
+            Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        }
+        catch (SQLException e) {
+            throw new UserAlreadyPresentException(String.format("User already present with name: %s", user.getName()));
+        }
     }
 
+    @Override
+    public void updateUser(User user) throws UserNotFoundException {
+        String query = "UPDATE User SET password = '" + user.getPassword() + "' WHERE User_id = " + user.get_id() + ";";
+        try {
+            Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        }
+        catch (SQLException e) {
+            throw new UserNotFoundException("User "+ user.getName() + " not found.");
+        }
+    }
+
+    @Override
+    public void userFollowUser(User follower, User followee) {
+
+    }
 
 }

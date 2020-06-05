@@ -3,7 +3,6 @@ package com.neu.prattle.model;
 public interface DatabaseAPI {
   /**
    * Set connection settings
-   * @param url
    * @param user
    * @param password
    */
