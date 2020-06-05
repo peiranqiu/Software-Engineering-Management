@@ -3,6 +3,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
-@SuiteClasses({GroupEntityTest.class, GroupServiceTest.class, UserTests.class})
+@SuiteClasses({GroupEntityTest.class, GroupServiceTest.class, UserTests.class, UserMockTests.class})
 public class AllTests {
 }

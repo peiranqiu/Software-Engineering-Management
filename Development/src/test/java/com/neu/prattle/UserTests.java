@@ -78,7 +78,7 @@ public class UserTests {
    */
   @Test(timeout = 1000)
   public void testTimeout() {
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < 100; i++) {
       User user = new User("RobsUsername" + i);
       user.setPassword("RobsPassword" + i);
       assertTrue(userService.addUser(user));
