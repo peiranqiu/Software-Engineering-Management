@@ -6,6 +6,7 @@
 package com.neu.prattle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -38,6 +39,9 @@ public class ChatEndpointTest {
   private static User testUser2;
   private Message message;
 
+  @Mock
+  private static User testUser3;
+
   // Mocking Session to connect with websocket
   @Mock
   private Session session1;
@@ -58,8 +62,10 @@ public class ChatEndpointTest {
   public static void setupBefore() {
     testUser1 = new User("testName1");
     testUser2 = new User("testName2");
+    testUser3 = new User("testName3");
     testUser1.setPassword("User1Password");
     testUser2.setPassword("User2Password");
+    testUser3.setPassword("User2Password");
 
     // Adding users
     UserService userService = UserServiceImpl.getInstance();
@@ -105,6 +111,22 @@ public class ChatEndpointTest {
     if (m.isPresent()) {
       assertEquals("Connected!", m.get().getContent());
       assertEquals(testUser1.getName(), m.get().getFrom());
+    } else {
+      fail();
+    }
+  }
+
+  @Test
+  public void testOnOpen1() throws IOException, EncodeException {
+    chatEndpoint1.onOpen(session1, testUser3.getName());
+
+    // Finding the message with content 'Connected!'
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("User testName3 could not be found")).findAny();
+
+    if (m.isPresent()) {
+      assertEquals("User testName3 could not be found", m.get().getContent());
     } else {
       fail();
     }
