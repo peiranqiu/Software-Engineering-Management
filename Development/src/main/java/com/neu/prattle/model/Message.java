@@ -160,26 +160,28 @@ public class Message {
   /***
    * Create the messageSent and messageReceived directories for the current user
    */
-  public void makeDirectory(String messagePath, int userID) {
+  public String makeDirectory(String messagePath, int userID) {
     File fromUserFile = new File(messagePath + "/" + userID);
     if (fromUserFile.mkdir()) {
       System.out.println("Successfully create user directory.");
     } else {
-      System.out.println("Creating user directory fails.");
+      throw new IllegalArgumentException("Creating user fails.");
     }
     File fileUserSent = new File(messagePath + "/" + userID + "/messageSent");
     if (fileUserSent.mkdir()) {
       System.out.println("Successfully create sender directory.");
     } else {
-      System.out.println("Creating sender directory fails.");
+      throw new IllegalArgumentException("Creating sender directory fails.");
     }
     File fileUserReceived = new File(messagePath + "/" + userID +"/messageReceived");
     if (fileUserReceived.mkdir()) {
       System.out.println("Successfully create receiver directory.");
     } else {
-      System.out.println("Creating receiver directory fails.");
+      throw new IllegalArgumentException("Creating receiver directory fails.");
     }
-    }
+    String result = "Successfully create receiver directory.";
+    return result;
+  }
 
     /***
      * Make directories and save the current message into a JSON file under the folder of the current sender and receiver
@@ -188,10 +190,16 @@ public class Message {
         if (fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
             messagePath = getMessagePath();
             if (!Files.exists(Paths.get(messagePath + "/" + fromID))){
-                makeDirectory(messagePath, fromID);
+                String result1 = makeDirectory(messagePath, fromID);
+                if (!result1.equals("Successfully create receiver directory.")){
+                  return false;
+                }
             }
             if (!Files.exists(Paths.get(messagePath + "/" + toID))){
-                makeDirectory(messagePath, toID);
+                String result2 = makeDirectory(messagePath, toID);
+              if (!result2.equals("Successfully create receiver directory.")){
+                return false;
+              }
             }
             File file1 = new File(messagePath + "/" + fromID + "/messageSent" + "/" + messageID + ".json");
             File file2 = new File(messagePath + "/" + toID  + "/messageReceived" + "/" + messageID + ".json");

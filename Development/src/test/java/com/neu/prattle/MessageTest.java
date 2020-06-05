@@ -75,8 +75,32 @@ public class MessageTest {
     assertEquals("From: peiranTo: rouniContent: Good Morning!", message.toString());
   }
 
+  @Test(expected=IllegalArgumentException.class)
+  public void testmakeDirectoryException1() {
+    assertEquals("Creating user fails.", message.makeDirectory(message.getMessagePath(), message.getFromID()));
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testmakeDirectoryException2() {
+    assertEquals("Successfully create sender directory.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageSent", 12345));
+    assertEquals("Creating sender directory fails.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageSent", 12345));
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testmakeDirectoryException3() {
+    assertEquals("Successfully create receiver directory.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
+    assertEquals("Creating receiver directory fails.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
+  }
+
+  @Test(expected=IllegalArgumentException.class)
+  public void testmakeDirectoryException4() {
+    assertEquals("Successfully create receiver directory.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
+    assertEquals("Creating receiver directory fails.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
+  }
+
   @Test
   public void testmakeDirectory() {
-    assertNull(message.makeDirectory(message.getMessagePath(), message.getFromID()));
+    assertEquals("Successfully create receiver directory.", message.makeDirectory(message.getMessagePath() + "/" + 1234511 + "/messageReceived", 1234511));
   }
+
 }
