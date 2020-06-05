@@ -12,11 +12,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12.4</version>
 				<configuration>
-					<argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
 					<includes>
-						<include>**/UserTests.java</include>
-						<include>**/UserMockTests.java</include>
+						<include>**/ALLTests.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -116,14 +115,6 @@
 			<version>3.3.3</version>
 		</dependency>
 		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.10.19</version>
-			<scope>test</scope>
-		</dependency>
-
-
-		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>2.9.6</version>
@@ -216,4 +207,3 @@
 		</profile>
 	</profiles>
 </project>
-

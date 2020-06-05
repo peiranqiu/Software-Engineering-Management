@@ -79,6 +79,7 @@ public abstract class DBUtils {
       stmt.close();
 
     } catch (SQLException e) {
+      System.out.println(e.getMessage());
       throw new IllegalStateException("sql update failed");
     }
 

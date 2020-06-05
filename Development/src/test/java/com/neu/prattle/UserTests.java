@@ -1,123 +1,113 @@
 package com.neu.prattle;
 
-import com.neu.prattle.exceptions.PasswordInvalidException;
-import com.neu.prattle.exceptions.UserAlreadyPresentException;
-import com.neu.prattle.exceptions.UserNameInvalidException;
-import com.neu.prattle.exceptions.UserNotFoundException;
+import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.UserService;
-import com.neu.prattle.service.UserServiceImpl;
 
-import org.junit.Before;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
+import static org.junit.Assert.assertNull;
 
 /**
- * A junit test class for user.
+ * A junit test class for user service.
  */
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserTests {
 
-  private UserService userService;
-
-  private User user1;
-  private User user2;
-
-  @Before
-  public void setUp() {
-    userService = UserServiceImpl.getInstance();
-    user1 = new User("HarryPotter1");
-    user1.setPassword("User1Password");
-    user2 = new User("EmmaStone2");
-    user2.setPassword("User2Password");
-  }
+  private User user = new User("CS5500Team2");
+  private User user1 = new User("CS5500Team3");
+  private User user2 = new User("CS5500Team4");
+  private User user3 = new User("CS5500Team5");
+  private Group group1 = new Group();
+  private Group group2 = new Group();
 
   /**
-   * Test success of user creation.
+   * Test set and get user name.
    */
   @Test
-  public void testCreateUser() {
-    assertTrue(userService.addUser(user1));
+  public void testUserId() {
+    user = new User("CS5500Team1");
+    user.setUserId(99999);
+    assertEquals(user.getUserId(), 99999);
   }
 
   /**
-   * Test failure of user creation because of user already exist.
-   */
-  @Test(expected = UserAlreadyPresentException.class)
-  public void testCreateUserAlreadyExist() {
-
-    userService.addUser(user1);
-  }
-
-  /**
-   * Test failure of user creation because of invalid username.
-   */
-  @Test(expected = UserNameInvalidException.class)
-  public void testCreateUserInvalidName() {
-    user2.setName("-1");
-    userService.addUser(user2);
-  }
-
-  /**
-   * Test failure of user creation because of invalid password.
-   */
-  @Test(expected = PasswordInvalidException.class)
-  public void testCreateUserInvalidPassword() {
-    user2.setPassword("-1");
-    userService.addUser(user2);
-  }
-
-  /**
-   * Test timeout for adding a large number of users.
-   */
-  @Test(timeout = 1000)
-  public void testTimeout() {
-    for (int i = 0; i < 100; i++) {
-      User user = new User("RobsUsername" + i);
-      user.setPassword("RobsPassword" + i);
-      assertTrue(userService.addUser(user));
-    }
-  }
-
-  /**
-   * Test find user with a given name.
+   * Test set and get user avatar.
    */
   @Test
-  public void testFindUserByName() {
-    assertEquals(userService.findUserByName("HarryPotter1").get(), user1);
-    assertFalse(userService.findUserByName("EllenDeGeneres").isPresent());
+  public void testUserAvatar() {
+    user.setAvatar("picture.png");
+    assertEquals(user.getAvatar(), "picture.png");
   }
 
   /**
-   * Test get current information for the user.
+   * Test set and get user's following users list.
    */
   @Test
-  public void testRetrieveInformationForCurrentUser(){
-    assertEquals("HarryPotter1", user1.getName());
-    assertEquals("User1Password", user1.getPassword());
+  public void testFollowUser() {
+    List<User> followedUser = new ArrayList<>();
+    followedUser.add(user2);
+    followedUser.add(user3);
+    followedUser.add(user1);
+    user.setFollowedUser(followedUser);
+    assertEquals(user.getFollowedUser(), followedUser);
   }
 
   /**
-   * Test user password update.
+   * Test set and get user's follower list.
    */
   @Test
-  public void testUpdatePassword(){
-    user1.setPassword("Harry12345");
-    assertEquals(userService.updateUser(user1).getName(), user1.getName());
+  public void testUsersFollower() {
+    List<User> follower = new ArrayList<>();
+    follower.add(user2);
+    follower.add(user3);
+    follower.add(user1);
+    user.setFollower(follower);
+    assertEquals(user.getFollower(), follower);
   }
 
   /**
-   * Test user password update failure.
+   * Test set and get user's group list.
    */
-  @Test(expected = UserNotFoundException.class)
-  public void testUpdatePasswordFail(){
-    user2.setPassword("Emma12345");
-    userService.updateUser(user2);
+  @Test
+  public void testUsersGroup() {
+    List<Group> groups = new ArrayList<>();
+    groups.add(group1);
+    groups.add(group2);
+    user.setGroups(groups);
+    assertEquals(user.getGroups(), groups);
   }
+
+  /**
+   * Test set and get user's followed group list.
+   */
+  @Test
+  public void testUserFollowGroup() {
+    List<Group> followedGroups = new ArrayList<>();
+    followedGroups.add(group1);
+    followedGroups.add(group2);
+    user.setFollowedGroup(followedGroups);
+    assertEquals(user.getFollowedGroup(), followedGroups);
+  }
+
+  /**
+   * Test user hashcode.
+   */
+  @Test
+  public void testUserHashcode() {
+    assertEquals(user.hashCode(), Objects.hash(user.getName()));
+  }
+
+  /**
+   * Test user equals incompatible object.
+   */
+  @Test
+  public void testUserEquals() {
+    assertFalse(user.equals(1));
+  }
+
 }
