@@ -12,17 +12,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /***
- * A Resource class responsible for handling CRUD operations
- * on User objects.
+ * A Resource class responsible for handling CRUD operations on User objects.
  *
- * @author CS5500 Fall 2019 Teaching staff
- * @version dated 2019-10-06
  */
+
 @Path(value = "/user")
-public class UserController {
+public final class UserController {
+
+    private static final UserController userControllerInstance = new UserController();
 
     // Usually Dependency injection will be used to inject the service at run-time
-    private UserService accountService = UserServiceImpl.getInstance();
+    private UserService userService = UserServiceImpl.getInstance();
 
     /***
      * Handles a HTTP POST request for user creation
@@ -35,7 +35,7 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createUserAccount(User user) {
         try {
-            accountService.addUser(user);
+            userService.addUser(user);
         } catch (UserAlreadyPresentException e) {
             return Response.status(409).build();
         }
