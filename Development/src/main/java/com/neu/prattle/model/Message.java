@@ -160,6 +160,13 @@ public class Message {
   }
 
   /***
+   * Set the parent directory of the message folder
+   */
+  public void setMessagePath() {
+    this.messagePath = getMessagePath();
+  }
+
+  /***
    * Create the messageSent and messageReceived directories for the current user
    */
   public void makeDirectory(String messagePath, int userID) {
