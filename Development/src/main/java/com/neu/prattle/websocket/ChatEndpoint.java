@@ -2,7 +2,7 @@ package com.neu.prattle.websocket;
 
 /**
  * A simple chat client based on websockets.
- * 
+ *
  * @author https://github.com/eugenp/tutorials/java-websocket/src/main/java/com/baeldung/websocket/ChatEndpoint.java
  * @version dated 2017-03-05
  */

@@ -3,45 +3,46 @@ package com.neu.prattle;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Optional;
-
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.neu.prattle.model.User;
+import org.mockito.Mock;
 
+
+import static org.mockito.Mockito.*;
+
+
+/**
+ * A junit test class for user.
+ */
 public class SimpleTestExample {
 
-	private UserService as;
-	
+	private UserService userService;
+
+	@Mock
+	private User user;
+
 	@Before
 	public void setUp() {
-		as = UserServiceImpl.getInstance();
+		userService = UserServiceImpl.getInstance();
 	}
-	
-	
-	// This method just tries to add 
+
+	@Before
+	public void setup() {
+		user = new User("peiran");
+		user.setPassword("12345");
+		userService = UserServiceImpl.getInstance();
+
+	}
+
 	@Test
-	public void setUserTest(){
-	   as.addUser(new User("Mike"));
+	public void testUserCreation() {
+		//when(userService.addUser(any())).thenReturn(true);
+		//assertTrue(userService.addUser(user));
 	}
-	
-	// This method just tries to add 
-	@Test
-	public void getUserTest(){
-		Optional<User> user = as.findUserByName("Mike");
-		assertTrue(user.isPresent());
-	}
-	
-	// Performance testing to benchmark our number of users that can be added 
-	// in 1 sec	
-	
-	@Test(timeout = 1000)
-	public void checkPrefTest(){
-		for(int i=0; i < 1000; i++) {
-			as.addUser(new User("Mike"+i));
-		}
-	}
+
+
 }
