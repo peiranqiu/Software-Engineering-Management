@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.logging.Logger;
+
 import javax.websocket.EncodeException;
 
 /***
@@ -16,6 +18,7 @@ import javax.websocket.EncodeException;
  * @version dated 2020-06-05
  */
 public class Message {
+  Logger logger = Logger.getLogger(Message.class.getName());
     /***
      * The name of the user who sent this message.
      */
@@ -160,25 +163,21 @@ public class Message {
    */
   public String makeDirectory(String messagePath, int userID) {
     File fromUserFile = new File(messagePath + "/" + userID);
-    if (fromUserFile.mkdir()) {
-      System.out.println("Successfully create user directory.");
-    } else {
+    if (!fromUserFile.mkdir()) {
       throw new IllegalArgumentException("Creating user fails.");
     }
+    logger.info("Successfully create user directory.");
     File fileUserSent = new File(messagePath + "/" + userID + "/messageSent");
-    if (fileUserSent.mkdir()) {
-      System.out.println("Successfully create sender directory.");
-    } else {
+    if (!fileUserSent.mkdir()) {
       throw new IllegalArgumentException("Creating sender directory fails.");
     }
+    logger.info("Successfully create sender directory.");
     File fileUserReceived = new File(messagePath + "/" + userID +"/messageReceived");
-    if (fileUserReceived.mkdir()) {
-      System.out.println("Successfully create receiver directory.");
-    } else {
+    if (!fileUserReceived.mkdir()) {
       throw new IllegalArgumentException("Creating receiver directory fails.");
     }
-    String result = "Successfully create receiver directory.";
-    return result;
+    logger.info("Successfully create receiver directory.");
+    return "Successfully create receiver directory.";
   }
 
     /***

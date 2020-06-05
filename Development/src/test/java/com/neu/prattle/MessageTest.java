@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-
+import java.io.File;
 import java.io.IOException;
 
 import javax.websocket.EncodeException;
@@ -77,24 +77,18 @@ public class MessageTest {
   }
 
   @Test(expected=IllegalArgumentException.class)
-  public void testmakeDirectoryException1() {
+  public void testMakeDirectoryException1() {
     assertEquals("Creating user fails.", message.makeDirectory(message.getMessagePath(), message.getFromID()));
   }
 
   @Test(expected=IllegalArgumentException.class)
-  public void testmakeDirectoryException2() {
+  public void testMakeDirectoryException2() {
     assertEquals("Successfully create sender directory.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageSent", 12345));
     assertEquals("Creating sender directory fails.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageSent", 12345));
   }
 
   @Test(expected=IllegalArgumentException.class)
-  public void testmakeDirectoryException3() {
-    assertEquals("Successfully create receiver directory.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
-    assertEquals("Creating receiver directory fails.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
-  }
-
-  @Test(expected=IllegalArgumentException.class)
-  public void testmakeDirectoryException4() {
+  public void testMakeDirectoryException3() {
     assertEquals("Successfully create receiver directory.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
     assertEquals("Creating receiver directory fails.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
   }
@@ -111,4 +105,22 @@ public class MessageTest {
     assertEquals(ms1.getContent(), message.getContent());
   }
 
+  @Test
+  public void testMakeDirectory() {
+    deleteDir(new File(message.getMessagePath() + "/" + message.getFromID()));
+    assertEquals("Successfully create receiver directory.", message.makeDirectory(message.getMessagePath(), message.getFromID()));
+  }
+
+
+  public void deleteDir(File dir) {
+    if (dir.exists()){
+      File[] files = dir.listFiles();
+      if(files != null) {
+        for (final File file : files) {
+          deleteDir(file);
+        }
+      }
+      dir.delete();
+    }
+  }
 }
