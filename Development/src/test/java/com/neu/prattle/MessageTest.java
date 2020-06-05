@@ -4,6 +4,7 @@ import com.neu.prattle.model.Message;
 import com.neu.prattle.websocket.MessageDecoder;
 import com.neu.prattle.websocket.MessageEncoder;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -122,5 +123,12 @@ public class MessageTest {
       }
       dir.delete();
     }
+  }
+
+  @Test
+  public void decode(){
+    MessageDecoder decode = new MessageDecoder();
+    assertFalse(decode.willDecode(null));
+    assertTrue(decode.willDecode("test"));
   }
 }
