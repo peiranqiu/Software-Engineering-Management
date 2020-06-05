@@ -5,9 +5,11 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.UserAPI;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -15,6 +17,7 @@ import org.junit.runners.MethodSorters;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -119,5 +122,14 @@ public class UserTests {
   public void testUpdatePasswordFail(){
     user2.setPassword("Emma12345");
     userService.updateUser(user2);
+  }
+
+  /**
+   * Close an API connection after all the tasks.
+   */
+  @Test
+  public void closeConnection(){
+    UserAPI api = new UserAPI();
+    api.closeConnection();
   }
 }

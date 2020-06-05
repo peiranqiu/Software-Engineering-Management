@@ -59,5 +59,4 @@ public class UserAPI extends DBUtils {
     }
   }
 
-
 }
