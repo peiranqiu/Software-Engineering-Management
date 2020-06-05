@@ -27,8 +27,9 @@ public interface GroupService {
   /***
    * Tries to add a group in the system
    * @param group group object
+   * @return true of successful, false otherwise.
    *
    */
-  void addGroup(Group group);
+  boolean addGroup(Group group);
 
 }

@@ -1,4 +1,4 @@
-package com.neu.prattle.model;
+package com.neu.prattle.service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DBUtils {
+/**
+ * An abstract class to connect mysql database and offer general crud for
+ * tables.
+ */
+public abstract class DBUtils {
 
 
   protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
@@ -18,7 +22,12 @@ public class DBUtils {
     this.con = getConnection();
   }
 
-  public Connection getConnection() {
+  /**
+   * Connect to the db
+   * @return the connect
+   */
+  public Connection getConnection()
+  {
     if (con == null) {
       try {
         con = DriverManager.getConnection(url, user, password);
@@ -32,6 +41,9 @@ public class DBUtils {
     return con;
   }
 
+  /**
+   * Disconnect
+   */
   public void closeConnection() {
     try {
       con.close();
@@ -42,14 +54,14 @@ public class DBUtils {
   }
 
   /**
-   * For a table of terms consisting of an id and string value pair, get the id of the term adding a
-   * new term if it does not yet exist in the table
-   *
+   * For a table of terms consisting of an id and string value pair, get the id of the term
+   * adding a new term if it does not yet exist in the table
    * @param table The table of terms
-   * @param term  The term value
+   * @param term The term value
    * @return The id of the term
    */
-  public int insertTerm(String table, String valueColumn, String term) {
+  protected int insertTerm(String table, String valueColumn, String term)
+  {
     int key = -1;
 
     try {

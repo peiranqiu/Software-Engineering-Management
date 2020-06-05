@@ -48,6 +48,12 @@ public class UserServiceImpl implements UserService {
       return Optional.empty();
   }
 
+  /**
+   * Add a user
+   * @param user User object
+   * @return if add successfully
+   */
+
   @Override
   public boolean addUser(User user) {
 
