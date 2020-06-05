@@ -67,7 +67,7 @@ pipeline {
             slackSend (baseUrl: "https://northeasternuhq.slack.com/services/hooks/jenkins-ci//", token: "FxNFkRxN2MlzjDED5wv2twCS", channel: "#team-4", color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME}")
             }
    failure {  
-         slackSend (baseUrl: "https://northeasternuhq.slack.com/services/hooks/jenkins-ci/", token: "FxNFkRxN2MlzjDED5wv2twCS", channel: "#team-4", color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME}")
+         //slackSend (baseUrl: "https://northeasternuhq.slack.com/services/hooks/jenkins-ci/", token: "FxNFkRxN2MlzjDED5wv2twCS", channel: "#team-4", color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME}")
          }
    }
 } //pipeline
