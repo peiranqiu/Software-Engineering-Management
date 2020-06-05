@@ -1,7 +1,6 @@
 package com.neu.prattle.model;
 
 import com.neu.prattle.websocket.MessageEncoder;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
-
 import javax.websocket.EncodeException;
 
 /***
@@ -139,8 +137,8 @@ public class Message {
             if (!Files.exists(Paths.get(messagePath + "/" + toID))){
                 makeDirectory(messagePath, toID);
             }
-            File file1 = new File(messagePath + "/" + fromID + "/messageSent" + "/" + messageID + ".txt");
-            File file2 = new File(messagePath + "/" + toID  + "/messageReceived" + "/" + messageID + ".txt");
+            File file1 = new File(messagePath + "/" + fromID + "/messageSent" + "/" + messageID + ".json");
+            File file2 = new File(messagePath + "/" + toID  + "/messageReceived" + "/" + messageID + ".json");
             if (file1.createNewFile() && file2.createNewFile()) {
                 writeFile(messagePath);
                 return true;
@@ -153,22 +151,24 @@ public class Message {
 
     private void writeFile(String messagePath) throws IOException, EncodeException {
         MessageEncoder msEncoder = new MessageEncoder();
-        FileWriter myWriter = new FileWriter(messagePath + "/" + fromID + "/messageSent" + "/" + messageID + ".txt");
+        FileWriter myWriter = new FileWriter(messagePath + "/" + fromID + "/messageSent" + "/" + messageID + ".json");
         myWriter.write(msEncoder.encode(this));
         myWriter.close();
         MessageEncoder msEncoder2 = new MessageEncoder();
-        FileWriter myWriter2 = new FileWriter(messagePath + "/" + toID  + "/messageReceived" + "/" + messageID + ".txt");
+        FileWriter myWriter2 = new FileWriter(messagePath + "/" + toID  + "/messageReceived" + "/" + messageID + ".json");
         myWriter2.write(msEncoder2.encode(this));
         myWriter2.close();
     }
 
-    public void deleteMessage(int userID, int messageID) {
+    public String deleteMessage(int userID, String messageID) {
         messagePath = getMessagePath();
-        File file = new File(messagePath + "/" + userID + "messageSent" + "/" + messageID + ".txt");
+        String output = "File remove fails.";
+        File file = new File(messagePath + "/" + userID + "/messageSent" + "/" + messageID + ".json");
         if(file.delete())
         {
-            System.out.println("File deleted successfully");
+            output = "File deleted successfully";
         }
+        return output;
     }
 
     public static MessageBuilder messageBuilder()   {
