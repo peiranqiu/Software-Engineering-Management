@@ -1,6 +1,7 @@
 package com.neu.prattle;
 
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
+import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
@@ -22,7 +23,6 @@ public class GroupServiceTest {
 
   @Mock
   private Group group1=new Group("testGroup1");
-  private Group group2=new Group("testGroup2");
 
   @Before
   public void setUp(){
@@ -45,5 +45,11 @@ public class GroupServiceTest {
   public void test3(){
     assertEquals(group1.getName(), groupService.findGroupByName("testGroup1").get().getName());
   }
+
+  @Test(expected = GroupNotFoundException.class)
+  public void test4(){
+    groupService.findGroupByName("testGroup3");
+  }
+
 
 }

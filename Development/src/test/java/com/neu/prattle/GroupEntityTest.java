@@ -55,5 +55,16 @@ public class GroupEntityTest {
 
   }
 
+  @Test
+  public void test4() {
+    Group group4 = new Group("group4");
+    Group group5 = new Group("group4");
+    Group group6 = new Group("group6");
+    assertEquals(group4,group5);
+    assertFalse(group4.equals(group6));
+    assertTrue(group4.hashCode()==group5.hashCode());
+
+  }
+
 
 }

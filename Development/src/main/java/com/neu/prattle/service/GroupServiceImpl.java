@@ -49,8 +49,7 @@ public class GroupServiceImpl implements GroupService {
     final Group group = new Group(name);
     if (api.getGroup(name))
       return Optional.of(group);
-    else
-      return Optional.empty();
+    else throw new GroupNotFoundException("there is no such group");
   }
 
 
