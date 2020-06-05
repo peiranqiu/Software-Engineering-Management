@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * A junit test class for user service.
