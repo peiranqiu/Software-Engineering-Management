@@ -1,4 +1,4 @@
-package com.neu.prattle.model;
+package com.neu.prattle.service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
