@@ -13,11 +13,13 @@ public class UserAPI extends DBUtils {
     super();
   }
 
-  public void addUser(User user) {
+  public boolean addUser(User user) {
+
     super.insertTerm("User", "name", user.getName());
+    return true;
   }
 
-  public boolean getUsers(String name) {
+  public User getUsers(String name) {
     try {
       Connection con = getConnection();
       Statement stmt = con.createStatement();
@@ -26,15 +28,35 @@ public class UserAPI extends DBUtils {
 
       ResultSet rs = stmt.executeQuery(sql);
       if (rs.next()) {
-        return true;
+        User user = new User();
+        user.setUserId(rs.getInt("User_id"));
+        user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
+        return user;
       }
       rs.close();
       stmt.close();
-      return false;
+      return null;
     } catch (SQLException e) {
-      return false;
+      return null;
     }
+  }
 
+  public User updateUser(User user, String field, String value) {
+    try {
+      Connection con = getConnection();
+      Statement stmt = con.createStatement();
+      String sql = "UPDATE User SET " + field + "= '" + value + "' WHERE name = '" + user.getName() + "';";
+
+      int result = stmt.executeUpdate(sql);
+      if (result == 1) {
+        stmt.close();
+        return user;
+      }
+      return null;
+    } catch (SQLException e) {
+      return null;
+    }
   }
 
 

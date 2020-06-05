@@ -19,9 +19,6 @@ import javax.ws.rs.core.Response;
 @Path(value = "/user")
 public final class UserController {
 
-  private static final UserController userControllerInstance = new UserController();
-
-  // Usually Dependency injection will be used to inject the service at run-time
   private UserService userService = UserServiceImpl.getInstance();
 
   /***

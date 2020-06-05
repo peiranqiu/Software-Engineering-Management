@@ -1,7 +1,9 @@
 package com.neu.prattle;
 
-
+import com.neu.prattle.exceptions.PasswordInvalidException;
 import com.neu.prattle.exceptions.UserAlreadyPresentException;
+import com.neu.prattle.exceptions.UserNameInvalidException;
+import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
@@ -10,10 +12,10 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.mockito.Mock;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -24,13 +26,16 @@ public class UserTests {
 
   private UserService userService;
 
-  @Mock
-  private User user1 = new User("Harry");
-  private User user2 = new User("Emma");
+  private User user1;
+  private User user2;
 
   @Before
   public void setUp() {
     userService = UserServiceImpl.getInstance();
+    user1 = new User("HarryPotter1");
+    user1.setPassword("User1Password");
+    user2 = new User("EmmaStone2");
+    user2.setPassword("User2Password");
   }
 
   /**
@@ -38,24 +43,34 @@ public class UserTests {
    */
   @Test
   public void testCreateUser() {
-    userService.addUser(user1);
+    assertTrue(userService.addUser(user1));
   }
 
   /**
-   * Test failure of user creation.
+   * Test failure of user creation because of user already exist.
    */
   @Test(expected = UserAlreadyPresentException.class)
-  public void testCreateUserFail() {
+  public void testCreateUserAlreadyExist() {
+
     userService.addUser(user1);
   }
 
   /**
-   * Test find user with a given name.
+   * Test failure of user creation because of invalid username.
    */
-  @Test
-  public void testFindUserByName() {
-    assertEquals(userService.findUserByName("Harry").get(), user1);
-    assertFalse(userService.findUserByName("Ellen").isPresent());
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName() {
+    user2.setName("-1");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword() {
+    user2.setPassword("-1");
+    userService.addUser(user2);
   }
 
   /**
@@ -64,18 +79,45 @@ public class UserTests {
   @Test(timeout = 1000)
   public void testTimeout() {
     for (int i = 0; i < 1000; i++) {
-      userService.addUser(new User("Mike" + i));
+      User user = new User("RobsUsername" + i);
+      user.setPassword("RobsPassword" + i);
+      assertTrue(userService.addUser(user));
     }
+  }
+
+  /**
+   * Test find user with a given name.
+   */
+  @Test
+  public void testFindUserByName() {
+    assertEquals(userService.findUserByName("HarryPotter1").get(), user1);
+    assertFalse(userService.findUserByName("EllenDeGeneres").isPresent());
+  }
+
+  /**
+   * Test get current information for the user.
+   */
+  @Test
+  public void testRetrieveInformationForCurrentUser(){
+    assertEquals("HarryPotter1", user1.getName());
+    assertEquals("User1Password", user1.getPassword());
   }
 
   /**
    * Test user password update.
    */
   @Test
-	public void updatePassword(){
-		//User user = new User("Harry5");
-		//userService.addUser(user);
-		//user.setPassword("harry212345");
-		//userService.updateUser(user);
-	}
+  public void testUpdatePassword(){
+    user1.setPassword("Harry12345");
+    assertEquals(userService.updateUser(user1).getName(), user1.getName());
+  }
+
+  /**
+   * Test user password update failure.
+   */
+  @Test(expected = UserNotFoundException.class)
+  public void testUpdatePasswordFail(){
+    user2.setPassword("Emma12345");
+    userService.updateUser(user2);
+  }
 }
