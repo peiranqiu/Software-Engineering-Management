@@ -1,1 +1,0 @@
-{"from":"peiran","to":"rouni","content":"Good Morning!","messageID":"0a0a72d5-c0de-4c53-94d4-a10fa422c9ae","messageDate":null,"messagePath":"/Users/daniehao/Desktop/CS_5500/summer1_cs5500/team-4-su20/Development/src","fromID":123,"toID":456}

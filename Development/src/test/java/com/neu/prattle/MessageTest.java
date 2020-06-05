@@ -1,10 +1,8 @@
 package com.neu.prattle;
 
 import com.neu.prattle.model.Message;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 import java.io.IOException;
@@ -26,19 +24,9 @@ public class MessageTest {
   }
 
   @Test
-  public void testStoreMessage() throws IOException, EncodeException {
-    message.storeMessage();
+  public void testStoreMessageDeleteMessage() throws IOException, EncodeException {
     assertTrue(message.storeMessage());
-
-    message.deleteMessage(message.getFromID(), message.getMessageID());
-    System.out.println(message.deleteMessage(message.getFromID(), message.getMessageID()));
+    assertEquals("File deleted successfully", message.deleteMessage(message.getFromID(), message.getMessageID()));
   }
-
-//  @Test
-//  public void testDeleteMessage() {
-//    message.deleteMessage(message.getFromID(), message.getMessageID());
-//    System.out.println(message.deleteMessage(message.getFromID(), message.getMessageID()));
-////    assertEquals("File deleted successfully", message.deleteMessage(message.getFromID(), message.getMessageID()));
-//  }
 
 }
