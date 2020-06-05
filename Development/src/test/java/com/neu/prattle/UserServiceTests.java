@@ -1,4 +1,3 @@
-
 package com.neu.prattle;
 
 import com.neu.prattle.exceptions.PasswordInvalidException;
