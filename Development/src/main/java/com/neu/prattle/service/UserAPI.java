@@ -13,8 +13,10 @@ public class UserAPI extends DBUtils {
     super();
   }
 
-  public void addUser(User user) {
+  public boolean addUser(User user) {
+
     super.insertTerm("User", "name", user.getName());
+    return true;
   }
 
   public User getUsers(String name) {

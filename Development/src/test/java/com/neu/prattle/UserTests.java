@@ -1,6 +1,5 @@
 package com.neu.prattle;
 
-
 import com.neu.prattle.exceptions.PasswordInvalidException;
 import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
@@ -12,11 +11,7 @@ import com.neu.prattle.service.UserServiceImpl;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
@@ -26,18 +21,20 @@ import static org.junit.Assert.assertEquals;
  * A junit test class for user.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-//@RunWith(MockitoJUnitRunner.class)
 public class UserTests {
 
   private UserService userService;
 
-  private User user1 = new User("HarryPotter1");
-  private User user2 = new User("EmmaStone2");
+  private User user1;
+  private User user2;
 
   @Before
   public void setUp() {
     userService = UserServiceImpl.getInstance();
+    user1 = new User("HarryPotter1");
     user1.setPassword("User1Password");
+    user2 = new User("EmmaStone2");
+    user2.setPassword("User2Password");
   }
 
   /**
@@ -80,8 +77,8 @@ public class UserTests {
   @Test(timeout = 1000)
   public void testTimeout() {
     for (int i = 0; i < 1000; i++) {
-      User user = new User("MikesUsername" + i);
-      user.setPassword("MikesPassword" + i);
+      User user = new User("RobsUsername" + i);
+      user.setPassword("RobsPassword" + i);
       userService.addUser(user);
     }
   }
@@ -93,6 +90,15 @@ public class UserTests {
   public void testFindUserByName() {
     assertEquals(userService.findUserByName("HarryPotter1").get(), user1);
     assertFalse(userService.findUserByName("EllenDeGeneres").isPresent());
+  }
+
+  /**
+   * Test get current information for the user.
+   */
+  @Test
+  public void testRetrieveInformationForCurrentUser(){
+    assertEquals(user1.getName(), "HarryPotter1");
+    assertEquals(user1.getPassword(), "User1Password");
   }
 
   /**

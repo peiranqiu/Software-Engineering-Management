@@ -21,7 +21,8 @@ public class UserServiceImpl implements UserService {
    * UserServiceImpl is a Singleton class.
    */
   private UserServiceImpl() {
-    api = new UserAPI();
+
+    this.api = new UserAPI();
   }
 
   static {
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public synchronized Optional<User> findUserByName(String name) {
+  public Optional<User> findUserByName(String name) {
     final User user = new User(name);
     if (api.getUsers(name) != null)
       return Optional.of(user);
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public synchronized void addUser(User user) throws UserAlreadyPresentException {
+  public boolean addUser(User user) throws UserAlreadyPresentException {
 
     if (!isValidUsername(user)) {
       throw new UserNameInvalidException("Username must be between 4-20 letters long, and contain one capital letter, " +
@@ -60,6 +61,7 @@ public class UserServiceImpl implements UserService {
 
     try {
       api.addUser(user);
+      return true;
     } catch (IllegalStateException e) {
       throw new UserAlreadyPresentException(String.format("User already present with name: %s", user.getName()));
     }

@@ -36,7 +36,7 @@ public interface UserService {
      * @param user User object
      *
      */
-    void addUser(User user);
+    boolean addUser(User user);
 
     /***
      * A user follows another user.
