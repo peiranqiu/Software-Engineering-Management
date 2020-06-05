@@ -78,6 +78,10 @@ public class Message {
 
     public String getMessageDate() {return messageDate;}
 
+//    public void deleteMessage(String messageID) {
+//
+//    }
+
     public static MessageBuilder messageBuilder()   {
         return new MessageBuilder();
     }
@@ -85,7 +89,7 @@ public class Message {
     /***
      * A Builder helper class to create instances of {@link Message}
      */
-    public static class MessageBuilder    {
+    public static class MessageBuilder {
         /***
          * Invoking the build method will return this message object.
          */
