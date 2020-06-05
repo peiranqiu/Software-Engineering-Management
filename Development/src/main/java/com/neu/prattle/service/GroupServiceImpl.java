@@ -56,12 +56,14 @@ public class GroupServiceImpl implements GroupService {
   /***
    * Tries to add a group in the system
    * @param group group object
+   * @return true of successful, false otherwise.
    *
    */
   @Override
-  public void addGroup(Group group) throws GroupAlreadyPresentException {
+  public boolean addGroup(Group group) throws GroupAlreadyPresentException {
     try {
       api.addGroup(group);
+      return true;
     } catch (IllegalStateException e) {
       throw new GroupAlreadyPresentException(String.format("Group already present with name: %s", group.getName()));
     }
