@@ -19,27 +19,27 @@ import javax.ws.rs.core.Response;
 @Path(value = "/user")
 public final class UserController {
 
-    private static final UserController userControllerInstance = new UserController();
+  private static final UserController userControllerInstance = new UserController();
 
-    // Usually Dependency injection will be used to inject the service at run-time
-    private UserService userService = UserServiceImpl.getInstance();
+  // Usually Dependency injection will be used to inject the service at run-time
+  private UserService userService = UserServiceImpl.getInstance();
 
-    /***
-     * Handles a HTTP POST request for user creation
-     * 
-     * @param user -> The User object decoded from the payload of POST request.
-     * @return -> A Response indicating the outcome of the requested operation.
-     */
-    @POST
-    @Path("/create")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response createUserAccount(User user) {
-        try {
-            userService.addUser(user);
-        } catch (UserAlreadyPresentException e) {
-            return Response.status(409).build();
-        }
-
-        return Response.ok().build();
+  /***
+   * Handles a HTTP POST request for user creation
+   *
+   * @param user -> The User object decoded from the payload of POST request.
+   * @return -> A Response indicating the outcome of the requested operation.
+   */
+  @POST
+  @Path("/create")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response createUserAccount(User user) {
+    try {
+      userService.addUser(user);
+    } catch (UserAlreadyPresentException e) {
+      return Response.status(409).build();
     }
+
+    return Response.ok().build();
+  }
 }

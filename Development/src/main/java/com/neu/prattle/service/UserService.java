@@ -14,13 +14,13 @@ import java.util.Optional;
  */
 public interface UserService {
 
-    /***
-     * Returns the user associated with the username.
-     *
-     * @param name The name of the user
-     * @return the user if found.
-     */
-    Optional<User> findUserByName(String name);
+  /***
+   * Returns the user associated with the username.
+   *
+   * @param name The name of the user
+   * @return the user if found.
+   */
+  Optional<User> findUserByName(String name);
 
     /***
      * Update user profile.
@@ -44,5 +44,13 @@ public interface UserService {
      * @param follower User as the follower
      * @param followee User as the followee
      */
-    //void userFollowUser(User follower, User followee);
+
+
+  /***
+   * A user follows another user.
+   *
+   * @param follower User as the follower
+   * @param followee User as the followee
+   */
+  //void userFollowUser(User follower, User followee);
 }

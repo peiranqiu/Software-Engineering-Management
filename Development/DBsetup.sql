@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group` (
   `Group_id` INT NOT NULL auto_increment,
   `name` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NULL,
-  PRIMARY KEY (`Group_id`))
+  PRIMARY KEY (`Group_id`),
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE))
 ENGINE = InnoDB;
 
 

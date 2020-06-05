@@ -14,8 +14,13 @@ import java.util.Optional;
  */
 public class UserServiceImpl implements UserService {
 
-  private UserAPI api;
   private static UserService userService;
+
+  static {
+    userService = new UserServiceImpl();
+  }
+
+  private UserAPI api;
 
   /***
    * UserServiceImpl is a Singleton class.
@@ -23,10 +28,6 @@ public class UserServiceImpl implements UserService {
   private UserServiceImpl() {
 
     this.api = new UserAPI();
-  }
-
-  static {
-    userService = new UserServiceImpl();
   }
 
   /**

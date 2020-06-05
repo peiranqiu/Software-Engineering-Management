@@ -11,15 +11,14 @@ public class DBUtils {
 
   protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
   protected String user = "mydb";
-  protected String password ="CS5500team4";
+  protected String password = "CS5500team4";
   protected Connection con = null;
 
   public DBUtils() {
     this.con = getConnection();
   }
 
-  public Connection getConnection()
-  {
+  public Connection getConnection() {
     if (con == null) {
       try {
         con = DriverManager.getConnection(url, user, password);
@@ -43,26 +42,26 @@ public class DBUtils {
   }
 
   /**
-   * For a table of terms consisting of an id and string value pair, get the id of the term
-   * adding a new term if it does not yet exist in the table
+   * For a table of terms consisting of an id and string value pair, get the id of the term adding a
+   * new term if it does not yet exist in the table
+   *
    * @param table The table of terms
-   * @param term The term value
+   * @param term  The term value
    * @return The id of the term
    */
-  public int insertTerm(String table, String valueColumn, String term)
-  {
+  public int insertTerm(String table, String valueColumn, String term) {
     int key = -1;
 
     try {
       Connection con = getConnection();
       Statement stmt = con.createStatement();
 
-        String sqlInsert = "INSERT INTO "+table+" ("+valueColumn+") VALUES " +
-                "('"+term +"')";
-        stmt.executeUpdate(sqlInsert,
+      String sqlInsert = "INSERT INTO " + table + " (" + valueColumn + ") VALUES " +
+              "('" + term + "')";
+      stmt.executeUpdate(sqlInsert,
               Statement.RETURN_GENERATED_KEYS);
-        ResultSet rs = stmt.getGeneratedKeys();
-        if (rs.next()) key = rs.getInt(1);
+      ResultSet rs = stmt.getGeneratedKeys();
+      if (rs.next()) key = rs.getInt(1);
 
       rs.close();
       stmt.close();
