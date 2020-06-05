@@ -153,4 +153,11 @@ public class MessageTest {
       dir.delete();
     }
   }
+
+  @Test
+  public void decode(){
+    MessageDecoder decode = new MessageDecoder();
+    assertFalse(decode.willDecode(null));
+    assertTrue(decode.willDecode("test"));
+  }
 }
