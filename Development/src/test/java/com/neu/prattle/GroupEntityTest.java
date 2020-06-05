@@ -5,6 +5,8 @@ import com.neu.prattle.model.Member;
 import com.neu.prattle.model.Moderator;
 import com.neu.prattle.model.User;
 
+import junit.framework.TestCase;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -64,6 +66,7 @@ public class GroupEntityTest {
     Group group6 = new Group("group6");
     assertEquals(group4,group5);
     assertFalse(group4.equals(group6));
+    TestCase.assertFalse(group4.equals(1));
     assertTrue(group4.hashCode()==group5.hashCode());
 
   }
