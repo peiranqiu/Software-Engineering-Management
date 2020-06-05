@@ -4,30 +4,21 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * The class made to delegate tasks to the JPA service and send results back to Service.
  */
 public class UserServiceImpl implements UserService {
 
-  private final String URL = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
-  private final String USER = "mydb";
-  private final String PASSWORD = "CS5500team4";
-
-
-  private UserAPI api = new UserAPI();
+  private UserAPI api;
   private static UserService userService;
-  private Set<User> userSet;
 
   /***
    * UserServiceImpl is a Singleton class.
    */
   private UserServiceImpl() {
-    userSet = new HashSet<>();
-
+    api = new UserAPI();
   }
 
   static {
