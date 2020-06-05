@@ -26,8 +26,9 @@ public interface UserService {
      * Update user profile.
      *
      * @param user The user to update
+     * @return the updated user
      */
-    void updateUser(User user);
+    User updateUser(User user);
 
     /***
      * Create a new user.
@@ -43,5 +44,5 @@ public interface UserService {
      * @param follower User as the follower
      * @param followee User as the followee
      */
-    void userFollowUser(User follower, User followee);
+    //void userFollowUser(User follower, User followee);
 }
