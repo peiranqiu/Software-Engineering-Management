@@ -6,7 +6,6 @@ import com.neu.prattle.model.Moderator;
 import com.neu.prattle.model.User;
 
 import org.junit.Test;
-import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
