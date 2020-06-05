@@ -9,15 +9,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import java.io.IOException;
 
-import javax.websocket.DecodeException;
 import javax.websocket.EncodeException;
 
 public class MessageTest {
@@ -68,5 +65,18 @@ public class MessageTest {
   public void testStoreMessageDeleteMessage() throws IOException, EncodeException {
     assertTrue(message.storeMessage());
     assertEquals("File deleted successfully", message.deleteMessage(message.getFromID(), message.getMessageID()));
+  }
+
+  /***
+   * Test StringBuilder functions
+   */
+  @Test
+  public void testStringBuilder() {
+    assertEquals("From: peiranTo: rouniContent: Good Morning!", message.toString());
+  }
+
+  @Test
+  public void testmakeDirectory() {
+    assertNull(message.makeDirectory(message.getMessagePath(), message.getFromID()));
   }
 }

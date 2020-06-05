@@ -116,15 +116,6 @@ public class Message {
     public String getMessageID() {return messageID;}
 
     /***
-     * Set date of message
-     */
-    public void setMessageDate() {
-        DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        messageDate = mdy.format(now);
-    }
-
-    /***
      * Retrieve date of message
      */
     public String getMessageDate() {return messageDate;}
