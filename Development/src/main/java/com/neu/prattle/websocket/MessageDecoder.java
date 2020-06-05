@@ -23,10 +23,14 @@ import javax.websocket.EndpointConfig;
  */
 public class MessageDecoder implements Decoder.Text<Message> {
 
-  /** @see org.codehaus.jackson.map.ObjectMapper */
+  /**
+   * @see org.codehaus.jackson.map.ObjectMapper
+   */
   private static ObjectMapper objectMapper = new ObjectMapper();
 
-  /** The logger. */
+  /**
+   * The logger.
+   */
   private Logger logger = Logger.getLogger(this.getClass().getName());
 
   /**
@@ -34,7 +38,7 @@ public class MessageDecoder implements Decoder.Text<Message> {
    *
    * Extracts the text message from a JSON structure.  It's very bad if there's no message.
    *
-   * @param s    the JSON structure that was sent in the channel
+   * @param s the JSON structure that was sent in the channel
    * @return a Message object
    */
   @Override
@@ -62,8 +66,8 @@ public class MessageDecoder implements Decoder.Text<Message> {
   }
 
   /**
-   * Custom code if anything special is needed when establishing the session
-   * with a particular endpoint (the websocket).  Not used at present.
+   * Custom code if anything special is needed when establishing the session with a particular
+   * endpoint (the websocket).  Not used at present.
    *
    * @param endpointConfig the endpoint config
    */
@@ -75,9 +79,8 @@ public class MessageDecoder implements Decoder.Text<Message> {
   /**
    * Destroy.
    *
-   * Close the connection.  Nothing implemented in the prototype.
-   * But then again, there's no disconnect message.
-   *
+   * Close the connection.  Nothing implemented in the prototype. But then again, there's no
+   * disconnect message.
    */
   @Override
   public void destroy() {

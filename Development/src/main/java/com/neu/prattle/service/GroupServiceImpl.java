@@ -4,6 +4,9 @@ package com.neu.prattle.service;
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
+import com.neu.prattle.model.User;
+
+import java.util.Optional;
 
 
 public class GroupServiceImpl implements GroupService {
@@ -39,17 +42,20 @@ public class GroupServiceImpl implements GroupService {
    * if the System contains a {@link Group} object having the same name
    * as the parameter.
    *
-   * @param id The id of group
+   * @param name The name of group
    * @return Optional object.
    */
   @Override
-  public synchronized Group findGroupById(Integer id) throws GroupNotFoundException {
-    final Group group = new Group();
-    group.setGroupId(id);
-    if (api.getGroup(id) != null)
-      return group;
+  public synchronized Optional<Group> findGroupByName(String name) throws GroupNotFoundException {
+    System.out.println(name);
+
+    final Group group = new Group(name);
+    System.out.println(group.getName());
+    System.out.println(api.getGroup(name));
+    if (api.getGroup(name))
+      return Optional.of(group);
     else
-      return null;
+      return Optional.empty();
   }
 
 

@@ -8,6 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * GroupApI is a class that can connect this project with sql database for group entity.
+ */
 public class GroupAPI extends DBUtils {
   private PreparedStatement pstmt = null;
   private Connection conn = null;
@@ -17,36 +20,38 @@ public class GroupAPI extends DBUtils {
     super();
   }
 
+  /**
+   * add group into database
+   * @param group adding group object.
+   */
   public void addGroup(Group group) {
-    super.insertTerm("Group", "name", group.getName());
+    super.insertTerm("mydb.Group", "name", group.getName());
   }
 
-  public Group getGroup(int id) {
+  /**
+   * check if group exists in the database.
+   * @param name group name
+   * @return boolean
+   */
+  public boolean getGroup(String name) {
     Group group = null;
     try {
       con = getConnection();
-      String str = "SELECT * FROM Group WHERE Group_id =?";
+      String str = "SELECT * FROM mydb.Group WHERE name =?";
       pstmt = getConnection().prepareStatement(str);
-      pstmt.setInt(1, id);
+      pstmt.setString(1, name);
       results = pstmt.executeQuery();
       while (results.next()) {
-        group = new Group(results.getString("name"));
+        return true;
       }
-
+      results.close();
+      pstmt.close();
+      return false;
 
     } catch (SQLException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        conn.close();
-        pstmt.close();
-        results.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+      return false;
     }
-
-    return group;
   }
+
 
 }

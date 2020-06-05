@@ -31,7 +31,7 @@ public class Group {
   /**
    * The group name should be unique.
    */
-  @Column(name = "name", unique = true)
+  @Column(unique = true)
   private String name;
   /**
    * a private group should have password.

@@ -2,6 +2,8 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.model.Group;
 
+import java.util.Optional;
+
 public interface GroupService {
   /***
    * Acts as an interface between the data layer and the
@@ -17,10 +19,10 @@ public interface GroupService {
    * if the System contains a {@link Group} object having the same name
    * as the parameter.
    *
-   * @param id The id of group
+   * @param name The name of group
    * @return Group object.
    */
-  Group findGroupById(Integer id);
+  Optional<Group> findGroupByName(String name);
 
   /***
    * Tries to add a group in the system
