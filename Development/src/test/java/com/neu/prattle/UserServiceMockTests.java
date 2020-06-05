@@ -188,15 +188,6 @@ public class UserServiceMockTests {
   }
 
   /**
-   * Close an API connection after all the tasks.
-   */
-  @Test
-  public void closeConnection(){
-    UserAPI api = new UserAPI();
-    api.closeConnection();
-  }
-
-  /**
    * Generate random number range from 1 to 10000.
    * @return the generated number
    */
