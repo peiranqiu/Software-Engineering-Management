@@ -43,7 +43,9 @@
 				<version>2.12.4</version>
 				<configuration>
 					<includes>
-						<include>**/AllTests.java</include>
+						<include>**/UserTests.java</include>
+						<include>**/UserServiceTests.java</include>
+						<include>**/UserServiceMockTests.java</include>
 					</includes>
 				</configuration>
 			</plugin>
