@@ -4,7 +4,6 @@ package com.neu.prattle.service;
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
-import com.neu.prattle.model.User;
 
 import java.util.Optional;
 
@@ -47,11 +46,7 @@ public class GroupServiceImpl implements GroupService {
    */
   @Override
   public synchronized Optional<Group> findGroupByName(String name) throws GroupNotFoundException {
-    System.out.println(name);
-
     final Group group = new Group(name);
-    System.out.println(group.getName());
-    System.out.println(api.getGroup(name));
     if (api.getGroup(name))
       return Optional.of(group);
     else
