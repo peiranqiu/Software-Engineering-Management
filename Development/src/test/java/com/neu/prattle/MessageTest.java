@@ -29,6 +29,6 @@ public class MessageTest {
 
   @Test
   public void testStoreMessage() throws IOException, EncodeException {
-    message.storeMessage();
+    System.out.println(message.storeMessage());
   }
 }

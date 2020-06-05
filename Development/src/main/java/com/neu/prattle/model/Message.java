@@ -139,11 +139,13 @@ public class Message {
             if (!Files.exists(Paths.get(messagePath + "/" + toID))){
                 makeDirectory(messagePath, toID);
             }
-            File file1 = new File(messagePath + "/" + fromID + "messageSent" + "/" + messageID + ".txt");
-            File file2 = new File(messagePath + "/" + toID  + "messageReceived" + "/" + messageID + ".txt");
+            File file1 = new File(messagePath + "/" + fromID + "/messageSent" + "/" + messageID + ".txt");
+            File file2 = new File(messagePath + "/" + toID  + "/messageReceived" + "/" + messageID + ".txt");
             if (file1.createNewFile() && file2.createNewFile()) {
                 writeFile(messagePath);
                 return true;
+            } else {
+                throw new IOException();
             }
         }
         return false;
@@ -151,11 +153,11 @@ public class Message {
 
     private void writeFile(String messagePath) throws IOException, EncodeException {
         MessageEncoder msEncoder = new MessageEncoder();
-        FileWriter myWriter = new FileWriter(messagePath + "/" + fromID + "messageSent" + "/" + messageID + ".txt");
+        FileWriter myWriter = new FileWriter(messagePath + "/" + fromID + "/messageSent" + "/" + messageID + ".txt");
         myWriter.write(msEncoder.encode(this));
         myWriter.close();
         MessageEncoder msEncoder2 = new MessageEncoder();
-        FileWriter myWriter2 = new FileWriter(messagePath + "/" + toID  + "messageReceived" + "/" + messageID + ".txt");
+        FileWriter myWriter2 = new FileWriter(messagePath + "/" + toID  + "/messageReceived" + "/" + messageID + ".txt");
         myWriter2.write(msEncoder2.encode(this));
         myWriter2.close();
     }
