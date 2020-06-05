@@ -52,7 +52,6 @@ public class UserServiceTests {
    */
   @Test(expected = UserAlreadyPresentException.class)
   public void testCreateUserAlreadyExist() {
-
     userService.addUser(user1);
   }
 

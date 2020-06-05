@@ -1,3 +1,4 @@
+
 package com.neu.prattle.model;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
