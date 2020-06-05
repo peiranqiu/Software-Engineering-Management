@@ -29,8 +29,8 @@ public class UserTests {
   @Test
   public void testUserId() {
     user = new User("CS5500Team1");
-    user.setUserId(99999);
-    assertEquals(user.getUserId(), 99999);
+    user.setUserId(999999);
+    assertEquals(user.getUserId(), 999999);
   }
 
   /**
