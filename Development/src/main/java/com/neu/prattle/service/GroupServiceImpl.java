@@ -5,13 +5,10 @@ import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 public class GroupServiceImpl implements GroupService {
-  private Set<Group> groupSet = new HashSet<>();
   private GroupAPI api = new GroupAPI();
+  private static GroupService groupService;
 
   /***
    * UserServiceImpl is a Singleton class.
@@ -20,8 +17,6 @@ public class GroupServiceImpl implements GroupService {
   private GroupServiceImpl() {
 
   }
-
-  private static GroupService groupService;
 
   static {
     groupService = new GroupServiceImpl();
@@ -47,20 +42,14 @@ public class GroupServiceImpl implements GroupService {
    * @return Optional object.
    */
   @Override
-  public synchronized Optional<Group> findGroupById(Integer id) throws GroupNotFoundException {
+  public synchronized Group findGroupById(Integer id) throws GroupNotFoundException {
     final Group group = new Group();
     group.setGroupId(id);
-    if (api.getGroup(id))
-      return Optional.of(group);
+    if (api.getGroup(id) != null)
+      return group;
     else
-      return Optional.empty();
+      return null;
   }
-
-  /***
-   * Tries to add a group in the system
-   * @param group group object
-   *
-   */
 
 
   /***
@@ -69,9 +58,7 @@ public class GroupServiceImpl implements GroupService {
    *
    */
   @Override
-  public void addGroup(Group group) {
-    if (groupSet.contains(group))
-      throw new GroupAlreadyPresentException(String.format("Group already present with name: %s", group.getName()));
+  public void addGroup(Group group) throws GroupAlreadyPresentException {
     try {
       api.addGroup(group);
     } catch (IllegalStateException e) {
