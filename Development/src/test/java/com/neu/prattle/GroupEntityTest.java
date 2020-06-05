@@ -6,6 +6,7 @@ import com.neu.prattle.model.Moderator;
 import com.neu.prattle.model.User;
 
 import org.junit.Test;
+import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -13,9 +14,11 @@ import static org.junit.Assert.assertTrue;
 
 public class GroupEntityTest {
 
+
   @Test
   public void test1() {
     Group group1 = new Group();
+
     group1.setGroupId(4);
     assertEquals(4, group1.getGroupId());
     group1.setName("group1");
