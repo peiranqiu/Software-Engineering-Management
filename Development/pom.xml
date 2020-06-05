@@ -14,12 +14,12 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.8.5</version>
 				<!--<configuration>-->
-					<!--<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>-->
-					<!--<output>file</output>-->
-					<!--<append>true</append>-->
-					<!--<excludes>-->
-						<!--<exclude>*MethodAccess</exclude>-->
-					<!--</excludes>-->
+				<!--<destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>-->
+				<!--<output>file</output>-->
+				<!--<append>true</append>-->
+				<!--<excludes>-->
+				<!--<exclude>*MethodAccess</exclude>-->
+				<!--</excludes>-->
 				<!--</configuration>-->
 				<executions>
 					<execution>
@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.45</version>
+			<version>8.0.20</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
