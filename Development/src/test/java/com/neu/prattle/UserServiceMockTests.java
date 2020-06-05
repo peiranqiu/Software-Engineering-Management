@@ -5,6 +5,7 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.UserAPI;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 
@@ -96,6 +97,18 @@ public class UserServiceMockTests {
   }
 
   /**
+   * Test timeout for adding a large number of users.
+   */
+  @Test(timeout = 1000)
+  public void testTimeout() {
+    for (int i = 0; i < 100; i++) {
+      User user = new User("MikesUsername" + i);
+      user.setPassword("MikesPassword" + i);
+      assertTrue(userService.addUser(user));
+    }
+  }
+
+  /**
    * Test find user with a given name.
    */
   @Test
@@ -106,6 +119,15 @@ public class UserServiceMockTests {
 
     when(userService.findUserByName(anyString())).thenReturn(Optional.empty());
     assertFalse(userService.findUserByName("EllenDeGeneres").isPresent());
+  }
+
+  /**
+   * Test get current information for the user.
+   */
+  @Test
+  public void testRetrieveInformationForCurrentUser(){
+    assertEquals("HarryPotter1", user1.getName());
+    assertEquals("User1Password", user1.getPassword());
   }
 
   /**
@@ -126,6 +148,15 @@ public class UserServiceMockTests {
     user2.setPassword("Emma12345");
     when(userService.updateUser(any(User.class))).thenThrow(UserNotFoundException.class);
     userService.updateUser(user2);
+  }
+
+  /**
+   * Close an API connection after all the tasks.
+   */
+  @Test
+  public void closeConnection(){
+    UserAPI api = new UserAPI();
+    api.closeConnection();
   }
 
   /**
