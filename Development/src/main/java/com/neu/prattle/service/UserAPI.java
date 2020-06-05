@@ -6,11 +6,15 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class are api for crud in user table.
  */
 public class UserAPI extends DBUtils {
+
+  private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   public UserAPI() {
     super();
   }
@@ -47,10 +51,10 @@ public class UserAPI extends DBUtils {
       }
       rs.close();
       stmt.close();
-      return null;
     } catch (SQLException e) {
-      return null;
+      LOGGER.log(Level.INFO, e.getMessage());
     }
+    return null;
   }
 
   public User updateUser(User user, String field, String value) {
@@ -64,11 +68,10 @@ public class UserAPI extends DBUtils {
         stmt.close();
         return user;
       }
-      return null;
     } catch (SQLException e) {
-      return null;
+      LOGGER.log(Level.INFO, e.getMessage());
     }
+    return null;
   }
-
 
 }

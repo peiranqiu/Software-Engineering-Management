@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
    */
   private UserServiceImpl() {
 
-    this.api = new UserAPI();
+    api = new UserAPI();
   }
 
   /**
