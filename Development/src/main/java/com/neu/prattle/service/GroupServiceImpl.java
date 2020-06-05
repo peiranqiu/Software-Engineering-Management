@@ -7,8 +7,13 @@ import com.neu.prattle.model.Group;
 
 
 public class GroupServiceImpl implements GroupService {
-  private GroupAPI api = new GroupAPI();
   private static GroupService groupService;
+
+  static {
+    groupService = new GroupServiceImpl();
+  }
+
+  private GroupAPI api = new GroupAPI();
 
   /***
    * UserServiceImpl is a Singleton class.
@@ -16,10 +21,6 @@ public class GroupServiceImpl implements GroupService {
 
   private GroupServiceImpl() {
 
-  }
-
-  static {
-    groupService = new GroupServiceImpl();
   }
 
   /**

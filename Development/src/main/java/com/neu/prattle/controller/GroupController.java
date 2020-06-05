@@ -3,8 +3,6 @@ package com.neu.prattle.controller;
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.service.GroupService;
-import com.neu.prattle.service.GroupServiceImpl;
-import com.neu.prattle.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +24,7 @@ import javax.ws.rs.core.Response;
 public class GroupController {
   @Autowired
   GroupService groupService;
+
   /***
    * Handles a HTTP POST request for group creation
    *

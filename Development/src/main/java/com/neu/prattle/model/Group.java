@@ -21,33 +21,22 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Group")
 public class Group {
-  public Group(String name) {
-    this.name = name;
-  }
-
-  public Group() {
-  }
-
   /**
    * the id of the group, which is unique
    */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int groupId;
-
-
   /**
    * The group name should be unique.
    */
   @Column(name = "name", unique = true)
   private String name;
-
   /**
    * a private group should have password.
    */
   @Column(name = "password")
   private String password;
-
   /**
    * moderator list of this group. One group should have at least one moderator.
    */
@@ -66,8 +55,6 @@ public class Group {
           @JoinColumn(name = "Group_Group_id", referencedColumnName = "Group_id")})
   @JsonIgnore
   private List<Member> members = new ArrayList<>();
-
-
   /**
    * a list of sub-groups inside this group.
    */
@@ -77,6 +64,23 @@ public class Group {
           @JoinColumn(name = "sub_Group_id", referencedColumnName = "Group_id")})
   @JsonIgnore
   private List<Group> groups = new ArrayList<>();
+  /**
+   * a list of users who follow this group.
+   */
+  @OneToMany(targetEntity = Group.class)
+  @JoinTable(name = "User_follows_Group", joinColumns = {
+          @JoinColumn(name = "User_User_id", referencedColumnName = "User_id"),
+          @JoinColumn(name = "Group_Group_id", referencedColumnName = "Group_id")})
+  @JsonIgnore
+  private List<User> followers = new ArrayList<>();
+
+
+  public Group(String name) {
+    this.name = name;
+  }
+
+  public Group() {
+  }
 
   public String getName() {
     return name;
@@ -129,16 +133,6 @@ public class Group {
   public void addGroup(Group group) {
     this.groups.add(group);
   }
-
-  /**
-   * a list of users who follow this group.
-   */
-  @OneToMany(targetEntity = Group.class)
-  @JoinTable(name = "User_follows_Group", joinColumns = {
-          @JoinColumn(name = "User_User_id", referencedColumnName = "User_id"),
-          @JoinColumn(name = "Group_Group_id", referencedColumnName = "Group_id")})
-  @JsonIgnore
-  private List<User> followers = new ArrayList<>();
 
   public List<User> getFollowers() {
     return followers;

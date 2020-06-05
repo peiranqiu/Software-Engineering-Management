@@ -8,5 +8,6 @@ public class Member extends User {
   /**
    * Initiate a member.
    */
-  public Member(){}
+  public Member() {
+  }
 }

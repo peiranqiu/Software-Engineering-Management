@@ -1,4 +1,3 @@
-
 package com.neu.prattle.model;
 
 public interface DatabaseAPI {

@@ -2,8 +2,6 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.model.Group;
 
-import java.util.Optional;
-
 public interface GroupService {
   /***
    * Acts as an interface between the data layer and the
