@@ -1,17 +1,22 @@
 package com.neu.prattle.service;
 
-import com.neu.prattle.exceptions.UserAlreadyPresentException;
+import com.neu.prattle.Repositories.GroupRepo;
 import com.neu.prattle.model.Group;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Service
 public class GroupServiceImpl implements GroupService {
+  @Autowired
+  GroupRepo groupRepo;
 
   /***
    * UserServiceImpl is a Singleton class.
    */
+
   private GroupServiceImpl() {
 
   }
@@ -27,11 +32,10 @@ public class GroupServiceImpl implements GroupService {
    *
    * @return this
    */
+
   public static GroupService getInstance() {
     return groupService;
   }
-
-  private Set<Group> groupSet = new HashSet<>();
 
 
   /***
@@ -43,12 +47,9 @@ public class GroupServiceImpl implements GroupService {
    * @return Optional object.
    */
   @Override
-  public Optional<Group> findGroupById(Integer id) {
-    Group group = new Group(id);
-    if (groupSet.contains(group)) {
-      return Optional.of(group);
-    }
-    return Optional.empty();
+  public Group findGroupById(Integer id) {
+    Optional<Group> found = groupRepo.findById(id);
+    return found.orElse(null);
   }
 
   /***
@@ -56,12 +57,8 @@ public class GroupServiceImpl implements GroupService {
    * @param group group object
    *
    */
-  @Override
-  public void addGroup(Group group) {
 
-    if (groupSet.contains(group)) {
-      throw new UserAlreadyPresentException(String.format("User already present with id: %d", group.getGroupId()));
-    }
-    groupSet.add(group);
+  public void addGroup(Group group) {
+    groupRepo.save(group);
   }
 }

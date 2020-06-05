@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>java-websocket</artifactId>
 	<groupId>com.neu</groupId>
@@ -114,6 +114,16 @@
 			<artifactId>jackson-annotations</artifactId>
 			<version>2.9.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+			<version>2.2.0.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.2.0.RELEASE</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<javax.websocket-api.version>1.1</javax.websocket-api.version>
@@ -168,17 +178,18 @@
 									<!--
                                      Sets the path to the file which contains the execution data.
                                  -->
-                                 <dataFile>target/jacoco.exec</dataFile>
+									<dataFile>target/jacoco.exec</dataFile>
 									<!--
                                      Sets the output directory for the code coverage report.
                                  -->
-                                 <outputDirectory>target/jacoco-ut</outputDirectory>
-                             </configuration>
-                         </execution>
-                     </executions>
-                 </plugin>
-             </plugins>
-         </build>
-     </profile>
- </profiles>
+									<outputDirectory>target/jacoco-ut</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
+

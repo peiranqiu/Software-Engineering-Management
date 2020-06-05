@@ -20,9 +20,9 @@ public interface GroupService {
    * as the parameter.
    *
    * @param id The id of group
-   * @return Optional object.
+   * @return Group object.
    */
-  Optional<Group> findGroupById(Integer id);
+  Group findGroupById(Integer id);
 
   /***
    * Tries to add a group in the system

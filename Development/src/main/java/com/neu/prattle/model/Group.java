@@ -1,31 +1,97 @@
 package com.neu.prattle.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * a basic object for Group that is created by a moderator.
  */
-
+@Entity
+@Table(name = "Group")
 public class Group {
+  public Group(String name) {
+    this.name = name;
+  }
+
+  public Group() {
+  }
+
   /**
    * the id of the group, which is unique
    */
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int groupId;
+
+
+  /**
+   * The group name should be unique.
+   */
+  @Column(name = "name", unique = true)
+  private String name;
+
+  /**
+   * a private group should have password.
+   */
+  @Column(name = "password")
+  private String password;
+
   /**
    * moderator list of this group. One group should have at least one moderator.
    */
-  private List<Moderator> moderators;
+  @OneToMany(targetEntity = Group.class)
+  @JoinTable(name = "User_moderates_Group", joinColumns = {
+          @JoinColumn(name = "User_User_id", referencedColumnName = "User_id"),
+          @JoinColumn(name = "Group_Group_id", referencedColumnName = "Group_id")})
+  @JsonIgnore
+  private List<Moderator> moderators = new ArrayList<>();
   /**
    * member list of this group.
    */
-  private List<Member> members;
-  /**
-   * a list of users who follow this group.
-   */
-  private List<User> followers;
+  @OneToMany(targetEntity = Group.class)
+  @JoinTable(name = "User_has_Group", joinColumns = {
+          @JoinColumn(name = "User_User_id", referencedColumnName = "User_id"),
+          @JoinColumn(name = "Group_Group_id", referencedColumnName = "Group_id")})
+  @JsonIgnore
+  private List<Member> members = new ArrayList<>();
 
-  public Group(int groupId) {
-    this.groupId = groupId;
+
+  /**
+   * a list of sub-groups inside this group.
+   */
+  @OneToMany(targetEntity = Group.class)
+  @JoinTable(name = "Group_has_Group", joinColumns = {
+          @JoinColumn(name = "super_Group_id", referencedColumnName = "Group_id"),
+          @JoinColumn(name = "sub_Group_id", referencedColumnName = "Group_id")})
+  @JsonIgnore
+  private List<Group> groups = new ArrayList<>();
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public int getGroupId() {
@@ -40,7 +106,7 @@ public class Group {
     return this.moderators;
   }
 
-  public void setModerators(Moderator moderator) {
+  public void addModerator(Moderator moderator) {
     this.moderators.add(moderator);
   }
 
@@ -48,11 +114,7 @@ public class Group {
     return members;
   }
 
-  public void setMembers(List<Member> members) {
-    this.members = members;
-  }
-
-  public void addMembers(Member member) {
+  public void addMember(Member member) {
     this.members.add(member);
   }
 
@@ -60,11 +122,31 @@ public class Group {
     this.members.remove(member);
   }
 
+  public List<Group> getGroups() {
+    return groups;
+  }
+
+  public void addGroup(Group group) {
+    this.groups.add(group);
+  }
+
+  /**
+   * a list of users who follow this group.
+   */
+  @OneToMany(targetEntity = Group.class)
+  @JoinTable(name = "User_follows_Group", joinColumns = {
+          @JoinColumn(name = "User_User_id", referencedColumnName = "User_id"),
+          @JoinColumn(name = "Group_Group_id", referencedColumnName = "Group_id")})
+  @JsonIgnore
+  private List<User> followers = new ArrayList<>();
+
   public List<User> getFollowers() {
     return followers;
   }
 
-  public void setFollowers(User follower) {
+  public void setFollower(User follower) {
     this.followers.add(follower);
   }
+
+
 }
