@@ -9,15 +9,12 @@ import java.sql.Statement;
 public class DBUtils {
 
 
-  private String url;
-  private String user;
-  private String password;
-  private Connection con = null;
+  protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
+  protected String user = "mydb";
+  protected String password ="CS5500team4";
+  protected Connection con = null;
 
-  public DBUtils(String url, String user, String password) {
-    this.url = url;
-    this.user = user;
-    this.password = password;
+  public DBUtils() {
     this.con = getConnection();
   }
 
@@ -46,33 +43,33 @@ public class DBUtils {
   }
 
 
-  public int insertOneRecord(String insertSQL)
-  {
-    // System.out.println("INSERT STATEMENT: "+insertSQL);
-    int key = -1;
-    try {
-
-      // get connection and initialize statement
-      Connection con = getConnection();
-      Statement stmt = con.createStatement();
-
-      stmt.executeUpdate(insertSQL, Statement.RETURN_GENERATED_KEYS);
-
-      // extract auto-incremented ID
-      ResultSet rs = stmt.getGeneratedKeys();
-      if (rs.next()) key = rs.getInt(1);
-
-      // Cleanup
-      rs.close();
-      stmt.close();
-
-    } catch (SQLException e) {
-      System.err.println("ERROR: Could not insert record: "+insertSQL);
-      System.err.println(e.getMessage());
-      e.printStackTrace();
-    }
-    return key;
-  }
+//  public int insertOneRecord(String insertSQL)
+//  {
+//    // System.out.println("INSERT STATEMENT: "+insertSQL);
+//    int key = -1;
+//    try {
+//
+//      // get connection and initialize statement
+//      Connection con = getConnection();
+//      Statement stmt = con.createStatement();
+//
+//      stmt.executeUpdate(insertSQL, Statement.RETURN_GENERATED_KEYS);
+//
+//      // extract auto-incremented ID
+//      ResultSet rs = stmt.getGeneratedKeys();
+//      if (rs.next()) key = rs.getInt(1);
+//
+//      // Cleanup
+//      rs.close();
+//      stmt.close();
+//
+//    } catch (SQLException e) {
+//      System.err.println("ERROR: Could not insert record: "+insertSQL);
+//      System.err.println(e.getMessage());
+//      e.printStackTrace();
+//    }
+//    return key;
+//  }
 
 
   /**
@@ -82,31 +79,26 @@ public class DBUtils {
    * @param term The term value
    * @return The id of the term
    */
-  public int getOrInsertTerm(String table, String keyColumn, String valueColumn, String term)
+  public int insertTerm(String table, String valueColumn, String term)
   {
-
     int key = -1;
 
     try {
       Connection con = getConnection();
       Statement stmt = con.createStatement();
-      String sqlGet = "SELECT "+keyColumn+" FROM "+table+" WHERE "+valueColumn+" = '"+term.toUpperCase()+"'";
-      ResultSet rs = stmt.executeQuery(sqlGet);
-      if (rs.next())
-        key = rs.getInt(1);
-      else {
-        String sqlInsert = "INSERT INTO "+table+" ("+valueColumn+") VALUES ('"+term.toUpperCase()+"')";
-        stmt.executeUpdate(sqlInsert, Statement.RETURN_GENERATED_KEYS);
-        rs = stmt.getGeneratedKeys();
+
+        String sqlInsert = "INSERT INTO "+table+" ("+valueColumn+") VALUES " +
+                "('"+term +"')";
+        stmt.executeUpdate(sqlInsert,
+              Statement.RETURN_GENERATED_KEYS);
+        ResultSet rs = stmt.getGeneratedKeys();
         if (rs.next()) key = rs.getInt(1);
-      }
 
       rs.close();
       stmt.close();
 
     } catch (SQLException e) {
-      System.err.println(e.getMessage());
-      e.printStackTrace();
+      throw new IllegalStateException("sql update failed");
     }
 
     return key;
