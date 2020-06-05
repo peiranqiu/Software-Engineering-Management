@@ -45,7 +45,7 @@ public class GroupServiceImpl implements GroupService {
    * @return Optional object.
    */
   @Override
-  public synchronized Optional<Group> findGroupByName(String name) throws GroupNotFoundException {
+  public synchronized Optional<Group> findGroupByName(String name) {
     final Group group = new Group(name);
     if (api.getGroup(name))
       return Optional.of(group);

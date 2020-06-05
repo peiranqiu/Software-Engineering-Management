@@ -38,7 +38,7 @@ public class Group {
    */
   @Column(name = "password")
   private String password;
-  /**
+    /**
    * moderator list of this group. One group should have at least one moderator.
    */
   @OneToMany(targetEntity = Group.class)
