@@ -27,11 +27,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * A junit test class for user service.
+ * A junit test class for user service using mockito.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(MockitoJUnitRunner.class)
-public class UserMockTests {
+public class UserServiceMockTests {
 
   @Mock
   private UserService userService;

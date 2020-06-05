@@ -6,11 +6,14 @@ import com.neu.prattle.model.Group;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * GroupApI is a class that can connect this project with sql database for group entity.
  */
 public class GroupAPI extends DBUtils {
+  private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   private PreparedStatement pstmt = null;
   private ResultSet results = null;
 
@@ -43,11 +46,11 @@ public class GroupAPI extends DBUtils {
       }
       results.close();
       pstmt.close();
-      return false;
 
     } catch (SQLException e) {
-      return false;
+      LOGGER.log(Level.INFO, e.getMessage());
     }
+    return false;
   }
 
 
