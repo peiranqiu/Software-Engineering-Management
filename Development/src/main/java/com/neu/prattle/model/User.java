@@ -29,7 +29,7 @@ public class User {
    */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int _id;
+  private int userId;
 
   /**
    * The username should be unique.
@@ -116,15 +116,15 @@ public class User {
   /**
    * Get the user's id.
    */
-  public int get_id() {
-    return _id;
+  public int getUserId() {
+    return userId;
   }
 
   /**
    * Set the user's id.
    */
-  public void set_id(int _id) {
-    this._id = _id;
+  public void setUserId(int userId) {
+    this.userId = userId;
   }
 
   /**

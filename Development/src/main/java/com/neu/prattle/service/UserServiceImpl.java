@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public boolean addUser(User user) throws UserAlreadyPresentException {
+  public boolean addUser(User user) {
 
     if (!isValidUsername(user)) {
       throw new UserNameInvalidException("Username must be between 4-20 letters long, and contain one capital letter, " +
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
    * @return the updated user
    */
   @Override
-  public User updateUser(User user) throws UserNotFoundException {
+  public User updateUser(User user) {
     User newUser = api.getUsers(user.getName());
     if (newUser == null) {
       throw new UserNotFoundException(String.format("User %s not found.", user.getName()));
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
       } else if (Character.isLowerCase(character)) {
         booleanHashMap.replace("low", true);
       }
-      if (booleanHashMap.get("num") && booleanHashMap.get("cap") && booleanHashMap.get("low")) {
+      if (Boolean.TRUE.equals(booleanHashMap.get("num")) && Boolean.TRUE.equals(booleanHashMap.get("cap")) && Boolean.TRUE.equals(booleanHashMap.get("low"))) {
         break;
       }
     }

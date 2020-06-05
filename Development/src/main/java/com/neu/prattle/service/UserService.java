@@ -52,5 +52,4 @@ public interface UserService {
    * @param follower User as the follower
    * @param followee User as the followee
    */
-  //void userFollowUser(User follower, User followee);
 }

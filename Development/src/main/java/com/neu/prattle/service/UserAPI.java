@@ -29,7 +29,7 @@ public class UserAPI extends DBUtils {
       ResultSet rs = stmt.executeQuery(sql);
       if (rs.next()) {
         User user = new User();
-        user.set_id(rs.getInt("User_id"));
+        user.setUserId(rs.getInt("User_id"));
         user.setName(rs.getString("name"));
         user.setPassword(rs.getString("password"));
         return user;

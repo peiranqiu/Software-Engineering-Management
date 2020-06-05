@@ -15,6 +15,7 @@ import org.junit.runners.MethodSorters;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -42,7 +43,7 @@ public class UserTests {
    */
   @Test
   public void testCreateUser() {
-    userService.addUser(user1);
+    assertTrue(userService.addUser(user1));
   }
 
   /**
@@ -50,6 +51,7 @@ public class UserTests {
    */
   @Test(expected = UserAlreadyPresentException.class)
   public void testCreateUserAlreadyExist() {
+
     userService.addUser(user1);
   }
 
@@ -79,7 +81,7 @@ public class UserTests {
     for (int i = 0; i < 1000; i++) {
       User user = new User("RobsUsername" + i);
       user.setPassword("RobsPassword" + i);
-      userService.addUser(user);
+      assertTrue(userService.addUser(user));
     }
   }
 
@@ -97,8 +99,8 @@ public class UserTests {
    */
   @Test
   public void testRetrieveInformationForCurrentUser(){
-    assertEquals(user1.getName(), "HarryPotter1");
-    assertEquals(user1.getPassword(), "User1Password");
+    assertEquals("HarryPotter1", user1.getName());
+    assertEquals("User1Password", user1.getPassword());
   }
 
   /**

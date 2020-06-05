@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -61,7 +62,7 @@ public class UserMockTests {
   @Test
   public void testCreateUser() {
     when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
+    assertTrue(userService.addUser(user1));
   }
 
   /**
@@ -92,18 +93,6 @@ public class UserMockTests {
     when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
     user2.setPassword("-1");
     userService.addUser(user2);
-  }
-
-  /**
-   * Test timeout for adding a large number of users.
-   */
-  @Test(timeout = 1000)
-  public void testTimeout() {
-    for (int i = 0; i < 1000; i++) {
-      User user = new User("MikesUsername" + i);
-      user.setPassword("MikesPassword" + i);
-      userService.addUser(user);
-    }
   }
 
   /**
