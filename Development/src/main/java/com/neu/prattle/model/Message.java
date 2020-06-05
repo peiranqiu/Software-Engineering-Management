@@ -40,6 +40,10 @@ public class Message {
      * The date of the message creation
      */
     private String messageDate;
+    /***
+     * The directory of massage folder
+     */
+    private String messagePath;
 
     private int fromID = -1;
 
@@ -78,6 +82,13 @@ public class Message {
         this.content = content;
     }
 
+    public String getMessagePath() {
+        String path = Message.class.getResource("").getPath();
+        String mainPath = path.substring(0, path.indexOf("main") + 4);
+        String messagePath = mainPath + "/messages";
+        return messagePath;
+    }
+
     public void setMessageID() {this.messageID = UUID.randomUUID().toString();}
 
     public String getMessageID() {return messageID;}
@@ -109,9 +120,7 @@ public class Message {
 
     public boolean storeMessage() throws IOException, EncodeException {
         if (fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
-            String path = Message.class.getResource("").getPath();
-            String mainPath = path.substring(0, path.indexOf("main") + 4);
-            String messagePath = mainPath + "/messages";
+            messagePath = getMessagePath();
             if (!Files.exists(Paths.get(messagePath + "/" + fromID))){
                 makeDirectory(messagePath, fromID);
             }
@@ -137,6 +146,15 @@ public class Message {
         FileWriter myWriter2 = new FileWriter(messagePath + "/" + toID  + "messageReceived" + "/" + messageID + ".txt");
         myWriter2.write(msEncoder2.encode(this));
         myWriter2.close();
+    }
+
+    public void deleteMessage(int userID, int messageID) {
+        messagePath = getMessagePath();
+        File file = new File(messagePath + "/" + userID + "messageSent" + "/" + messageID + ".txt");
+        if(file.delete())
+        {
+            System.out.println("File deleted successfully");
+        }
     }
 
     public static MessageBuilder messageBuilder()   {
