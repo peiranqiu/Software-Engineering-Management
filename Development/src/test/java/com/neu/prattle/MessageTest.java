@@ -3,12 +3,9 @@ package com.neu.prattle;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.websocket.MessageDecoder;
 import com.neu.prattle.websocket.MessageEncoder;
-
-import static junit.framework.TestCase.assertSame;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +53,9 @@ public class MessageTest {
     assertEquals(message.getMessagePath(), afterMessageConversion.getMessagePath());
     assertEquals(message.getFromID(), afterMessageConversion.getFromID());
     assertEquals(message.getToID(), afterMessageConversion.getToID());
+
+    msgDecoder.destroy();
+    msgEncoder.destroy();
   }
 
   /***
@@ -65,6 +65,7 @@ public class MessageTest {
   public void testStoreMessageDeleteMessage() throws IOException, EncodeException {
     assertTrue(message.storeMessage());
     assertEquals("File deleted successfully", message.deleteMessage(message.getFromID(), message.getMessageID()));
+    assertEquals("File remove fails.", message.deleteMessage(message.getFromID(), message.getMessageID()));
   }
 
   /***
@@ -99,8 +100,15 @@ public class MessageTest {
   }
 
   @Test
-  public void testmakeDirectory() {
-    assertEquals("Successfully create receiver directory.", message.makeDirectory(message.getMessagePath() + "/" + 1234511 + "/messageReceived", 1234511));
+  public void testMessageBuilder() {
+    Message ms1 = Message.messageBuilder()
+            .setFrom(message.getFrom())
+            .setTo(message.getTo())
+            .setMessageContent("Good Morning!")
+            .build();
+    assertEquals(ms1.getFrom(), message.getFrom());
+    assertEquals(ms1.getTo(), message.getTo());
+    assertEquals(ms1.getContent(), message.getContent());
   }
 
 }
