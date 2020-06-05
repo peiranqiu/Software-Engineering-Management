@@ -1,6 +1,6 @@
 package com.neu.prattle.service;
 
-import com.neu.prattle.model.DBUtils;
+
 import com.neu.prattle.model.Group;
 
 import java.sql.PreparedStatement;
