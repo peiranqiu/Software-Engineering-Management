@@ -4,6 +4,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -142,5 +143,36 @@ public class Group {
     this.followers.add(follower);
   }
 
+  /***
+   * Returns the hashCode of this object.
+   *
+   * As name can be treated as a sort of identifier for
+   * this instance, we can use the hashCode of "name"
+   * for the complete object.
+   *
+   *
+   * @return hashCode of "this"
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(name);
+  }
+
+  /***
+   * Makes comparison between two groups.
+   *
+   * Two group objects are equal if their name are equal ( names are case-sensitive )
+   *
+   * @param obj Object to compare
+   * @return a predicate value for the comparison.
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Group))
+      return false;
+
+    Group group = (Group) obj;
+    return group.name.equals(this.name);
+  }
 
 }
