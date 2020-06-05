@@ -242,4 +242,8 @@ public class User {
     User user = (User) obj;
     return user.name.equals(this.name);
   }
+
+  public void senMessage() {
+
+  }
 }

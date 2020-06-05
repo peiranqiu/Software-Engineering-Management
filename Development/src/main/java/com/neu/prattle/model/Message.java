@@ -105,7 +105,7 @@ public class Message {
 
     public int getFromID() {return fromID;}
 
-    public int setToID(int toID) {this.toID = toID;}
+    public void setToID(int toID) {this.toID = toID;}
 
     public int getToID() {return toID;}
 
