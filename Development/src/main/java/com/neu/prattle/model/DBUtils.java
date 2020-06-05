@@ -98,8 +98,7 @@ public class DBUtils {
       stmt.close();
 
     } catch (SQLException e) {
-      System.err.println(e.getMessage());
-      e.printStackTrace();
+      throw new IllegalStateException("sql update failed");
     }
 
     return key;

@@ -52,7 +52,11 @@ public class UserServiceImpl implements UserService {
     public synchronized boolean addUser(User user) throws UserAlreadyPresentException {
         if (userSet.contains(user))
             throw new UserAlreadyPresentException(String.format("User already present with name: %s", user.getName()));
-        api.addUser(user);
+        try{
+            api.addUser(user);}
+        catch (IllegalStateException e){
+            throw new UserAlreadyPresentException(String.format("User already present with name: %s", user.getName()));
+        }
 //        userSet.add(user);
         return true;
     }

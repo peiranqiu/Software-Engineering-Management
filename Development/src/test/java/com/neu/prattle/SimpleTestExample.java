@@ -37,7 +37,7 @@ public class SimpleTestExample {
 		user = new User("peiran");
 		user.setPassword("12345");
 		userService = UserServiceImpl.getInstance();
-	//	userService.addUser(user);
+		userService.addUser(user);
 
 
 	}
