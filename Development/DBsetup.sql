@@ -41,7 +41,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `mydb`.`Group` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`Group` (
-  `Group_id` INT NOT NULL,
+  `Group_id` INT NOT NULL auto_increment,
   `name` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NULL,
   PRIMARY KEY (`Group_id`))
