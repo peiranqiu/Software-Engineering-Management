@@ -31,6 +31,8 @@ public class UserTests {
   @Before
   public void setUp() {
     userService = UserServiceImpl.getInstance();
+    user1.setPassword("harry12345");
+    userService.addUser(user1);
   }
 
   /**
@@ -54,13 +56,8 @@ public class UserTests {
    */
   @Test
   public void testFindUserByName() {
-    userService.addUser(user1);
-    Optional<User> user3 = userService.findUserByName("Harry");
-    assertTrue(user3.isPresent());
-    assertEquals(user3.get().getName(), user1.getName());
-
-    Optional<User> user4 = userService.findUserByName("Ellen");
-    assertFalse(user4.isPresent());
+    assertEquals(userService.findUserByName("Harry").get(), user1);
+    assertFalse(userService.findUserByName("Ellen").isPresent());
   }
 
   /**
@@ -78,9 +75,9 @@ public class UserTests {
    */
   @Test
 	public void updatePassword(){
-		User user = new User("Harry5");
-		userService.addUser(user);
-		user.setPassword("harry212345");
-		userService.updateUser(user);
+		//User user = new User("Harry5");
+		//userService.addUser(user);
+		//user.setPassword("harry212345");
+		//userService.updateUser(user);
 	}
 }
