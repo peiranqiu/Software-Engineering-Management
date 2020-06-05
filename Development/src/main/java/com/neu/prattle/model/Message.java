@@ -12,10 +12,10 @@ import java.util.UUID;
 import javax.websocket.EncodeException;
 
 /***
- * A Basic POJO for Message.
+ * The Message class built to get the necessary message attributes and message information
  *
- * @author CS5500 Fall 2019 Teaching staff
- * @version dated 2019-10-06
+ * @author Yijia Hao
+ * @version dated 2020-06-05
  */
 public class Message {
     /***
@@ -42,11 +42,18 @@ public class Message {
      * The directory of massage folder
      */
     private String messagePath;
-
+    /***
+     * Initialize the ID of sender
+     */
     private int fromID = -1;
-
+    /***
+     * Initialize the ID of receiver
+     */
     private int toID = -1;
 
+    /***
+     * Return the completed message with sender and receiver
+     */
     @Override
     public String toString() {
         return new StringBuilder()
@@ -56,78 +63,129 @@ public class Message {
                 .toString();
     }
 
+    /***
+     * Retrieve name of message sender
+     */
     public String getFrom() {
         return from;
     }
 
+    /***
+     * Set name of message sender
+     */
     public void setFrom(String from) {
         this.from = from;
     }
 
+    /***
+     * Retrieve name of message receiver
+     */
     public String getTo() {
         return to;
     }
 
+    /***
+     * Set name of message receiver
+     */
     public void setTo(String to) {
         this.to = to;
     }
 
+    /***
+     * Retrieve message content
+     */
     public String getContent() {
         return content;
     }
 
+    /***
+     * Set message content
+     */
     public void setContent(String content) {
         this.content = content;
     }
 
-    public String getMessagePath() {
-        String path = Message.class.getResource("").getPath();
-        String mainPath = path.substring(0, path.indexOf("Development") + 11);
-        String messagePath = mainPath + "/src";
-        return messagePath;
-    }
-
+    /***
+     * Set id of message
+     */
     public void setMessageID() {this.messageID = UUID.randomUUID().toString();}
 
+    /***
+     * Retrieve id of message
+     */
     public String getMessageID() {return messageID;}
 
+    /***
+     * Set date of message
+     */
     public void setMessageDate() {
         DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
         messageDate = mdy.format(now);
     }
 
+    /***
+     * Retrieve date of message
+     */
     public String getMessageDate() {return messageDate;}
 
+    /***
+     * Set id of message sender
+     */
     public void setFromID(int fromID) {this.fromID = fromID;}
 
+    /***
+     * Retrieve id of message sender
+     */
     public int getFromID() {return fromID;}
 
+    /***
+     * Set id of message receiver
+     */
     public void setToID(int toID) {this.toID = toID;}
 
+    /***
+     * Retrieve id of message receiver
+     */
     public int getToID() {return toID;}
 
-    public void makeDirectory(String messagePath, int userID) {
-        File fromUserFile = new File(messagePath + "/" + userID);
-        if (fromUserFile.mkdir()) {
-            System.out.println("Successfully create user directory.");
-        } else {
-            System.out.println("Creating user directory fails.");
-        }
-        File fileUserSent = new File(messagePath + "/" + userID + "/messageSent");
-        if (fileUserSent.mkdir()) {
-            System.out.println("Successfully create sender directory.");
-        } else {
-            System.out.println("Creating sender directory fails.");
-        }
-        File fileUserReceived = new File(messagePath + "/" + userID +"/messageReceived");
-        if (fileUserReceived.mkdir()) {
-            System.out.println("Successfully create receiver directory.");
-        } else {
-            System.out.println("Creating receiver directory fails.");
-        }
+  /***
+   * Get the parent directory of the message folder
+   */
+  public String getMessagePath() {
+    String path = Message.class.getResource("").getPath();
+    String mainPath = path.substring(0, path.indexOf("Development") + 11);
+    String messagePath = mainPath + "/src";
+    return messagePath;
+  }
+
+  /***
+   * Create the messageSent and messageReceived directories for the current user
+   */
+  public void makeDirectory(String messagePath, int userID) {
+    File fromUserFile = new File(messagePath + "/" + userID);
+    if (fromUserFile.mkdir()) {
+      System.out.println("Successfully create user directory.");
+    } else {
+      System.out.println("Creating user directory fails.");
+    }
+    File fileUserSent = new File(messagePath + "/" + userID + "/messageSent");
+    if (fileUserSent.mkdir()) {
+      System.out.println("Successfully create sender directory.");
+    } else {
+      System.out.println("Creating sender directory fails.");
+    }
+    File fileUserReceived = new File(messagePath + "/" + userID +"/messageReceived");
+    if (fileUserReceived.mkdir()) {
+      System.out.println("Successfully create receiver directory.");
+    } else {
+      System.out.println("Creating receiver directory fails.");
+    }
     }
 
+    /***
+     * Make directories and save the current message into a JSON file under the folder of the current sender and receiver
+     */
     public boolean storeMessage() throws IOException, EncodeException {
         if (fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
             messagePath = getMessagePath();
@@ -149,6 +207,9 @@ public class Message {
         return false;
     }
 
+    /***
+     * Write the current message into a JSON file under the folder of the current sender and receiver
+     */
     private void writeFile(String messagePath) throws IOException, EncodeException {
         MessageEncoder msEncoder = new MessageEncoder();
         FileWriter myWriter = new FileWriter(messagePath + "/" + fromID + "/messageSent" + "/" + messageID + ".json");
@@ -160,6 +221,9 @@ public class Message {
         myWriter2.close();
     }
 
+    /***
+     * Remove the current message sent by sender
+     */
     public String deleteMessage(int userID, String messageID) {
         messagePath = getMessagePath();
         String output = "File remove fails.";
@@ -171,6 +235,9 @@ public class Message {
         return output;
     }
 
+    /***
+     * Create an object of MessageBuilder class
+     */
     public static MessageBuilder messageBuilder()   {
         return new MessageBuilder();
     }
