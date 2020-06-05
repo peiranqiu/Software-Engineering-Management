@@ -9,7 +9,9 @@ import java.io.IOException;
 import javax.websocket.EncodeException;
 
 public class MessageTest {
-
+  /***
+   * Message created by Message class
+   */
   private Message message;
 
   @Before
@@ -24,6 +26,9 @@ public class MessageTest {
   }
 
   @Test
+  /***
+   * Test if soreMessage function and deleteMessage function both work successfully
+   */
   public void testStoreMessageDeleteMessage() throws IOException, EncodeException {
     assertTrue(message.storeMessage());
     assertEquals("File deleted successfully", message.deleteMessage(message.getFromID(), message.getMessageID()));
