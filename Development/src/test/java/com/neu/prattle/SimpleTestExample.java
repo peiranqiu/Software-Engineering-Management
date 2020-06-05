@@ -28,14 +28,8 @@ public class SimpleTestExample {
 	@Before
 	public void setUp() {
 		userService = UserServiceImpl.getInstance();
-	}
-
-	@Before
-	public void setup() {
 		user = new User("peiran");
 		user.setPassword("12345");
-		userService = UserServiceImpl.getInstance();
-
 	}
 
 	@Test

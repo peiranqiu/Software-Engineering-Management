@@ -31,13 +31,6 @@
 		</plugins>
 	</build>
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.3.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-
 	<dependencies>
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
@@ -101,6 +94,11 @@
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson-provider</artifactId>
 			<version>3.9.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy-agent</artifactId>
+			<version>1.5.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
