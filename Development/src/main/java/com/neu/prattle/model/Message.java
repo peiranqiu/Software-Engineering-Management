@@ -84,8 +84,8 @@ public class Message {
 
     public String getMessagePath() {
         String path = Message.class.getResource("").getPath();
-        String mainPath = path.substring(0, path.indexOf("main") + 4);
-        String messagePath = mainPath + "/messages";
+        String mainPath = path.substring(0, path.indexOf("Development") + 11);
+        String messagePath = mainPath + "/src";
         return messagePath;
     }
 
@@ -111,11 +111,23 @@ public class Message {
 
     public void makeDirectory(String messagePath, int userID) {
         File fromUserFile = new File(messagePath + "/" + userID);
-        fromUserFile.mkdir();
-        File fileUser = new File(messagePath + "/" + userID + "/messageSent");
-        fileUser.mkdir();
-        File fileSender = new File(messagePath + "/" + userID +"/messageReceived");
-        fileSender.mkdir();
+        if (fromUserFile.mkdir()) {
+            System.out.println("Successfully create user directory.");
+        } else {
+            System.out.println("Creating user directory fails.");
+        }
+        File fileUserSent = new File(messagePath + "/" + userID + "/messageSent");
+        if (fileUserSent.mkdir()) {
+            System.out.println("Successfully create sender directory.");
+        } else {
+            System.out.println("Creating sender directory fails.");
+        }
+        File fileUserReceived = new File(messagePath + "/" + userID +"/messageReceived");
+        if (fileUserReceived.mkdir()) {
+            System.out.println("Successfully create receiver directory.");
+        } else {
+            System.out.println("Creating receiver directory fails.");
+        }
     }
 
     public boolean storeMessage() throws IOException, EncodeException {
