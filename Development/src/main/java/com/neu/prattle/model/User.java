@@ -69,9 +69,9 @@ public class User {
   @OneToMany(targetEntity = User.class)
   @JoinTable(name = "user_follows_user",
           joinColumns = {
-                  @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),},
+                  @JoinColumn(name = "FOLLOWEE_ID", referencedColumnName = "ID"),},
           inverseJoinColumns = {
-                  @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")})
+                  @JoinColumn(name = "FOLLOWER_ID", referencedColumnName = "ID")})
   @JsonIgnore
   private List<User> follower = new ArrayList<>();
 
