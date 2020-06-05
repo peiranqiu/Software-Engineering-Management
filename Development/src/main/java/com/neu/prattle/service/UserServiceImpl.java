@@ -2,6 +2,9 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNotFoundException;
+import com.neu.prattle.model.DBUtils;
+import com.neu.prattle.model.DatabaseAPI;
+import com.neu.prattle.model.DatabaseMysql;
 import com.neu.prattle.model.User;
 
 import java.util.HashSet;
@@ -13,6 +16,7 @@ import java.util.Set;
  */
 public class UserServiceImpl implements UserService {
 
+    private UserAPI api = new UserAPI();
     private static UserService userService;
     private Set<User> userSet = new HashSet<>();
 
@@ -36,9 +40,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findUserByName(String name) throws UserNotFoundException {
+    public synchronized Optional<User> findUserByName(String name) throws UserNotFoundException {
         final User user = new User(name);
-        if (userSet.contains(user))
+        if (api.getUsers(name))
             return Optional.of(user);
         else
             return Optional.empty();
@@ -48,8 +52,8 @@ public class UserServiceImpl implements UserService {
     public synchronized boolean addUser(User user) throws UserAlreadyPresentException {
         if (userSet.contains(user))
             throw new UserAlreadyPresentException(String.format("User already present with name: %s", user.getName()));
-
-        userSet.add(user);
+        api.addUser(user);
+//        userSet.add(user);
         return true;
     }
 
