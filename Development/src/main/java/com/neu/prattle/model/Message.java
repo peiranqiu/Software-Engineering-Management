@@ -1,5 +1,8 @@
 package com.neu.prattle.model;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -32,6 +35,10 @@ public class Message {
      * The date of the message creation
      */
     private String messageDate;
+
+    private int fromID = -1;
+
+    private int toID = -1;
 
     @Override
     public String toString() {
@@ -78,9 +85,34 @@ public class Message {
 
     public String getMessageDate() {return messageDate;}
 
-//    public void deleteMessage(String messageID) {
-//
-//    }
+    public void setFromID(int fromID) {this.fromID = fromID;}
+
+    public int getFromID() {return fromID;}
+
+    public int setToID(int toID) {this.toID = toID;}
+
+    public int getToID() {return toID;}
+
+    public boolean storeMessage() {
+        if (fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
+            String path = Message.class.getResource("").getPath();
+            String mainPath = path.substring(0, path.indexOf("main") + 4);
+            String messagePath = mainPath + "/messages";
+            if (!Files.exists(Paths.get(messagePath+fromID))){
+                File fileUser = new File(messagePath + "messageSent");
+                fileUser.mkdir();
+                File fileSender = new File(messagePath + "messageReceived");
+                fileSender.mkdir();
+            }
+            if (!Files.exists(Paths.get(messagePath+toID))){
+                File fileUser = new File(messagePath + "messageSent");
+                fileUser.mkdir();
+                File fileSender = new File(messagePath + "messageReceived");
+                fileSender.mkdir();
+            }
+        }
+        return false;
+    }
 
     public static MessageBuilder messageBuilder()   {
         return new MessageBuilder();
