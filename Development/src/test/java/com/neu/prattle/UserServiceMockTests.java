@@ -42,6 +42,7 @@ public class UserServiceMockTests {
 
   private User user1;
   private User user2;
+  private User user3;
 
   @Before
   public void setUp() {
@@ -54,6 +55,9 @@ public class UserServiceMockTests {
 
     user2 = new User("EmmaStone" + getRandom());
     user2.setPassword("Password" + getRandom());
+
+    user3 = new User("Kale12345");
+    user3.setPassword("Password12345");
 
   }
 
@@ -81,8 +85,23 @@ public class UserServiceMockTests {
   @Test(expected = UserNameInvalidException.class)
   public void testCreateUserInvalidName() {
     when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
+    user2.setName("123456nfkgfkgsdfhdjfdkekgfhsdfk");
+    userService.addUser(user2);
 
+    when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
     user2.setName("-1");
+    userService.addUser(user2);
+
+    when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
+    user2.setName("GOODGOODGOOD123");
+    userService.addUser(user2);
+
+    when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
+    user2.setName("goodgoodgood");
+    userService.addUser(user2);
+
+    when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
+    user2.setName("GoodgoodGood");
     userService.addUser(user2);
   }
 
@@ -94,6 +113,22 @@ public class UserServiceMockTests {
     when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
     user2.setPassword("-1");
     userService.addUser(user2);
+
+    when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
+    user2.setPassword("-112v456nfkgfkgsdfhdjfdkekgfhsd3");
+    userService.addUser(user2);
+
+    when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
+    user2.setPassword("GOODGOODGOOD123");
+    userService.addUser(user2);
+
+    when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
+    user2.setPassword("goodgoodgood");
+    userService.addUser(user2);
+
+    when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
+    user2.setPassword("GoodgoodGood");
+    userService.addUser(user2);
   }
 
   /**
@@ -101,10 +136,11 @@ public class UserServiceMockTests {
    */
   @Test(timeout = 1000)
   public void testTimeout() {
-    for (int i = 0; i < 100; i++) {
-      User user = new User("MikesUsername" + i);
-      user.setPassword("MikesPassword" + i);
-      assertTrue(userService.addUser(user));
+    for (int i = 0; i < 1000; i++) {
+      User user = new User("RobsUsername" + i);
+      user.setPassword("RobsPassword" + i);
+      when(userService.addUser(any(User.class))).thenReturn(true);
+      userService.addUser(user);
     }
   }
 
@@ -126,8 +162,9 @@ public class UserServiceMockTests {
    */
   @Test
   public void testRetrieveInformationForCurrentUser(){
-    assertEquals("HarryPotter1", user1.getName());
-    assertEquals("User1Password", user1.getPassword());
+    userService.addUser(user3);
+    assertEquals("Kale12345", user3.getName());
+    assertEquals("Password12345", user3.getPassword());
   }
 
   /**
