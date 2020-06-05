@@ -1,3 +1,4 @@
+
 package com.neu.prattle.model;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -113,6 +114,12 @@ public class User {
     this.name = name;
   }
 
+  /**
+   * Get the user's id.
+   */
+  public int getUserId() {
+    return userId;
+  }
 
   /**
    * Set the user's id.
@@ -135,6 +142,75 @@ public class User {
     this.password = password;
   }
 
+  /**
+   * Get the user's avatar.
+   */
+  public String getAvatar() {
+    return avatar;
+  }
+
+  /**
+   * Set the user's avatar.
+   */
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
+  }
+
+  /**
+   * Get the list of user the user is following.
+   */
+  public List<User> getFollowedUser() {
+    return followedUser;
+  }
+
+  /**
+   * Set the user's following list.
+   */
+  public void setFollowedUser(List<User> followedUser) {
+    this.followedUser = followedUser;
+  }
+
+  /**
+   * Get the user's follower list.
+   */
+  public List<User> getFollower() {
+    return follower;
+  }
+
+  /**
+   * Set the user's follower list.
+   */
+  public void setFollower(List<User> follower) {
+    this.follower = follower;
+  }
+
+  /**
+   * Get the user's groups.
+   */
+  public List<Group> getGroups() {
+    return groups;
+  }
+
+  /**
+   * Set the user's groups.
+   */
+  public void setGroups(List<Group> groups) {
+    this.groups = groups;
+  }
+
+  /**
+   * Get the user's followed groups.
+   */
+  public List<Group> getFollowedGroup() {
+    return followedGroup;
+  }
+
+  /**
+   * Set the groups that the user is following.
+   */
+  public void setFollowedGroup(List<Group> followedGroup) {
+    this.followedGroup = followedGroup;
+  }
 
   /***
    * Returns the hashCode of this object.
