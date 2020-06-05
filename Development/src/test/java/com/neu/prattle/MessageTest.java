@@ -14,22 +14,13 @@ import org.junit.Test;
 import java.io.IOException;
 import javax.websocket.EncodeException;
 
-//import org.junit.BeforeClass;
-//import org.junit.Test;
-//import org.mockito.ArgumentCaptor;
-//import org.mockito.Mock;
-
-
 public class MessageTest {
   /***
    * Message created by Message class
    */
-  @Mock
   private Message message;
-  @Mock
   private static MessageEncoder msgEncoder;
 
-  @BeforeClass
   public static void setupBefore() {
     msgEncoder = new MessageEncoder();
     msgEncoder = mock(MessageEncoder.class);
@@ -37,6 +28,7 @@ public class MessageTest {
 
   @Before
   public void setup() {
+    message = new Message();
     message.setFrom("peiran");
     message.setTo("rouni");
     message.setContent("Good Morning!");
@@ -46,22 +38,24 @@ public class MessageTest {
     message = mock(Message.class);
   }
 
-//  @Test
   /***
    * Test message encode and message decode
    */
+  @Test
   public void testEncodeAndDecode() throws EncodeException {
     MessageEncoder msgEncoder = new MessageEncoder();
     msgEncoder.encode(message);
   }
 
-  @Test
+
   /***
    * Test if soreMessage function and deleteMessage function both work successfully
    */
+  @Test
   public void testStoreMessageDeleteMessage() throws IOException, EncodeException {
     when(message.storeMessage()).thenReturn(true);
     assertTrue(message.storeMessage());
+    when(message.deleteMessage(message.getFromID(), message.getMessageID())).thenReturn("File deleted successfully");
     assertEquals("File deleted successfully", message.deleteMessage(message.getFromID(), message.getMessageID()));
   }
 }
