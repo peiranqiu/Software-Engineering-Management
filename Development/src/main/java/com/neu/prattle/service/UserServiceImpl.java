@@ -55,10 +55,10 @@ public class UserServiceImpl implements UserService {
       throw new UserNameInvalidException("Username must be between 4-20 letters long, and contain one capital letter, " +
               "one lowercase letter and one number.");
     }
-    if (!isValidPassword(user)) {
-      throw new PasswordInvalidException("Password must be between 4-20 letters long, and contain one capital letter, " +
-              "one lowercase letter and one number.");
-    }
+//    if (!isValidPassword(user)) {
+//      throw new PasswordInvalidException("Password must be between 4-20 letters long, and contain one capital letter, " +
+//              "one lowercase letter and one number.");
+//    }
 
     try {
       api.addUser(user);
