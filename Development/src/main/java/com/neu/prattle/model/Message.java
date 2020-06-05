@@ -188,15 +188,9 @@ public class Message {
             messagePath = getMessagePath();
             if (!Files.exists(Paths.get(messagePath + "/" + fromID))){
                 String result1 = makeDirectory(messagePath, fromID);
-                if (!result1.equals("Successfully create receiver directory.")){
-                  return false;
-                }
             }
             if (!Files.exists(Paths.get(messagePath + "/" + toID))){
                 String result2 = makeDirectory(messagePath, toID);
-              if (!result2.equals("Successfully create receiver directory.")){
-                return false;
-              }
             }
             File file1 = new File(messagePath + "/" + fromID + "/messageSent" + "/" + messageID + ".json");
             File file2 = new File(messagePath + "/" + toID  + "/messageReceived" + "/" + messageID + ".json");
