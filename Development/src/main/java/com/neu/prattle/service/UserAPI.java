@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public class UserAPI extends DBUtils {
 
-  private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   public UserAPI() {
     super();
   }

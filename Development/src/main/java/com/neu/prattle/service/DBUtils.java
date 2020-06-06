@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An abstract class to connect mysql database and offer general crud for
@@ -12,7 +14,7 @@ import java.sql.Statement;
  */
 public abstract class DBUtils {
 
-
+  private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
   protected String user = "mydb";
   protected String password = "CS5500team4";
@@ -33,7 +35,7 @@ public abstract class DBUtils {
         con = DriverManager.getConnection(url, user, password);
         return con;
       } catch (SQLException e) {
-        System.err.println(e.getMessage());
+        LOGGER.log(Level.INFO, e.getMessage());
         System.exit(1);
       }
     }
@@ -48,8 +50,7 @@ public abstract class DBUtils {
     try {
       con.close();
     } catch (SQLException e) {
-      System.err.println(e.getMessage());
-      e.printStackTrace();
+      LOGGER.log(Level.INFO, e.getMessage());
     }
   }
 
@@ -65,7 +66,7 @@ public abstract class DBUtils {
     int key = -1;
 
     try {
-      Connection con = getConnection();
+      con = getConnection();
       Statement stmt = con.createStatement();
 
       String sqlInsert = "INSERT INTO " + table + " (" + valueColumn + ") VALUES " +
@@ -79,7 +80,7 @@ public abstract class DBUtils {
       stmt.close();
 
     } catch (SQLException e) {
-      System.out.println(e.getMessage());
+      LOGGER.log(Level.INFO, e.getMessage());
       throw new IllegalStateException("sql update failed");
     }
 

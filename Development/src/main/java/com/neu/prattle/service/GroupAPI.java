@@ -13,9 +13,7 @@ import java.util.logging.Logger;
  * GroupApI is a class that can connect this project with sql database for group entity.
  */
 public class GroupAPI extends DBUtils {
-  private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-  private PreparedStatement pstmt = null;
-  private ResultSet results = null;
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
   public GroupAPI() {
     super();
@@ -34,7 +32,9 @@ public class GroupAPI extends DBUtils {
    * @param name group name
    * @return boolean
    */
-  public boolean getGroup(String name) {
+  public boolean getGroup(String name) throws SQLException {
+    PreparedStatement pstmt = null;
+    ResultSet results = null;
     try {
       con = getConnection();
       String str = "SELECT * FROM mydb.Group WHERE name =?";
@@ -44,11 +44,14 @@ public class GroupAPI extends DBUtils {
       while (results.next()) {
         return true;
       }
-      results.close();
-      pstmt.close();
 
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
+    }
+    finally {
+      results.close();
+      pstmt.close();
+
     }
     return false;
   }
