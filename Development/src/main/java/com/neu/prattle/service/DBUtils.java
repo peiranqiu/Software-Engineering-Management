@@ -2,6 +2,7 @@ package com.neu.prattle.service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -66,12 +67,16 @@ public abstract class DBUtils {
 
     try {
       Connection con = getConnection();
-      Statement stmt = con.createStatement();
+//      Statement stmt = con.createStatement();
 
-      String sqlInsert = "INSERT INTO " + table + " (" + valueColumn + ") VALUES " +
-              "('" + term + "')";
-      stmt.executeUpdate(sqlInsert,
-              Statement.RETURN_GENERATED_KEYS);
+      String sqlInsert = "INSERT INTO table (cols) VALUES (?)";
+      sqlInsert = sqlInsert.replace("table", table);
+      sqlInsert = sqlInsert.replace("cols", valueColumn);
+      PreparedStatement stmt = con.prepareStatement(sqlInsert,Statement.RETURN_GENERATED_KEYS);
+      stmt.setString(1, term);
+
+      stmt.executeUpdate();
+//      stmt.executeUpdate(Statement.RETURN_GENERATED_KEYS);
       ResultSet rs = stmt.getGeneratedKeys();
       if (rs.next()) key = rs.getInt(1);
 

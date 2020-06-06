@@ -3,6 +3,7 @@ package com.neu.prattle.service;
 import com.neu.prattle.model.User;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -37,11 +38,12 @@ public class UserAPI extends DBUtils {
   public User getUsers(String name) {
     try {
       Connection con = getConnection();
-      Statement stmt = con.createStatement();
 
-      String sql = "SELECT * FROM User WHERE name = '" + name + "';";
 
-      ResultSet rs = stmt.executeQuery(sql);
+      String sql = "SELECT * FROM User WHERE name =?";
+      PreparedStatement stmt = con.prepareStatement(sql);
+      stmt.setString(1,name);
+      ResultSet rs = stmt.executeQuery();
       if (rs.next()) {
         User user = new User();
         user.setUserId(rs.getInt("User_id"));
@@ -60,10 +62,15 @@ public class UserAPI extends DBUtils {
   public User updateUser(User user, String field, String value) {
     try {
       Connection con = getConnection();
-      Statement stmt = con.createStatement();
-      String sql = "UPDATE User SET " + field + "= '" + value + "' WHERE name = '" + user.getName() + "';";
 
-      int result = stmt.executeUpdate(sql);
+      String sql =
+              "UPDATE User SET field = ? WHERE name = ?";
+      sql = sql.replace("field", field);
+      PreparedStatement stmt = con.prepareStatement(sql);
+      stmt.setString(1, value);
+      stmt.setString(2, user.getName());
+
+      int result = stmt.executeUpdate();
       if (result == 1) {
         stmt.close();
         return user;
