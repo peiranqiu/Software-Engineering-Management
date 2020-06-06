@@ -14,7 +14,7 @@ import java.sql.Statement;
 public abstract class DBUtils {
 
 
-  protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
+  protected String url = "jdbc:mysql://mydb.cd4ztimoe6ek.us-east-1.rds.amazonaws.com:3306/mydb?serverTimezone=EST5EDT";
   protected String user = "mydb";
   protected String pd = "CS5500team4";
   protected Connection con = null;
@@ -31,8 +31,7 @@ public abstract class DBUtils {
   {
     if (con == null) {
       try {
-        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb" +
-                "?serverTimezone=EST5EDT&user=mydb&passwrod=CS5500team4");
+        con = DriverManager.getConnection(url, user, pd);
         return con;
       } catch (SQLException e) {
         System.err.println(e.getMessage());
