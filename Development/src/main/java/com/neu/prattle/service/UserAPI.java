@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +14,9 @@ import java.util.logging.Logger;
  */
 public class UserAPI extends DBUtils {
 
-  private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+  private PreparedStatement stmt = null;
+  private ResultSet rs = null;
   public UserAPI() {
     super();
   }
@@ -26,7 +27,12 @@ public class UserAPI extends DBUtils {
    */
   public boolean addUser(User user) {
 
-    super.insertTerm("User", "name", user.getName());
+    try {
+      super.insertTerm("User", "name", user.getName());
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+
     return true;
   }
 
@@ -35,15 +41,14 @@ public class UserAPI extends DBUtils {
    * @param name the name of the user
    * @return if the user is in the db
    */
-  public User getUsers(String name) {
+  public User getUsers(String name) throws SQLException {
+
     try {
       Connection con = getConnection();
-
-
       String sql = "SELECT * FROM User WHERE name =?";
-      PreparedStatement stmt = con.prepareStatement(sql);
+      stmt = con.prepareStatement(sql);
       stmt.setString(1,name);
-      ResultSet rs = stmt.executeQuery();
+      rs = stmt.executeQuery();
       if (rs.next()) {
         User user = new User();
         user.setUserId(rs.getInt("User_id"));
@@ -51,32 +56,35 @@ public class UserAPI extends DBUtils {
         user.setPassword(rs.getString("password"));
         return user;
       }
-      rs.close();
-      stmt.close();
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      rs.close();
+      stmt.close();
     }
     return null;
   }
 
-  public User updateUser(User user, String field, String value) {
+  public User updateUser(User user, String field, String value) throws SQLException, NullPointerException {
     try {
       Connection con = getConnection();
 
       String sql =
               "UPDATE User SET field = ? WHERE name = ?";
       sql = sql.replace("field", field);
-      PreparedStatement stmt = con.prepareStatement(sql);
+      stmt = con.prepareStatement(sql);
       stmt.setString(1, value);
       stmt.setString(2, user.getName());
 
       int result = stmt.executeUpdate();
       if (result == 1) {
-        stmt.close();
         return user;
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      rs.close();
+      stmt.close();
     }
     return null;
   }
