@@ -7,11 +7,12 @@ import com.neu.prattle.model.Group;
 
 import java.sql.SQLException;
 import java.util.Optional;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GroupServiceImpl implements GroupService {
   private static GroupService groupService;
-
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   static {
     groupService = new GroupServiceImpl();
   }
@@ -54,7 +55,7 @@ public class GroupServiceImpl implements GroupService {
         optional = Optional.of(group);
       else throw new GroupNotFoundException("there is no such group");
     } catch (SQLException e) {
-      e.printStackTrace();
+      LOGGER.log(Level.INFO, e.getMessage());
     }
     return optional;
   }

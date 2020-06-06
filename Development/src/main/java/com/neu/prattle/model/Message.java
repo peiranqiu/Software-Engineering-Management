@@ -232,25 +232,31 @@ public class Message {
   /***
    * Write the current message into a JSON file under the folder of the current sender and receiver
    */
-  private void writeFile(String messagePath) throws IOException, EncodeException {
+  private void writeFile(String messagePath) throws IOException, EncodeException, NullPointerException {
     MessageEncoder msEncoder = new MessageEncoder();
+    String file1 = messagePath + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
+    FileWriter myWriter = new FileWriter(file1);
     try {
-      String file1 = messagePath + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
-      FileWriter myWriter = new FileWriter(file1);
+
       myWriter.write(msEncoder.encode(this));
+
+    } catch(NullPointerException e) {
+      logger.info(e.getMessage());
+    }
+      finally{
       myWriter.close();
-    } finally {
-      // do something
     }
 
+    String file2 = messagePath + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
+    FileWriter myWriter2 = new FileWriter(file2);
     try {
       MessageEncoder msEncoder2 = new MessageEncoder();
-      String file2 = messagePath + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
-      FileWriter myWriter2 = new FileWriter(file2);
       myWriter2.write(msEncoder2.encode(this));
-      myWriter2.close();
+
+    } catch(NullPointerException e) {
+      logger.info(e.getMessage());
     } finally {
-      // do something
+      myWriter2.close();
     }
   }
 

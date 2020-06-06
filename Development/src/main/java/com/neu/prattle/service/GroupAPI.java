@@ -21,40 +21,46 @@ public class GroupAPI extends DBUtils {
 
   /**
    * add group into database
+   *
    * @param group adding group object.
    */
   public void addGroup(Group group) {
-    super.insertTerm("mydb.Group", "name", group.getName());
+    try {
+      super.insertTerm("mydb.Group", "name", group.getName());
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+
+
   }
 
   /**
    * check if group exists in the database.
+   *
    * @param name group name
    * @return boolean
    */
-  public boolean getGroup(String name) throws SQLException {
-    PreparedStatement pstmt = null;
-    ResultSet results = null;
+  public boolean getGroup(String name) throws SQLException, NullPointerException {
+    Boolean b = false;
     try {
       con = getConnection();
       String str = "SELECT * FROM mydb.Group WHERE name =?";
-      pstmt = getConnection().prepareStatement(str);
-      pstmt.setString(1, name);
-      results = pstmt.executeQuery();
-      while (results.next()) {
-        return true;
+      try (PreparedStatement pstmt = getConnection().prepareStatement(str)) {
+        pstmt.setString(1, name);
+        try (ResultSet rs = pstmt.executeQuery()) {
+          if (rs.next()) {
+            b = true;
+          }
+          rs.close();
+        }
+        pstmt.close();
+      } catch (SQLException e) {
+        LOGGER.log(Level.INFO, e.getMessage());
       }
-
-    } catch (SQLException e) {
+    } catch (NullPointerException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
-    finally {
-      results.close();
-      pstmt.close();
-
-    }
-    return false;
+    return b;
   }
-
 
 }
