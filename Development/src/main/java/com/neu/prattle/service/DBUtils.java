@@ -17,7 +17,7 @@ public abstract class DBUtils {
   private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
   protected String user = "mydb";
-  protected String password = "CS5500team4";
+  protected String pd = "CS5500team4";
   protected Connection con = null;
 
   public DBUtils() {
@@ -32,7 +32,7 @@ public abstract class DBUtils {
   public Connection getConnection() {
     if (con == null) {
       try {
-        con = DriverManager.getConnection(url, user, password);
+        con = DriverManager.getConnection(url, user, pd);
         return con;
       } catch (SQLException e) {
         LOGGER.log(Level.INFO, e.getMessage());
