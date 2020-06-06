@@ -31,7 +31,8 @@ public abstract class DBUtils {
   {
     if (con == null) {
       try {
-        con = DriverManager.getConnection(url, user, pd);
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb" +
+                "?serverTimezone=EST5EDT&user=mydb&passwrod=CS5500team4");
         return con;
       } catch (SQLException e) {
         System.err.println(e.getMessage());
