@@ -177,5 +177,26 @@ public class ChatEndpoint {
   public void onError(Session session, Throwable throwable) {
     // Do error handling here
   }
+
+  public static void sendPersonalMessage(Message message) {
+    chatEndpoints.forEach(endpoint ->
+    {
+      if (message.getTo().equals(users.get(endpoint.session.getId()))) {
+        synchronized (endpoint) {
+          try {
+            endpoint.session.getBasicRemote()
+                    .sendObject(message);
+            message.setMessageID();
+            message.storeMessage();
+          } catch (IOException | EncodeException e) {
+            /* note: in production, who exactly is looking at the console.  This exception's
+             *       output should be moved to a logger.
+             */
+            e.printStackTrace();
+          }
+        }
+      }
+    });
+  }
 }
 
