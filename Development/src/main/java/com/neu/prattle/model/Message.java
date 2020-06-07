@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.rmi.activation.ActivationGroup_Stub;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -23,9 +22,9 @@ import javax.websocket.EncodeException;
 public class Message {
 
   private Logger logger = Logger.getLogger(Message.class.getName());
-  private final String MESSAGESENT = "/messageSent";
-  private final String MESSAGERECEIVE = "/messageReceived";
-  private final String JSON = ".json";
+  private static final String MESSAGESENT = "/messageSent";
+  private static final String MESSAGERECEIVE = "/messageReceived";
+  private static final String JSON = ".json";
   /***
    * The name of the user who sent this message.
    */
@@ -179,7 +178,7 @@ public class Message {
   }
 
   /***
-   * Create the messageSent and messageReceived directories for the current user
+   * Create the MESSAGESENT and messageReceived directories for the current user
    */
   public String makeDirectory(String messagePath, int userID) {
     String dirName1 = messagePath + "/" + userID;
@@ -232,31 +231,23 @@ public class Message {
   /***
    * Write the current message into a JSON file under the folder of the current sender and receiver
    */
-  private void writeFile(String messagePath) throws IOException, EncodeException, NullPointerException {
+  private void writeFile(String messagePath) throws IOException, EncodeException {
     MessageEncoder msEncoder = new MessageEncoder();
     String file1 = messagePath + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
-    FileWriter myWriter = new FileWriter(file1);
-    try {
+    try(FileWriter myWriter = new FileWriter(file1)) {
 
       myWriter.write(msEncoder.encode(this));
-
     } catch(NullPointerException e) {
       logger.info(e.getMessage());
-    }
-      finally{
-      myWriter.close();
     }
 
     String file2 = messagePath + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
-    FileWriter myWriter2 = new FileWriter(file2);
-    try {
+
+    try(FileWriter myWriter2 = new FileWriter(file2)) {
       MessageEncoder msEncoder2 = new MessageEncoder();
       myWriter2.write(msEncoder2.encode(this));
-
     } catch(NullPointerException e) {
       logger.info(e.getMessage());
-    } finally {
-      myWriter2.close();
     }
   }
 
@@ -266,7 +257,8 @@ public class Message {
   public String deleteMessage(int userID, String messageID) {
     messagePath = getMessagePath();
     String output = "File remove fails.";
-    Path path = Paths.get(messagePath + "/" + userID + MESSAGESENT + "/" + messageID + JSON);
+    String s = messagePath + "/" + userID + MESSAGESENT + "/" + messageID + JSON;
+    Path path = Paths.get(s);
 
     try {
       Files.delete(path);

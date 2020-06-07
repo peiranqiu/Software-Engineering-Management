@@ -30,7 +30,7 @@ public class UserTests {
   public void testUserId() {
     user = new User("CS5500Team1");
     user.setUserId(999999);
-    assertEquals(user.getUserId(), 999999);
+    assertEquals(999999, user.getUserId());
   }
 
   /**
@@ -39,7 +39,7 @@ public class UserTests {
   @Test
   public void testUserAvatar() {
     user.setAvatar("picture.png");
-    assertEquals(user.getAvatar(), "picture.png");
+    assertEquals("picture.png", user.getAvatar());
   }
 
   /**
