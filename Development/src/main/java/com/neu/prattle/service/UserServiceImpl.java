@@ -44,11 +44,10 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Optional<User> findUserByName(String name) {
-    final User user = new User(name);
     Optional<User> optional = Optional.empty();
     try {
       if (api.getUsers(name) != null) {
-        optional = Optional.of(user);
+        optional = Optional.of(api.getUsers(name));
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
