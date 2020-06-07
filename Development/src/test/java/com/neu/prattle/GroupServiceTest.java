@@ -14,6 +14,8 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A junit test class for user.
@@ -33,7 +35,7 @@ public class GroupServiceTest {
   @Test
   public void test1() {
 
-    groupService.addGroup(group1);
+    assertTrue(groupService.addGroup(group1));
 
   }
 
@@ -47,8 +49,8 @@ public class GroupServiceTest {
     assertEquals(group1.getName(), groupService.findGroupByName("testGroup1").get().getName());
   }
 
-  @Test(expected = GroupNotFoundException.class)
+  @Test
   public void test4() {
-    groupService.findGroupByName("testGroup3");
+    assertFalse(groupService.findGroupByName("testGroup3").isPresent());
   }
 }

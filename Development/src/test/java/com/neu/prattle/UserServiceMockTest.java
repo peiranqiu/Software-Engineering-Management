@@ -30,9 +30,10 @@ import static org.mockito.Mockito.when;
 /**
  * A junit test class for user service using mockito.
  */
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(MockitoJUnitRunner.class)
-public class UserServiceMockTests {
+public class UserServiceMockTest {
 
   @Mock
   private UserService userService;
@@ -140,7 +141,7 @@ public class UserServiceMockTests {
       User user = new User("RobsUsername" + i);
       user.setPassword("RobsPassword" + i);
       when(userService.addUser(any(User.class))).thenReturn(true);
-      userService.addUser(user);
+      assertTrue(userService.addUser(user));
     }
   }
 
