@@ -13,6 +13,5 @@ import org.junit.runners.Suite.SuiteClasses;
         GroupServiceMockTest.class,GroupServiceTest.class, UserTest.class,
         UserServiceMockTest.class, UserServiceTest.class})
 public class AllTest {
-
   //All tests
 }
