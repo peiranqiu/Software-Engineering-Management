@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Logger;
 
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
@@ -51,6 +52,8 @@ public class ChatEndpoint {
    * The session.
    */
   private Session session;
+
+  Logger logger = Logger.getLogger(Message.class.getName());
 
   /**
    * Broadcast.
@@ -178,16 +181,15 @@ public class ChatEndpoint {
     // Do error handling here
   }
 
-  public static void sendPersonalMessage(Message message) {
+  public static void sendPersonalMessage(Message message) throws IOException, EncodeException {
     chatEndpoints.forEach(endpoint ->
     {
-      if (message.getTo().equals(users.get(endpoint.session.getId()))) {
+      if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
         synchronized (endpoint) {
           try {
             endpoint.session.getBasicRemote()
                     .sendObject(message);
-            message.setMessageID();
-            message.storeMessage();
+
           } catch (IOException | EncodeException e) {
             /* note: in production, who exactly is looking at the console.  This exception's
              *       output should be moved to a logger.
@@ -197,6 +199,7 @@ public class ChatEndpoint {
         }
       }
     });
+    message.storeMessage();
   }
 }
 
