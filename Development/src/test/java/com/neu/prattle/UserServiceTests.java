@@ -73,17 +73,6 @@ public class UserServiceTests {
     userService.addUser(user2);
   }
 
-  /**
-   * Test timeout for adding a large number of users.
-   */
-  @Test(timeout = 1000)
-  public void testTimeout() {
-    for (int i = 0; i < 100; i++) {
-      User user = new User("RobsUsername" + i);
-      user.setPassword("RobsPassword" + i);
-      assertTrue(userService.addUser(user));
-    }
-  }
 
   /**
    * Test find user with a given name.
