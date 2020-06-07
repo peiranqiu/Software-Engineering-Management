@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User` (
   `logins` VARCHAR(45) NULL,
   `watched` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`User_id`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB;
 
 
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group` (
   `name` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NULL,
   PRIMARY KEY (`Group_id`),
-  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE)
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB;
 
 
@@ -58,8 +58,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User_has_Group` (
   `User_User_id` INT NOT NULL,
   `Group_Group_id` INT NOT NULL,
   PRIMARY KEY (`User_User_id`, `Group_Group_id`),
-  INDEX `fk_User_has_Group_Group1_idx` (`Group_Group_id` ASC) VISIBLE,
-  INDEX `fk_User_has_Group_User_idx` (`User_User_id` ASC) VISIBLE,
+  INDEX `fk_User_has_Group_Group1_idx` (`Group_Group_id` ASC),
+  INDEX `fk_User_has_Group_User_idx` (`User_User_id` ASC),
   CONSTRAINT `fk_User_has_Group_User`
     FOREIGN KEY (`User_User_id`)
     REFERENCES `mydb`.`User` (`User_id`)
@@ -82,8 +82,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group_has_Group` (
   `super_Group_id` INT NOT NULL,
   `sub_Group_id` INT NOT NULL,
   PRIMARY KEY (`super_Group_id`, `sub_Group_id`),
-  INDEX `fk_Group_has_Group_Group2_idx` (`sub_Group_id` ASC) VISIBLE,
-  INDEX `fk_Group_has_Group_Group1_idx` (`super_Group_id` ASC) VISIBLE,
+  INDEX `fk_Group_has_Group_Group2_idx` (`sub_Group_id` ASC),
+  INDEX `fk_Group_has_Group_Group1_idx` (`super_Group_id` ASC),
   CONSTRAINT `fk_Group_has_Group_Group1`
     FOREIGN KEY (`super_Group_id`)
     REFERENCES `mydb`.`Group` (`Group_id`)
@@ -106,8 +106,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User_moderates_Group` (
   `User_User_id` INT NOT NULL,
   `Group_Group_id` INT NOT NULL,
   PRIMARY KEY (`User_User_id`, `Group_Group_id`),
-  INDEX `fk_User_has_Group1_Group1_idx` (`Group_Group_id` ASC) VISIBLE,
-  INDEX `fk_User_has_Group1_User1_idx` (`User_User_id` ASC) VISIBLE,
+  INDEX `fk_User_has_Group1_Group1_idx` (`Group_Group_id` ASC),
+  INDEX `fk_User_has_Group1_User1_idx` (`User_User_id` ASC),
   CONSTRAINT `fk_User_has_Group1_User1`
     FOREIGN KEY (`User_User_id`)
     REFERENCES `mydb`.`User` (`User_id`)
@@ -130,8 +130,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User_follows_User` (
   `follower_id` INT NOT NULL,
   `followee_id` INT NOT NULL,
   PRIMARY KEY (`follower_id`, `followee_id`),
-  INDEX `fk_User_has_User_User2_idx` (`followee_id` ASC) VISIBLE,
-  INDEX `fk_User_has_User_User1_idx` (`follower_id` ASC) VISIBLE,
+  INDEX `fk_User_has_User_User2_idx` (`followee_id` ASC),
+  INDEX `fk_User_has_User_User1_idx` (`follower_id` ASC),
   CONSTRAINT `fk_User_has_User_User1`
     FOREIGN KEY (`follower_id`)
     REFERENCES `mydb`.`User` (`User_id`)
@@ -154,8 +154,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User_follows_Group` (
   `User_User_id` INT NOT NULL,
   `Group_Group_id` INT NOT NULL,
   PRIMARY KEY (`User_User_id`, `Group_Group_id`),
-  INDEX `fk_User_has_Group1_Group2_idx` (`Group_Group_id` ASC) VISIBLE,
-  INDEX `fk_User_has_Group1_User2_idx` (`User_User_id` ASC) VISIBLE,
+  INDEX `fk_User_has_Group1_Group2_idx` (`Group_Group_id` ASC),
+  INDEX `fk_User_has_Group1_User2_idx` (`User_User_id` ASC),
   CONSTRAINT `fk_User_has_Group1_User2`
     FOREIGN KEY (`User_User_id`)
     REFERENCES `mydb`.`User` (`User_id`)
