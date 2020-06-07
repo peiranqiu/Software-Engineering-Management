@@ -116,6 +116,6 @@ public class UserServiceTest {
   @Test
   public void closeConnection(){
     UserAPI api = new UserAPI();
-    api.closeConnection();
+    assertTrue(api.closeConnection());
   }
 }
