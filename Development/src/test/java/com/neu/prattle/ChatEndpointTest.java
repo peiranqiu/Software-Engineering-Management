@@ -180,14 +180,15 @@ public class ChatEndpointTest {
 
   @Test
   public void testSendPersonalMessage() throws IOException, EncodeException {
-    testUser1.setUserId(testUser1.getUserId());
-    testUser2.setUserId(testUser2.getUserId());
-    chatEndpoint1.onOpen(session1, testUser1.getName());
-    chatEndpoint2.onOpen(session2, testUser2.getName());
-    message.setFrom(testUser1.getName());
-    message.setTo(testUser2.getName());
-    message.setFromID(testUser1.getUserId());
-    message.setToID(testUser2.getUserId());
+    UserService userService = UserServiceImpl.getInstance();
+    User user1 = userService.findUserByName("testName1").get();
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo(user2.getName());
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
     message.setContent("Hey");
     message.setMessageID();
 
