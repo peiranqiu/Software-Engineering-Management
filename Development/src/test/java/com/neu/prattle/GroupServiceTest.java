@@ -15,6 +15,7 @@ import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * A junit test class for user.
@@ -34,7 +35,7 @@ public class GroupServiceTest {
   @Test
   public void test1() {
 
-    groupService.addGroup(group1);
+    assertTrue(groupService.addGroup(group1));
 
   }
 

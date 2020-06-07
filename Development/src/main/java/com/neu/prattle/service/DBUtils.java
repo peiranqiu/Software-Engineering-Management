@@ -47,12 +47,14 @@ public abstract class DBUtils {
   /**
    * Disconnect
    */
-  public void closeConnection() {
+  public boolean closeConnection() {
     try {
       con.close();
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
+      return true;
+
   }
 
   /**

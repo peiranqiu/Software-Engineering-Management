@@ -141,7 +141,7 @@ public class UserServiceMockTest {
       User user = new User("RobsUsername" + i);
       user.setPassword("RobsPassword" + i);
       when(userService.addUser(any(User.class))).thenReturn(true);
-      userService.addUser(user);
+      assertTrue(userService.addUser(user));
     }
   }
 
