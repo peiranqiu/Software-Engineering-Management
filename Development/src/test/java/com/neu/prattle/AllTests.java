@@ -12,6 +12,6 @@ import org.junit.runners.Suite.SuiteClasses;
         MessageTest.class, ChatEndpointTest.class, GroupControllerTest.class,
         GroupServiceMockTest.class,GroupServiceTest.class, UserTest.class,
         UserServiceMockTest.class, UserServiceTest.class})
-public class AllTest {
+public class AllTests {
   //All tests
 }
