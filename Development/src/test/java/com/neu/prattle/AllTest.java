@@ -10,8 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({GroupEntityTest.class, UserControllerTest.class,
         MessageTest.class, ChatEndpointTest.class, GroupControllerTest.class,
-        GroupServiceMockTests.class,GroupServiceTest.class, UserTests.class,
-        UserServiceMockTests.class, UserServiceTests.class})
-public class AllTests {
+        GroupServiceMockTest.class,GroupServiceTest.class, UserTest.class,
+        UserServiceMockTest.class, UserServiceTest.class})
+public class AllTest {
   //All tests
 }

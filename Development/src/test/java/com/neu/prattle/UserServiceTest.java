@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
  * A junit test class for user service.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserServiceTests {
+public class UserServiceTest {
 
   private UserService userService;
 

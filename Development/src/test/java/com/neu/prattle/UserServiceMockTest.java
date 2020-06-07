@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(MockitoJUnitRunner.class)
-public class UserServiceMockTests {
+public class UserServiceMockTest {
 
   @Mock
   private UserService userService;
