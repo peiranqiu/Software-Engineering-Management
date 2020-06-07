@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  */
 public abstract class DBUtils {
 
-  private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   protected String url = "jdbc:mysql://mydb.cd4ztimoe6ek.us-east-1.rds.amazonaws.com:3306/mydb?";
   protected String user = "mydb";
   protected String pd = "CS5500team4";
@@ -63,37 +63,35 @@ public abstract class DBUtils {
    * @param term  The term value
    * @return The id of the term
    */
-  protected int insertTerm(String table, String valueColumn, String term) throws SQLException, NullPointerException {
+  protected int insertTerm(String table, String valueColumn, String term) throws SQLException {
     int key = -1;
 
     try {
-      Connection con = getConnection();
+      con = getConnection();
 
       String sqlInsert = "INSERT INTO table (cols) VALUES (?)";
       sqlInsert = sqlInsert.replace("table", table);
       sqlInsert = sqlInsert.replace("cols", valueColumn);
-      try(PreparedStatement stmt = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
-
-        stmt.setString(1, term);
-
-        stmt.executeUpdate();
-        ResultSet rs = stmt.getGeneratedKeys();
-        if (rs.next()) key = rs.getInt(1);
-
-        rs.close();
-        stmt.close();
-
-      } catch (SQLException e) {
-
-        throw new IllegalStateException("sql update failed");
-      }
-
-
+      key = prepareStatement(con, sqlInsert, term);
     } catch (NullPointerException e) {
-
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return key;
 
+  }
+
+
+  protected int prepareStatement(Connection con, String sqlInsert, String term) throws SQLException {
+    int key = -1;
+    try (PreparedStatement stmt = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+      stmt.setString(1, term);
+      stmt.executeUpdate();
+      ResultSet rs = stmt.getGeneratedKeys();
+      if (rs.next()) key = rs.getInt(1);
+      rs.close();
+    } catch (SQLException e) {
+      throw new IllegalStateException("sql update failed");
+    }
+    return key;
   }
 }

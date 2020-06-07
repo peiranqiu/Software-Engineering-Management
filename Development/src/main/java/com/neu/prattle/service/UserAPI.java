@@ -65,7 +65,7 @@ public class UserAPI extends DBUtils {
     return null;
   }
 
-  public User updateUser(User user, String field, String value) throws SQLException, NullPointerException {
+  public User updateUser(User user, String field, String value) throws SQLException {
     try {
       Connection con = getConnection();
 

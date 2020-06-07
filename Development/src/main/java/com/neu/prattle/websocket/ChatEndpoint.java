@@ -37,7 +37,7 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint(value = "/chat/{username}", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
 public class ChatEndpoint {
 
-  private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   /**
    * The Constant chatEndpoints.
    */

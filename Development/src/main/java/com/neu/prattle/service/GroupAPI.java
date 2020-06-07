@@ -40,24 +40,28 @@ public class GroupAPI extends DBUtils {
    * @param name group name
    * @return boolean
    */
-  public boolean getGroup(String name) throws SQLException, NullPointerException {
+  public boolean getGroup(String name) {
     Boolean b = false;
     try {
       con = getConnection();
       String str = "SELECT * FROM mydb.Group WHERE name =?";
-      try (PreparedStatement pstmt = getConnection().prepareStatement(str)) {
-        pstmt.setString(1, name);
-        try (ResultSet rs = pstmt.executeQuery()) {
-          if (rs.next()) {
-            b = true;
-          }
-          rs.close();
-        }
-        pstmt.close();
-      } catch (SQLException e) {
-        LOGGER.log(Level.INFO, e.getMessage());
-      }
+      b = prepareStatement(name, str);
     } catch (NullPointerException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return b;
+  }
+
+  public boolean prepareStatement(String name, String str) {
+    Boolean b = false;
+    try (PreparedStatement pstmt = getConnection().prepareStatement(str)) {
+      pstmt.setString(1, name);
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          b = true;
+        }
+      }
+    } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return b;
