@@ -30,6 +30,7 @@ import static org.mockito.Mockito.when;
 /**
  * A junit test class for user service using mockito.
  */
+
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceMockTests {
