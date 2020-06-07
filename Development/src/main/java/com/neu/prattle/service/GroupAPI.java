@@ -13,9 +13,7 @@ import java.util.logging.Logger;
  * GroupApI is a class that can connect this project with sql database for group entity.
  */
 public class GroupAPI extends DBUtils {
-  private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-  private PreparedStatement pstmt = null;
-  private ResultSet results = null;
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
   public GroupAPI() {
     super();
@@ -23,35 +21,50 @@ public class GroupAPI extends DBUtils {
 
   /**
    * add group into database
+   *
    * @param group adding group object.
    */
   public void addGroup(Group group) {
-    super.insertTerm("mydb.Group", "name", group.getName());
+    try {
+      super.insertTerm("mydb.Group", "name", group.getName());
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+
+
   }
 
   /**
    * check if group exists in the database.
+   *
    * @param name group name
    * @return boolean
    */
   public boolean getGroup(String name) {
+    Boolean b = false;
     try {
       con = getConnection();
       String str = "SELECT * FROM mydb.Group WHERE name =?";
-      pstmt = getConnection().prepareStatement(str);
-      pstmt.setString(1, name);
-      results = pstmt.executeQuery();
-      while (results.next()) {
-        return true;
-      }
-      results.close();
-      pstmt.close();
+      b = prepareStatement(name, str);
+    } catch (NullPointerException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return b;
+  }
 
+  public boolean prepareStatement(String name, String str) {
+    Boolean b = false;
+    try (PreparedStatement pstmt = getConnection().prepareStatement(str)) {
+      pstmt.setString(1, name);
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          b = true;
+        }
+      }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
-    return false;
+    return b;
   }
-
 
 }

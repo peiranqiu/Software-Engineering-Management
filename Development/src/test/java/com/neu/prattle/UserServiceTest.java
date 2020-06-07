@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
  * A junit test class for user service.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserServiceTests {
+public class UserServiceTest {
 
   private UserService userService;
 
@@ -73,17 +73,6 @@ public class UserServiceTests {
     userService.addUser(user2);
   }
 
-  /**
-   * Test timeout for adding a large number of users.
-   */
-  @Test(timeout = 1000)
-  public void testTimeout() {
-    for (int i = 0; i < 100; i++) {
-      User user = new User("RobsUsername" + i);
-      user.setPassword("RobsPassword" + i);
-      assertTrue(userService.addUser(user));
-    }
-  }
 
   /**
    * Test find user with a given name.
@@ -127,6 +116,6 @@ public class UserServiceTests {
   @Test
   public void closeConnection(){
     UserAPI api = new UserAPI();
-    api.closeConnection();
+    assertTrue(api.closeConnection());
   }
 }

@@ -6,14 +6,17 @@ import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The class made to delegate tasks to the JPA service and send results back to Service.
  */
 public class UserServiceImpl implements UserService {
-
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   private static UserService userService;
 
   static {
@@ -41,15 +44,20 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Optional<User> findUserByName(String name) {
-    final User user = new User(name);
-    if (api.getUsers(name) != null)
-      return Optional.of(user);
-    else
-      return Optional.empty();
+    Optional<User> optional = Optional.empty();
+    try {
+      if (api.getUsers(name) != null) {
+        optional = Optional.of(api.getUsers(name));
+      }
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return optional;
   }
 
   /**
    * Add a user
+   *
    * @param user User object
    * @return if add successfully
    */
@@ -82,14 +90,20 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public User updateUser(User user) {
-    User newUser = api.getUsers(user.getName());
-    if (newUser == null) {
-      throw new UserNotFoundException(String.format("User %s not found.", user.getName()));
+    try {
+      User newUser = api.getUsers(user.getName());
+      if (newUser == null) {
+        throw new UserNotFoundException(String.format("User %s not found.", user.getName()));
+      }
+      newUser.setPassword(user.getPassword());
+      String field = "password";
+      String value = user.getPassword();
+      return api.updateUser(newUser, field, value);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
     }
-    newUser.setPassword(user.getPassword());
-    String field = "password";
-    String value = user.getPassword();
-    return api.updateUser(newUser, field, value);
+    return null;
+
   }
 
   /**

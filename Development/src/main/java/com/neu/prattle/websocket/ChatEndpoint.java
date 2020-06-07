@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.websocket.EncodeException;
@@ -36,6 +37,7 @@ import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint(value = "/chat/{username}", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
 public class ChatEndpoint {
 
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   /**
    * The Constant chatEndpoints.
    */
@@ -53,8 +55,6 @@ public class ChatEndpoint {
    */
   private Session session;
 
-  Logger logger = Logger.getLogger(Message.class.getName());
-
   /**
    * Broadcast.
    *
@@ -63,7 +63,8 @@ public class ChatEndpoint {
    * endpoint, it is blocked until this Message finishes being sent..
    */
   private static void broadcast(Message message) {
-    chatEndpoints.forEach(endpoint -> {
+    chatEndpoints.forEach(endpoint0 -> {
+      final ChatEndpoint endpoint = endpoint0;
       synchronized (endpoint) {
         try {
           endpoint.session.getBasicRemote()
@@ -72,7 +73,7 @@ public class ChatEndpoint {
           /* note: in production, who exactly is looking at the console.  This exception's
            *       output should be moved to a logger.
            */
-          e.printStackTrace();
+          LOGGER.log(Level.INFO, e.getMessage());
         }
       }
     });

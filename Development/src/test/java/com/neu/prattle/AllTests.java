@@ -8,7 +8,10 @@ import org.junit.runners.Suite.SuiteClasses;
  * This is a wrapper for all test classes.
  */
 @RunWith(Suite.class)
-@SuiteClasses({GroupEntityTest.class, UserControllerTest.class, MessageTest.class, ChatEndpointTest.class, GroupControllerTest.class, GroupServiceMockTests.class, UserTests.class, UserServiceMockTests.class, UserServiceTests.class})
+@SuiteClasses({GroupEntityTest.class, UserControllerTest.class,
+        MessageTest.class, ChatEndpointTest.class, GroupControllerTest.class,
+        GroupServiceMockTest.class,GroupServiceTest.class, UserTest.class,
+        UserServiceMockTest.class, UserServiceTest.class})
 public class AllTests {
   //All tests
 }

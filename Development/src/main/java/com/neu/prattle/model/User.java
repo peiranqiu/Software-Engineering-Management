@@ -100,6 +100,15 @@ public class User {
   }
 
   /**
+   * Initiate a new user with user name and password.
+   */
+  public User(String name, String password) {
+
+    this.name = name;
+    this.password = password;
+  }
+
+  /**
    * Get the user's name.
    */
   public String getName() {

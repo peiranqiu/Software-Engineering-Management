@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(MockitoJUnitRunner.class)
-public class GroupServiceMockTests {
+public class GroupServiceMockTest {
   @Mock
   private GroupService groupService;
   @Mock
@@ -71,3 +71,4 @@ public class GroupServiceMockTests {
     assertFalse(groupService.findGroupByName("^^&*(").isPresent());
   }
 }
+

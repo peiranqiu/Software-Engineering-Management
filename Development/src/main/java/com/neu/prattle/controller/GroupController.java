@@ -5,11 +5,9 @@ import com.neu.prattle.model.Group;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
@@ -24,7 +22,7 @@ import javax.ws.rs.core.Response;
 @Controller
 @Path(value = "/group")
 public class GroupController {
-  private static final GroupController groupControllerInstance = new GroupController();
+
   private GroupService groupService = GroupServiceImpl.getInstance();
 
   /***
