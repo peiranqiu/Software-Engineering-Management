@@ -32,7 +32,8 @@ public abstract class DBUtils {
   public Connection getConnection() {
     if (con == null) {
       try {
-        con = DriverManager.getConnection(url, user, pd);
+        con = DriverManager.getConnection(url+ "&user=" + user + "&password" +
+                "=" + pd);
         return con;
       } catch (SQLException e) {
         LOGGER.log(Level.INFO, e.getMessage());
