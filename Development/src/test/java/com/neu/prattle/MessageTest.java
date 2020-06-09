@@ -161,4 +161,8 @@ public class MessageTest {
     assertTrue(decode.willDecode("test"));
   }
 
+  public void testGroupChatLog() {
+
+  }
+
 }

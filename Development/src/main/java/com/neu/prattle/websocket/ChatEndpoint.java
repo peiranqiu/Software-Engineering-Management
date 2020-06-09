@@ -227,7 +227,7 @@ public class ChatEndpoint {
     broadcastInGroup(message, currentGroupObject);
   }
 
-  private static void broadcastInGroup(Message message, Group currentGroupObject) {
+  private static void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
     List<Member> members = currentGroupObject.getMembers();
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
