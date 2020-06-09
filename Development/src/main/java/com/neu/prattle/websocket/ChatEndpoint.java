@@ -223,12 +223,12 @@ public class ChatEndpoint {
       session.getBasicRemote().sendObject(error);
       return;
     }
-    List<Member> members = group.get().getMembers();
-    broadcastInGroup(message, members);
+    Group currentGroupObject = group.get();
+    broadcastInGroup(message, currentGroupObject);
   }
 
-
-  private static void broadcastInGroup(Message message, List<Member> members) {
+  private static void broadcastInGroup(Message message, Group currentGroupObject) {
+    List<Member> members = currentGroupObject.getMembers();
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
       if (members.contains(users.get(endpoint.session.getId()))) {
@@ -242,6 +242,7 @@ public class ChatEndpoint {
         }
       }
     });
+    message.saveChatLog(currentGroupObject);
   }
 }
 

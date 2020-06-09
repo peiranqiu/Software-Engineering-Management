@@ -57,6 +57,10 @@ public class Message {
    * Initialize the ID of receiver
    */
   private int toID = -1;
+  /***
+   * Message to group or not
+   */
+  private boolean sendToGroup = false;
 
   /***
    * Return the completed message with sender and receiver
@@ -162,6 +166,19 @@ public class Message {
   }
 
   /***
+   * Return send to group or not
+   */
+  public boolean getSendToGroup() {
+    return sendToGroup;
+  }
+  /***
+   * Retrieve sent to group or not
+   */
+  public void setSendToGroup(boolean sendToGroup) {
+    this.sendToGroup = sendToGroup;
+  }
+
+  /***
    * Get the parent directory of the message folder
    */
   public String getMessagePath() {
@@ -206,8 +223,7 @@ public class Message {
    * Make directories and save the current message into a JSON file under the folder of the current sender and receiver
    */
   public boolean storeMessage() throws IOException, EncodeException {
-    if (fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
-      messagePath = getMessagePath();
+    if (!sendToGroup && fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
       if (!Files.exists(Paths.get(messagePath + "/" + fromID))) {
         makeDirectory(messagePath, fromID);
       }
@@ -255,7 +271,6 @@ public class Message {
    * Remove the current message sent by sender
    */
   public String deleteMessage(int userID, String messageID) {
-    messagePath = getMessagePath();
     String output = "File remove fails.";
     String s = messagePath + "/" + userID + MESSAGESENT + "/" + messageID + JSON;
     Path path = Paths.get(s);
@@ -267,6 +282,27 @@ public class Message {
       logger.info("File not deleted.");
     }
     return output;
+  }
+
+  public void saveChatLog(Group currentGroupObject) throws IOException {
+    if (sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
+      if (!Files.exists(Paths.get(messagePath + "/Group"))) {
+        String groupDir = messagePath + "/Group";
+        File GroupDirFile = new File(groupDir);
+        GroupDirFile.mkdir();
+        }
+      String groupChatLogName = messagePath + "/Group" + "/" + currentGroupObject.getGroupId() + ".txt";
+      File groupChatFile = new File(groupChatLogName);
+      if (groupChatFile.createNewFile()) {
+        try(FileWriter myWriter = new FileWriter(groupChatFile)) {
+          myWriter.write(toString());
+        } catch(NullPointerException e) {
+          logger.info(e.getMessage());
+        }
+      } else {
+        throw new IOException();
+      }
+    }
   }
 
   /***
