@@ -7,13 +7,18 @@ package com.neu.prattle.websocket;
  * @version dated 2017-03-05
  */
 
+import com.neu.prattle.model.Group;
+import com.neu.prattle.model.Member;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.GroupService;
+import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -54,6 +59,10 @@ public class ChatEndpoint {
    * The session.
    */
   private Session session;
+  /**
+   * The group service.
+   */
+  private static GroupService groupService = GroupServiceImpl.getInstance();
 
   /**
    * Broadcast.
@@ -202,6 +211,37 @@ public class ChatEndpoint {
       }
     });
     message.storeMessage();
+  }
+
+  public static void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
+    Optional<Group> group = groupService.findGroupByName(groupName);
+    if (!group.isPresent()) {
+      Message error = Message.messageBuilder()
+              .setMessageContent(String.format("Group %s could not be found", groupName))
+              .build();
+
+      session.getBasicRemote().sendObject(error);
+      return;
+    }
+    List<Member> members = group.get().getMembers();
+    broadcastInGroup(message, members);
+  }
+
+
+  private static void broadcastInGroup(Message message, List<Member> members) {
+    chatEndpoints.forEach(endpoint0 -> {
+      final ChatEndpoint endpoint = endpoint0;
+      if (members.contains(users.get(endpoint.session.getId()))) {
+        synchronized (endpoint) {
+          try {
+            endpoint.session.getBasicRemote()
+                    .sendObject(message);
+          } catch (IOException | EncodeException e) {
+            LOGGER.log(Level.INFO, e.getMessage());
+          }
+        }
+      }
+    });
   }
 }
 

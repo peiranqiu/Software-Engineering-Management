@@ -65,6 +65,5 @@ public class GroupServiceImpl implements GroupService {
     } catch (IllegalStateException e) {
       throw new GroupAlreadyPresentException(String.format("Group already present with name: %s", group.getName()));
     }
-
   }
 }
