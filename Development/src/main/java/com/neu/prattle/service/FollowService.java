@@ -1,5 +1,7 @@
 package com.neu.prattle.service;
 
+import com.neu.prattle.exceptions.AlreadyFollowException;
+import com.neu.prattle.exceptions.FollowNotFoundException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 
@@ -49,6 +51,10 @@ public class FollowService {
   public boolean followUser(User user1, User user2) {
     User A = userService.findUserByName(user1.getName()).get();
     User B = userService.findUserByName(user2.getName()).get();
+    List<User> list = followService.getFollowingUsers(user1);
+    if(list.contains(B)) {
+      throw new AlreadyFollowException(String.format("User %s already followed user %s.", user1.getName(), user2.getName()));
+    }
     api.UserFollowUser(A.getUserId(), B.getUserId());
     return true;
   }
@@ -62,6 +68,10 @@ public class FollowService {
   public boolean unfollowUser(User user1, User user2) {
     User A = userService.findUserByName(user1.getName()).get();
     User B = userService.findUserByName(user2.getName()).get();
+    List<User> list = followService.getFollowingUsers(user1);
+    if(!list.contains(B)) {
+      throw new FollowNotFoundException(String.format("User %s has not followed user %s.", user1.getName(), user2.getName()));
+    }
     api.UserUnfollowUser(A.getUserId(), B.getUserId());
     return true;
   }
@@ -95,6 +105,10 @@ public class FollowService {
   public boolean followGroup(User user, Group group) {
     User u = userService.findUserByName(user.getName()).get();
     Group g = groupService.findGroupByName(group.getName()).get();
+    List<Group> list = followService.getFollowingGroups(u);
+    if(list.contains(g)) {
+      throw new AlreadyFollowException(String.format("User %s already followed group %s.", u.getName(), g.getName()));
+    }
     api.userFollowGroup(u.getUserId(), g.getGroupId());
     return true;
   }
@@ -108,6 +122,10 @@ public class FollowService {
   public boolean unfollowGroup(User user, Group group) {
     User u = userService.findUserByName(user.getName()).get();
     Group g = groupService.findGroupByName(group.getName()).get();
+    List<Group> list = followService.getFollowingGroups(u);
+    if(!list.contains(g)) {
+      throw new FollowNotFoundException(String.format("User %s has not followed group %s.", u.getName(), g.getName()));
+    }
     api.userUnfollowGroup(u.getUserId(), g.getGroupId());
     return true;
   }
