@@ -26,9 +26,10 @@ public interface UserService {
      * Update user profile.
      *
      * @param user The user to update
+     * @param field the specific field to update
      * @return the updated user
      */
-    User updateUser(User user);
+    User updateUser(User user, String field);
 
     /***
      * Create a new user.
