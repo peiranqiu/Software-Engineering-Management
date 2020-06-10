@@ -98,7 +98,7 @@ public class UserServiceTest {
   @Test
   public void testUpdatePassword(){
     user1.setPassword("Harry12345");
-    assertEquals(userService.updateUser(user1).getName(), user1.getName());
+    assertEquals(userService.updateUser(user1, "password").getName(), user1.getName());
   }
 
   /**
@@ -107,7 +107,7 @@ public class UserServiceTest {
   @Test(expected = UserNotFoundException.class)
   public void testUpdatePasswordFail(){
     user2.setPassword("Emma12345");
-    userService.updateUser(user2);
+    userService.updateUser(user2, "password");
   }
 
   /**

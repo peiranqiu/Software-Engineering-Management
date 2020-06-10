@@ -30,8 +30,6 @@ public class GroupAPI extends DBUtils {
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
-
-
   }
 
   /**

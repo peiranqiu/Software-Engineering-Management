@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService {
   public Optional<User> findUserByName(String name) {
     Optional<User> optional = Optional.empty();
     try {
-      if (api.getUsers(name) != null) {
-        optional = Optional.of(api.getUsers(name));
+      if (api.getUserByName(name) != null) {
+        optional = Optional.of(api.getUserByName(name));
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -89,16 +89,21 @@ public class UserServiceImpl implements UserService {
    * @return the updated user
    */
   @Override
-  public User updateUser(User user) {
+  public User updateUser(User user, String field) {
     try {
-      User newUser = api.getUsers(user.getName());
+      User newUser = api.getUserByName(user.getName());
       if (newUser == null) {
         throw new UserNotFoundException(String.format("User %s not found.", user.getName()));
       }
       newUser.setPassword(user.getPassword());
-      String field = "password";
-      String value = user.getPassword();
-      return api.updateUser(newUser, field, value);
+      if(field.equals("password")) {
+        String value = user.getPassword();
+        return api.updateUser(newUser, field, value);
+      }
+      if(field.equals("avatar")) {
+        String value = user.getAvatar();
+        return api.updateUser(newUser, field, value);
+      }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }

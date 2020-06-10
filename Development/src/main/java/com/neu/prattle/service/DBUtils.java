@@ -15,7 +15,8 @@ import java.util.logging.Logger;
 public abstract class DBUtils {
 
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-  protected String url = "jdbc:mysql://mydb.cd4ztimoe6ek.us-east-1.rds.amazonaws.com:3306/mydb?";
+  //protected String url = "jdbc:mysql://mydb.cd4ztimoe6ek.us-east-1.rds.amazonaws.com:3306/mydb?";
+  protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
   protected String user = "mydb";
   protected String pd = "CS5500team4";
   protected Connection con = null;
@@ -32,8 +33,8 @@ public abstract class DBUtils {
   public Connection getConnection() {
     if (con == null) {
       try {
-        con = DriverManager.getConnection(url+
-                "user=" + user + "&password=" + pd);
+        con = DriverManager.getConnection(url, user, pd);
+        //con = DriverManager.getConnection(url+ "user=" + user + "&password=" + pd);
         return con;
       } catch (SQLException e) {
         LOGGER.log(Level.INFO, e.getMessage());
@@ -92,6 +93,7 @@ public abstract class DBUtils {
       if (rs.next()) key = rs.getInt(1);
       rs.close();
     } catch (SQLException e) {
+      System.out.println(e.getMessage());
       throw new IllegalStateException("sql update failed");
     }
     return key;
