@@ -34,9 +34,7 @@ public class GroupServiceTest {
 
   @Test
   public void test1() {
-
     assertTrue(groupService.addGroup(group1));
-
   }
 
   @Test(expected = GroupAlreadyPresentException.class)

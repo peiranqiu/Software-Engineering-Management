@@ -61,11 +61,7 @@ public class UserAPI extends DBUtils {
       stmt.setString(1, name);
       rs = stmt.executeQuery();
       if (rs.next()) {
-        User user = new User();
-        user.setUserId(rs.getInt("User_id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
-        return user;
+        return constructUser(rs);
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -91,12 +87,7 @@ public class UserAPI extends DBUtils {
       stmt.setInt(1, id);
       rs = stmt.executeQuery();
       if (rs.next()) {
-        User user = new User();
-        user.setUserId(rs.getInt("User_id"));
-        user.setName(rs.getString("name"));
-        user.setPassword(rs.getString("password"));
-        //user.setAvatar(rs.getString("avatar"));
-        return user;
+        return constructUser(rs);
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -107,6 +98,14 @@ public class UserAPI extends DBUtils {
     return null;
   }
 
+  /**
+   * Update user info with given new fields.
+   * @param user the user to update
+   * @param field the field to update
+   * @param value the new value of the given field
+   * @return the updated user
+   * @throws SQLException
+   */
   public User updateUser(User user, String field, String value) throws SQLException {
     try {
       Connection con = getConnection();
@@ -131,4 +130,20 @@ public class UserAPI extends DBUtils {
     return null;
   }
 
+  /**
+   * A helper method to construct a user with returned result set.
+   * @param rs the result set
+   * @return the user
+   */
+  public User constructUser(ResultSet rs) {
+    User user = new User();
+    try {
+      user.setUserId(rs.getInt("User_id"));
+      user.setName(rs.getString("name"));
+      user.setPassword(rs.getString("password"));
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return user;
+  }
 }
