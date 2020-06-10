@@ -191,6 +191,7 @@ public class ChatEndpointTest {
     message.setToID(user2.getUserId());
     message.setContent("Hey");
     message.setMessageID();
+    message.setMessagePath();
 
     // Sending a message using onMessage method
     chatEndpoint1.sendPersonalMessage(message);
@@ -203,6 +204,37 @@ public class ChatEndpointTest {
      if (m.isPresent()) {
        String messagePath = message.getMessagePath();
       assertEquals(true, Files.exists(Paths.get(messagePath + "/" + message.getFromID())));
+    } else {
+      fail();
+    }
+  }
+
+  @Test
+  public void testSendGroupMessage() throws IOException, EncodeException {
+    UserService userService = UserServiceImpl.getInstance();
+    User user1 = userService.findUserByName("testName1").get();
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo(user2.getName());
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Welcome to this group!");
+    message.setMessageID();
+    message.setMessagePath();
+
+    // Sending a message using onMessage method
+    chatEndpoint1.sendGroupMessage(message, "testGroup1", session1);
+
+    // Finding messages with content hey
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Welcome to this group!")).findAny();
+
+    if (m.isPresent()) {
+      String messagePath = message.getMessagePath();
+      assertEquals(true, true);
     } else {
       fail();
     }
