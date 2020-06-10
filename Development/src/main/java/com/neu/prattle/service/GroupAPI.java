@@ -2,7 +2,6 @@ package com.neu.prattle.service;
 
 
 import com.neu.prattle.model.Group;
-import com.neu.prattle.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,8 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.transform.Result;
 
 /**
  * GroupApI is a class that can connect this project with sql database for group entity.
@@ -92,8 +89,8 @@ public class GroupAPI extends DBUtils {
     Boolean b = false;
     try (PreparedStatement pstmt = getConnection().prepareStatement(str)) {
       pstmt.setString(1, name);
-      try (ResultSet rs = pstmt.executeQuery()) {
-        if (rs.next()) {
+      try (ResultSet result = pstmt.executeQuery()) {
+        if (result.next()) {
           b = true;
         }
       }

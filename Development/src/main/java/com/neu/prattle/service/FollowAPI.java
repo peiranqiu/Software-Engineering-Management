@@ -39,7 +39,7 @@ public class FollowAPI extends DBUtils {
    * @param user1Id the follower's id
    * @return true if follow is successful
    */
-  public boolean UserFollowUser(int user1Id, int user2Id) {
+  public boolean userFollowUser(int user1Id, int user2Id) {
     con = getConnection();
     String sql = "INSERT INTO User_follows_User (follower_id, followee_id) VALUES (?, ?)";
     executeFollow(sql, user1Id, user2Id, "Follow");
@@ -53,7 +53,7 @@ public class FollowAPI extends DBUtils {
    * @param user1Id the follower's id
    * @return true if unfollow is successful
    */
-  public boolean UserUnfollowUser(int user1Id, int user2Id) {
+  public boolean userUnfollowUser(int user1Id, int user2Id) {
     con = getConnection();
     String sql = "DELETE FROM User_follows_User WHERE follower_id = ? AND followee_id = ?";
     executeFollow(sql, user1Id, user2Id, "Unfollow");
