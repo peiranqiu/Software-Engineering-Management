@@ -284,7 +284,7 @@ public class Message {
     return output;
   }
 
-  public void saveChatLog(Group currentGroupObject) throws IOException {
+  public void saveChatLog(Group currentGroupObject, boolean sendToGroup) throws IOException {
     if (sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
       if (!Files.exists(Paths.get(messagePath + "/Group"))) {
         String groupDir = messagePath + "/Group";
