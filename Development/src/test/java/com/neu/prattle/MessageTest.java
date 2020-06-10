@@ -160,4 +160,5 @@ public class MessageTest {
     assertFalse(decode.willDecode(null));
     assertTrue(decode.willDecode("test"));
   }
+
 }

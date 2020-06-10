@@ -70,9 +70,6 @@ public class ChatEndpoint {
           endpoint.session.getBasicRemote()
                   .sendObject(message);
         } catch (IOException | EncodeException e) {
-          /* note: in production, who exactly is looking at the console.  This exception's
-           *       output should be moved to a logger.
-           */
           LOGGER.log(Level.INFO, e.getMessage());
         }
       }
@@ -180,6 +177,31 @@ public class ChatEndpoint {
   @OnError
   public void onError(Session session, Throwable throwable) {
     // Do error handling here
+  }
+
+  /**
+   * On error.
+   *
+   * Send a message to the specific user and guarantee that both of the users could see the posted message
+   *
+   * @param message the message to be sent
+   */
+  public static void sendPersonalMessage(Message message) throws IOException, EncodeException {
+    chatEndpoints.forEach(endpoint ->
+    {
+      if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
+        synchronized (endpoint) {
+          try {
+            endpoint.session.getBasicRemote()
+                    .sendObject(message);
+
+          } catch (IOException | EncodeException e) {
+            LOGGER.log(Level.INFO, e.getMessage());
+          }
+        }
+      }
+    });
+    message.storeMessage();
   }
 }
 
