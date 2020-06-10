@@ -3,11 +3,9 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
-import com.neu.prattle.model.User;
 
 import java.sql.SQLException;
 import java.util.Optional;
-import java.util.logging.Level;
 
 public class GroupServiceImpl implements GroupService {
   private static GroupService groupService;

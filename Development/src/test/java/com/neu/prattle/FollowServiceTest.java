@@ -1,5 +1,7 @@
 package com.neu.prattle;
 
+import com.neu.prattle.exceptions.AlreadyFollowException;
+import com.neu.prattle.exceptions.FollowNotFoundException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
@@ -49,27 +51,82 @@ public class FollowServiceTest {
   }
 
   /**
+   * Test user follow failure because of an already followed user.
+   */
+  @Test(expected = AlreadyFollowException.class)
+  public void testFollowUserFail() {
+    userService.addUser(user1);
+    userService.addUser(user2);
+    followService.followUser(user1, user2);
+    followService.followUser(user1, user2);
+  }
+
+  /**
+   * Test user unfollow failure because of a non existing follow.
+   */
+  @Test(expected = FollowNotFoundException.class)
+  public void testUnfollowUserFail() {
+    userService.addUser(user1);
+    userService.addUser(user2);
+    followService.unfollowUser(user1, user2);
+  }
+
+  /**
    * Test get follower list for a given user.
    */
   @Test
   public void testUserGetFollowers() {
     userService.addUser(user1);
     userService.addUser(user2);
+    assertTrue(followService.userGetFollowers(user2).isEmpty());
     followService.followUser(user1, user2);
     assertEquals(followService.userGetFollowers(user2).get(0).getName(), user1.getName());
+  }
+
+  /**
+   * Test get following user list for a given user.
+   */
+  @Test
+  public void testGetFollowingUsers() {
+    userService.addUser(user1);
+    userService.addUser(user2);
+    assertTrue(followService.getFollowingUsers(user1).isEmpty());
+    followService.followUser(user1, user2);
+    assertEquals(followService.getFollowingUsers(user1).get(0).getName(), user2.getName());
   }
 
   /**
    * Test user follows and unfollows a group.
    */
   @Test
-  public void testUserFollowGroup() {
+  public void testFollowGroup() {
     userService.addUser(user1);
     groupService.addGroup(group1);
     followService.followGroup(user1, group1);
     assertEquals(followService.getFollowingGroups(user1).get(0).getName(), group1.getName());
     followService.unfollowGroup(user1, group1);
     assertTrue(followService.getFollowingGroups(user1).isEmpty());
+  }
+
+  /**
+   * Test group follow failure because of an already followed group.
+   */
+  @Test(expected = AlreadyFollowException.class)
+  public void testFollowGroupFail() {
+    userService.addUser(user1);
+    groupService.addGroup(group1);
+    followService.followGroup(user1, group1);
+    followService.followGroup(user1, group1);
+  }
+
+  /**
+   * Test group unfollow failure because of a non existing follow.
+   */
+  @Test(expected = FollowNotFoundException.class)
+  public void testUnfollowGroupFail() {
+    userService.addUser(user1);
+    groupService.addGroup(group1);
+    followService.unfollowGroup(user1, group1);
   }
 
   /**
@@ -87,12 +144,23 @@ public class FollowServiceTest {
   }
 
   /**
-   * Generate random number range from 1 to 10000.
+   * Test get following group list for a given user.
+   */
+  @Test
+  public void testGetFollowingGroups() {
+    userService.addUser(user1);
+    groupService.addGroup(group1);
+    assertTrue(followService.getFollowingGroups(user1).isEmpty());
+    followService.followGroup(user1, group1);
+    assertEquals(followService.getFollowingGroups(user1).get(0).getName(), group1.getName());
+  }
+
+  /**
+   * Helper method to generate random number range from 1 to 10000.
    * @return the generated number
    */
   public int getRandom() {
     return (int) (Math.random() * 10000 + 1);
   }
-
 
 }

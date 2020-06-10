@@ -33,13 +33,13 @@ public class UserAPI extends DBUtils {
     int key = -1;
     con = getConnection();
     String sqlInsert = "INSERT INTO User (name, password) VALUES (?, ?)";
-    try (PreparedStatement stmt = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
-      stmt.setString(1, String.valueOf(user.getName()));
-      stmt.setString(2, String.valueOf(user.getPassword()));
-      stmt.executeUpdate();
-      ResultSet rs = stmt.getGeneratedKeys();
-      if (rs.next()) key = rs.getInt(1);
-      rs.close();
+    try (PreparedStatement sttmt = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+      sttmt.setString(1, String.valueOf(user.getName()));
+      sttmt.setString(2, String.valueOf(user.getPassword()));
+      sttmt.executeUpdate();
+      ResultSet result = sttmt.getGeneratedKeys();
+      if (result.next()) key = result.getInt(1);
+      result.close();
     } catch (SQLException e) {
       throw new IllegalStateException("Create user failed.");
     }
