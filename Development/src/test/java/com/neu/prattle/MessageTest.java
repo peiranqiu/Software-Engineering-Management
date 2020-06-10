@@ -154,15 +154,13 @@ public class MessageTest {
     }
   }
 
+  /***
+   * Test for willDecode() in Message Decoder class
+   */
   @Test
-  public void decode(){
+  public void testWillDecode(){
     MessageDecoder decode = new MessageDecoder();
     assertFalse(decode.willDecode(null));
     assertTrue(decode.willDecode("test"));
   }
-
-  public void testGroupChatLog() {
-
-  }
-
 }
