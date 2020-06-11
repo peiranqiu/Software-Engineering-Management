@@ -31,6 +31,7 @@ public class ModerateServiceTest {
   private User user1 = new User("testModerator1", "Password1");
   private User user2 = new User("testModerator" + getRandom(),"Password" + getRandom());
   private User user3 = new User("testModerator3", "Password3");
+  private User user4 = new User("testModerator4", "Password4");
   private Group group1 = new Group("testModerateGroup1");
 
   @Before
@@ -44,7 +45,7 @@ public class ModerateServiceTest {
    * Test a user creates a group and becomes a moderator and member of that group.
    */
   @Test
-  public void test1UserCreateGroup() {
+  public void test0UserCreateGroup() {
     userService.addUser(user1);
     groupService.addGroup(group1);
     User moderator = moderateService.addGroupModerator(group1, user1, user1);
@@ -54,16 +55,24 @@ public class ModerateServiceTest {
     assertEquals(moderateService.getMembers(group1).get(0).getName(), user1.getName());
   }
 
-
   /**
    * Test moderator add a user to the group.
    */
   @Test
-  public void test2AddGroupMember() {
+  public void test1AddGroupMember() {
     List<User> list = moderateService.getModerators(group1);
     User moderator = list.get(0);
     userService.addUser(user3);
     assertTrue(moderateService.addGroupMember(group1, moderator, user3));
+  }
+
+  /**
+   * Test get group list that the user has or moderates.
+   */
+  @Test
+  public void test1GetUserGroup() {
+    assertEquals(moderateService.getModerateGroups(user1).get(0).getName(), group1.getName());
+    assertEquals(moderateService.getHasGroups(user3).get(0).getName(), group1.getName());
   }
 
   /**
@@ -193,10 +202,54 @@ public class ModerateServiceTest {
   }
 
   /**
+   * Test create invitation.
+   */
+  @Test
+  public void test6CreateInvitation() {
+    userService.addUser(user4);
+    assertTrue(moderateService.createInvitation(group1, user3, user4));
+  }
+
+  /**
+   * Test create invitation failed because the current user is not the group member yet.
+   */
+  @Test(expected = IllegalStateException.class)
+  public void test6CreateInvitationFail1() {
+    userService.addUser(user2);
+    assertTrue(moderateService.createInvitation(group1, user2, user2));
+  }
+
+  /**
+   * Test create invitation failed because the invitee is already the group member.
+   */
+  @Test(expected = IllegalStateException.class)
+  public void test6CreateInvitationFail2() {
+    assertTrue(moderateService.createInvitation(group1, user3, user1));
+  }
+
+  /**
+   * Test moderator approves an invitation.
+   */
+  @Test
+  public void test7ApproveInvitation() {
+    List<User> list = moderateService.getModerators(group1);
+    User moderator = list.get(0);
+    assertTrue(moderateService.approveInvitation(group1, moderator, user4));
+  }
+
+  /**
+   * Test approves an invitation failed because the current user is not group moderator.
+   */
+  @Test(expected = IllegalStateException.class)
+  public void test7ApproveInvitationFail() {
+    moderateService.approveInvitation(group1, user3, user4);
+  }
+
+  /**
    * Test delete member from group.
    */
   @Test
-  public void test5DeleteMemberSuccess() {
+  public void test8DeleteMemberSuccess() {
     List<User> list = moderateService.getModerators(group1);
     User moderator = list.get(0);
     assertTrue(moderateService.deleteGroupMember(group1, moderator, user3));

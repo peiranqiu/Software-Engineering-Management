@@ -50,11 +50,11 @@ public class ModerateService {
   public User addGroupModerator(Group group, User moderator, User user) {
 
     List<User> moderators = getModerators(group);
+    if(!moderators.isEmpty()) {
+      checkModerator(group, moderator);
+    }
     if(moderators.contains(user)) {
       throw new IllegalStateException("The user to be added is already the group moderator.");
-    }
-    if(Boolean.FALSE.equals(moderators.isEmpty()) && Boolean.FALSE.equals(moderator.getModerator())) {
-      throw new IllegalStateException("The current user is not moderator of the group and cannot add the moderator.");
     }
     List<User> members = getMembers(group);
     if(Boolean.FALSE.equals(members.isEmpty()) && !members.contains(user)) {
@@ -84,9 +84,7 @@ public class ModerateService {
    * @return true if downgrade success
    */
   public boolean deleteGroupModerator(Group group, User moderator, User user) {
-    if(Boolean.FALSE.equals(moderator.getModerator())) {
-      throw new IllegalStateException("The current user is not a group moderator and cannot delete the moderator.");
-    }
+    checkModerator(group, moderator);
     List<User> moderators = getModerators(group);
     if(moderators.size() == 1) {
       throw new IllegalStateException("Cannot delete this moderator because this is the only moderator of the group.");
@@ -116,9 +114,7 @@ public class ModerateService {
    * @return true if delete is successful
    */
   public boolean deleteGroupMember(Group group, User moderator, User user) {
-    if(Boolean.FALSE.equals(moderator.getModerator())) {
-      throw new IllegalStateException("The current user is not a group moderator and cannot delete the member.");
-    }
+    checkModerator(group, moderator);
     List<User> moderators = getModerators(group);
     if(moderators.contains(user)) {
       throw new IllegalStateException("Cannot delete a group moderator.");
@@ -145,9 +141,7 @@ public class ModerateService {
    * @return true if add member success
    */
   public boolean addGroupMember(Group group, User moderator, User member) {
-    if(Boolean.FALSE.equals(moderator.getModerator())) {
-      throw new IllegalStateException("The current user is not a group moderator and cannot add the member.");
-    }
+    checkModerator(group, moderator);
     List<User> members = getMembers(group);
     if(members.contains(member)) {
       throw new IllegalStateException("The user to be added is already the group member.");
@@ -203,4 +197,90 @@ public class ModerateService {
     }
     return new ArrayList<>();
   }
+
+  /**
+   * Get groups that the user is currently in
+   * @param user the user
+   * @return the group list
+   */
+  public List<Group> getHasGroups(User user) {
+    Optional<User> optional = userService.findUserByName(user.getName());
+    if(optional.isPresent()) {
+      int userId = optional.get().getUserId();
+      return api.getHasGroups(userId);
+    }
+    return new ArrayList<>();
+  }
+
+  /**
+   * Member invites a user to a group by creating an invitation for the group moderator to approve.
+   * @param group the group
+   * @param inviter the inviter
+   * @param invitee the invitee
+   * @return true if invitation created successfully
+   */
+  public boolean createInvitation(Group group, User inviter, User invitee) {
+    List<User> members = getMembers(group);
+    if(!members.contains(inviter)) {
+      throw new IllegalStateException("The current user is not a member of the group and cannot invite members.");
+    }
+    if(members.contains(invitee)) {
+      throw new IllegalStateException("The user to be added is already the group member.");
+    }
+    Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
+    Optional<User> optionalUser = userService.findUserByName(invitee.getName());
+    if(optionalGroup.isPresent() && optionalUser.isPresent()) {
+      Group g = optionalGroup.get();
+      User u = optionalUser.get();
+      return api.createInvitation(g.getGroupId(), u.getUserId());
+    }
+    return false;
+  }
+
+  /**
+   * Group moderator does not approve the invitation and deletes it.
+   * @param group the group
+   * @param moderator the moderator that executes this operation
+   * @param invitee the invitee
+   * @return true if delete success
+   */
+  public boolean deleteInvitation(Group group, User moderator, User invitee) {
+    checkModerator(group, moderator);
+    Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
+    Optional<User> optionalUser = userService.findUserByName(invitee.getName());
+    if(optionalGroup.isPresent() && optionalUser.isPresent()) {
+      Group g = optionalGroup.get();
+      User u = optionalUser.get();
+      return api.deleteInvitation(g.getGroupId(), u.getUserId());
+    }
+    return false;
+  }
+
+  /**
+   * Group moderator approves invitation and adds the invitee into group.
+   * @param group the group
+   * @param moderator the moderator executing this operation
+   * @param invitee the invitee
+   * @return true if approve success
+   */
+  public boolean approveInvitation(Group group, User moderator, User invitee) {
+    if(deleteInvitation(group, moderator, invitee)) {
+      return addGroupMember(group, moderator, invitee);
+    }
+    return false;
+  }
+
+  /**
+   * Helper method to check if current user is moderator of the group.
+   * @param group the group
+   * @param moderator the user to be checked
+   */
+  public void checkModerator(Group group, User moderator) {
+
+    List<User> moderators = getModerators(group);
+    if(!moderators.contains(moderator)) {
+      throw new IllegalStateException("The current user is not moderator of the group and cannot execute this operation.");
+    }
+  }
+
 }
