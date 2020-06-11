@@ -1,5 +1,6 @@
 package com.neu.prattle.service;
 
+import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 
@@ -294,7 +295,7 @@ public class ModerateService {
 
     List<User> moderators = getModerators(group);
     if(!moderators.contains(moderator)) {
-      throw new IllegalStateException("The current user is not moderator of the group and cannot execute this operation.");
+      throw new NoPrivilegeException("The current user is not moderator of the group and cannot execute this operation.");
     }
   }
 
