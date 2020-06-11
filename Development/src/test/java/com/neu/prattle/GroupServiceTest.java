@@ -4,11 +4,8 @@ package com.neu.prattle;
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
-import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
-import com.neu.prattle.service.UserService;
-import com.neu.prattle.service.UserServiceImpl;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -17,7 +14,6 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -26,14 +22,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GroupServiceTest {
   private GroupService groupService;
-  private UserService userService;
 
   @Mock
   private Group group1 = new Group("testGroup1");
 
   @Before
   public void setUp() {
-    userService = UserServiceImpl.getInstance();
     groupService = GroupServiceImpl.getInstance();
   }
 
@@ -52,9 +46,8 @@ public class GroupServiceTest {
     assertEquals(group1.getName(), groupService.findGroupByName("testGroup1").get().getName());
   }
 
-  @Test
+  @Test(expected = GroupNotFoundException.class)
   public void test4() {
-    assertFalse(groupService.findGroupByName("testGroup3").isPresent());
+    groupService.findGroupByName("emptyName1");
   }
-
 }
