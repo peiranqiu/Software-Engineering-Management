@@ -1,7 +1,5 @@
 package com.neu.prattle;
 
-import com.neu.prattle.service.FollowService;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -10,10 +8,10 @@ import org.junit.runners.Suite.SuiteClasses;
  * This is a wrapper for all test classes.
  */
 @RunWith(Suite.class)
-@SuiteClasses({GroupEntityTest.class, UserControllerTest.class,
+@SuiteClasses({GroupEntityTest.class, UserControllerTest.class, ModerateServiceTest.class,
         MessageTest.class, ChatEndpointTest.class, GroupControllerTest.class,
         GroupServiceMockTest.class,GroupServiceTest.class, UserTest.class,
-        UserServiceMockTest.class, UserServiceTest.class, FollowServiceTest.class})
+        UserServiceMockTest.class, UserServiceTest.class, FollowMockTest.class})
 public class AllTests {
   //All tests
 }

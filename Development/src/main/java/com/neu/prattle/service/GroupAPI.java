@@ -1,8 +1,8 @@
 package com.neu.prattle.service;
 
 
+import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
-import com.neu.prattle.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,8 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.transform.Result;
 
 /**
  * GroupApI is a class that can connect this project with sql database for group entity.
@@ -45,14 +43,15 @@ public class GroupAPI extends DBUtils {
    * @return the group
    */
   public Group getGroup(String name) throws SQLException {
+    Group g = null;
     try {
-      Connection con = getConnection();
+      con = getConnection();
       String sql = "SELECT * FROM mydb.Group WHERE name =?";
       stmt = con.prepareStatement(sql);
       stmt.setString(1, name);
       rs = stmt.executeQuery();
       if (rs.next()) {
-        return constructGroup(rs);
+        g = constructGroup(rs);
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -60,7 +59,7 @@ public class GroupAPI extends DBUtils {
       rs.close();
       stmt.close();
     }
-    return null;
+    return g;
   }
 
   /**
@@ -70,6 +69,7 @@ public class GroupAPI extends DBUtils {
    * @return the group
    */
   public Group getGroupById(int id) throws SQLException {
+    Group g = null;
     try {
       Connection con = getConnection();
       String sql = "SELECT * FROM mydb.Group WHERE Group_id =?";
@@ -77,7 +77,7 @@ public class GroupAPI extends DBUtils {
       stmt.setInt(1, id);
       rs = stmt.executeQuery();
       if (rs.next()) {
-        return constructGroup(rs);
+        g = constructGroup(rs);
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -85,22 +85,7 @@ public class GroupAPI extends DBUtils {
       rs.close();
       stmt.close();
     }
-    return null;
-  }
-
-  public boolean prepareStatement(String name, String str) {
-    Boolean b = false;
-    try (PreparedStatement pstmt = getConnection().prepareStatement(str)) {
-      pstmt.setString(1, name);
-      try (ResultSet rs = pstmt.executeQuery()) {
-        if (rs.next()) {
-          b = true;
-        }
-      }
-    } catch (SQLException e) {
-      LOGGER.log(Level.INFO, e.getMessage());
-    }
-    return b;
+    return g;
   }
 
   /**
@@ -119,5 +104,4 @@ public class GroupAPI extends DBUtils {
     }
     return group;
   }
-
 }

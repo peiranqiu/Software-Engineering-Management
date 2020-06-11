@@ -22,35 +22,28 @@ public interface UserService {
    */
   Optional<User> findUserByName(String name);
 
-    /***
-     * Update user profile.
-     *
-     * @param user The user to update
-     * @param field the specific field to update
-     * @return the updated user
-     */
-    User updateUser(User user, String field);
-
-    /***
-     * Create a new user.
-     *
-     * @param user User object
-     *
-     */
-    boolean addUser(User user);
-
-    /***
-     * A user follows another user.
-     *
-     * @param follower User as the follower
-     * @param followee User as the followee
-     */
-
+  /***
+   * Update user profile.
+   *
+   * @param user The user to update
+   * @param field the specific field to update
+   * @return the updated user
+   */
+  User updateUser(User user, String field);
 
   /***
-   * A user follows another user.
+   * Create a new user.
    *
-   * @param follower User as the follower
-   * @param followee User as the followee
+   * @param user User object
+   *
    */
+  boolean addUser(User user);
+
+  /**
+   * Update the user's role as or not as a moderator.
+   *
+   * @param user the user to update
+   * @return the updated user
+   */
+  User setModerator(User user);
 }
