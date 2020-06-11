@@ -50,17 +50,22 @@ public class ModerateService {
   public User addGroupModerator(Group group, User moderator, User user) {
 
     List<User> moderators = getModerators(group);
-    if(moderators.size() > 0) {
-      if(!moderator.getModerator() || moderators.contains(user)) {
-        return null;
-      }
+    if(moderators.contains(user)) {
+      throw new IllegalStateException("The user to be added is already the group moderator.");
+    }
+    if(Boolean.FALSE.equals(moderators.isEmpty()) && Boolean.FALSE.equals(moderator.getModerator())) {
+      throw new IllegalStateException("The current user is not moderator of the group and cannot add the moderator.");
+    }
+    List<User> members = getMembers(group);
+    if(Boolean.FALSE.equals(members.isEmpty()) && !members.contains(user)) {
+      throw new IllegalStateException("The user is not a member of the group yet.");
     }
     Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
     Optional<User> optionalUser = userService.findUserByName(user.getName());
     if(optionalGroup.isPresent() && optionalUser.isPresent()) {
       Group g = optionalGroup.get();
       User u = optionalUser.get();
-      if(!u.getModerator()) {
+      if(Boolean.FALSE.equals(u.getModerator())) {
         u.setModerator(true);
         userService.setModerator(u);
       }
@@ -79,12 +84,15 @@ public class ModerateService {
    * @return true if downgrade success
    */
   public boolean deleteGroupModerator(Group group, User moderator, User user) {
-    if(!moderator.getModerator()) {
-      return false;
+    if(Boolean.FALSE.equals(moderator.getModerator())) {
+      throw new IllegalStateException("The current user is not a group moderator and cannot delete the moderator.");
     }
     List<User> moderators = getModerators(group);
-    if(moderators.size() == 1 || !moderators.contains(user)) {
-      return false;
+    if(moderators.size() == 1) {
+      throw new IllegalStateException("Cannot delete this moderator because this is the only moderator of the group.");
+    }
+    if(!moderators.contains(user)) {
+      throw new IllegalStateException("The user to be removed is not a group moderator yet.");
     }
     Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
     Optional<User> optionalUser = userService.findUserByName(user.getName());
@@ -108,12 +116,16 @@ public class ModerateService {
    * @return true if delete is successful
    */
   public boolean deleteGroupMember(Group group, User moderator, User user) {
-    if(!moderator.getModerator()) {
-      return false;
+    if(Boolean.FALSE.equals(moderator.getModerator())) {
+      throw new IllegalStateException("The current user is not a group moderator and cannot delete the member.");
     }
     List<User> moderators = getModerators(group);
     if(moderators.contains(user)) {
-      return false;
+      throw new IllegalStateException("Cannot delete a group moderator.");
+    }
+    List<User> members = getMembers(group);
+    if(!members.contains(user)) {
+      throw new IllegalStateException("The user is not a member of the group yet.");
     }
     Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
     Optional<User> optionalUser = userService.findUserByName(user.getName());
@@ -133,12 +145,12 @@ public class ModerateService {
    * @return true if add member success
    */
   public boolean addGroupMember(Group group, User moderator, User member) {
-    if(!moderator.getModerator()) {
-      return false;
+    if(Boolean.FALSE.equals(moderator.getModerator())) {
+      throw new IllegalStateException("The current user is not a group moderator and cannot add the member.");
     }
     List<User> members = getMembers(group);
     if(members.contains(member)) {
-      return false;
+      throw new IllegalStateException("The user to be added is already the group member.");
     }
     Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
     Optional<User> optionalMember = userService.findUserByName(member.getName());

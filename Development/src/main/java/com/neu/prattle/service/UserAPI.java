@@ -2,7 +2,6 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.model.User;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -53,24 +52,9 @@ public class UserAPI extends DBUtils {
    * @param name the name of the user
    * @return if the user is in the db
    */
-  public User getUserByName(String name) throws SQLException {
-
-    try {
-      Connection con = getConnection();
-      String sql = "SELECT * FROM User WHERE name =?";
-      stmt = con.prepareStatement(sql);
-      stmt.setString(1, name);
-      rs = stmt.executeQuery();
-      if (rs.next()) {
-        return constructUser(rs);
-      }
-    } catch (SQLException e) {
-      LOGGER.log(Level.INFO, e.getMessage());
-    } finally {
-      rs.close();
-      stmt.close();
-    }
-    return null;
+  public User getUserByName(String name)throws SQLException {
+    String sql = "SELECT * FROM User WHERE name =?";
+    return getUser(sql, -1, name);
   }
 
   /**
@@ -80,74 +64,31 @@ public class UserAPI extends DBUtils {
    * @return if the user is in the db
    */
   public User getUserById(int id) throws SQLException {
+    String sql = "SELECT * FROM User WHERE User_id =?";
+    return getUser(sql, id, null);
+  }
 
+  /**
+   * Helper method to get user with given name or id.
+   * @param sql the sql query string
+   * @param id the user id
+   * @param name the user name
+   * @return the user if exist
+   * @throws SQLException
+   */
+  public User getUser(String sql, int id, String name) throws SQLException {
     try {
-      Connection con = getConnection();
-      String sql = "SELECT * FROM User WHERE User_id =?";
+      con = getConnection();
       stmt = con.prepareStatement(sql);
-      stmt.setInt(1, id);
+      if(name == null) {
+        stmt.setInt(1, id);
+      }
+      else {
+        stmt.setString(1, name);
+      }
       rs = stmt.executeQuery();
       if (rs.next()) {
         return constructUser(rs);
-      }
-    } catch (SQLException e) {
-      LOGGER.log(Level.INFO, e.getMessage());
-    } finally {
-      rs.close();
-      stmt.close();
-    }
-    return null;
-  }
-
-  /**
-   * Update user info with given new fields.
-   * @param user the user to update
-   * @param field the field to update
-   * @param value the new value of the given field
-   * @return the updated user
-   * @throws SQLException
-   */
-  public User updateUser(User user, String field, String value) throws SQLException {
-    try {
-      Connection con = getConnection();
-
-      String sql = "UPDATE User SET field = ? WHERE name = ?";
-      sql = sql.replace("field", field);
-      stmt = con.prepareStatement(sql);
-      stmt.setString(1, value);
-      stmt.setString(2, user.getName());
-
-      int result = stmt.executeUpdate();
-      if (result == 1) {
-        return user;
-      }
-    } catch (SQLException e) {
-      LOGGER.log(Level.INFO, e.getMessage());
-    } finally {
-      rs.close();
-      stmt.close();
-    }
-    return null;
-  }
-
-  /**
-   * Update user role.
-   * @param user the user to update
-   * @return the updated user
-   * @throws SQLException
-   */
-  public User setModerator(User user) throws SQLException {
-    try {
-      Connection con = getConnection();
-
-      String sql = "UPDATE User SET isModerator = ? WHERE name = ?";
-      stmt = con.prepareStatement(sql);
-      stmt.setBoolean(1, user.getModerator());
-      stmt.setString(2, user.getName());
-
-      int result = stmt.executeUpdate();
-      if (result == 1) {
-        return user;
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -174,5 +115,63 @@ public class UserAPI extends DBUtils {
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return user;
+  }
+
+  /**
+   * Update user info with given new fields.
+   * @param user the user to update
+   * @param field the field to update
+   * @param value the new value of the given field
+   * @return the updated user
+   * @throws SQLException
+   */
+  public User updateUser(User user, String field, String value) throws SQLException {
+    String sql = "UPDATE User SET field = ? WHERE name = ?";
+    sql = sql.replace("field", field);
+    return executeUpdate(sql, user, value, false);
+  }
+
+  /**
+   * Update user role.
+   * @param user the user to update
+   * @return the updated user
+   * @throws SQLException
+   */
+  public User setModerator(User user) throws SQLException {
+    String sql = "UPDATE User SET isModerator = ? WHERE name = ?";
+    return executeUpdate(sql, user, null, user.getModerator());
+  }
+
+  /**
+   * Helper method to update user information
+   * @param sql the sql query string
+   * @param user the user to be updated
+   * @param value the string value to be update if exist
+   * @param moderate the isModerator boolean value to be update if exist
+   * @return the updated user
+   * @throws SQLException
+   */
+  public User executeUpdate(String sql, User user, String value, boolean moderate) throws SQLException{
+    try {
+      con = getConnection();
+      stmt = con.prepareStatement(sql);
+      if(value == null) {
+        stmt.setBoolean(1, moderate);
+      }
+      else {
+        stmt.setString(1, value);
+      }
+      stmt.setString(2, user.getName());
+      int result = stmt.executeUpdate();
+      if (result == 1) {
+        return user;
+      }
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      rs.close();
+      stmt.close();
+    }
+    return null;
   }
 }
