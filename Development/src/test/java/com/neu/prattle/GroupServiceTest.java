@@ -4,8 +4,11 @@ package com.neu.prattle;
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
+import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.UserService;
+import com.neu.prattle.service.UserServiceImpl;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -23,12 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GroupServiceTest {
   private GroupService groupService;
+  private UserService userService;
 
   @Mock
   private Group group1 = new Group("testGroup1");
 
   @Before
   public void setUp() {
+    userService = UserServiceImpl.getInstance();
     groupService = GroupServiceImpl.getInstance();
   }
 
@@ -51,4 +56,5 @@ public class GroupServiceTest {
   public void test4() {
     assertFalse(groupService.findGroupByName("testGroup3").isPresent());
   }
+
 }
