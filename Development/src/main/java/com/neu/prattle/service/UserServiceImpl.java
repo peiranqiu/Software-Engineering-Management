@@ -46,8 +46,8 @@ public class UserServiceImpl implements UserService {
   public Optional<User> findUserByName(String name) {
     Optional<User> optional = Optional.empty();
     try {
-      if (api.getUsers(name) != null) {
-        optional = Optional.of(api.getUsers(name));
+      if (api.getUserByName(name) != null) {
+        optional = Optional.of(api.getUserByName(name));
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -89,21 +89,39 @@ public class UserServiceImpl implements UserService {
    * @return the updated user
    */
   @Override
-  public User updateUser(User user) {
+  public User updateUser(User user, String field) {
+    User u = null;
     try {
-      User newUser = api.getUsers(user.getName());
+      User newUser = api.getUserByName(user.getName());
       if (newUser == null) {
         throw new UserNotFoundException(String.format("User %s not found.", user.getName()));
       }
       newUser.setPassword(user.getPassword());
-      String field = "password";
-      String value = user.getPassword();
-      return api.updateUser(newUser, field, value);
+      if(field.equals("password")) {
+        String value = user.getPassword();
+        u = api.updateUser(newUser, field, value);
+      }
+      else if(field.equals("avatar")) {
+        String value = user.getAvatar();
+        u = api.updateUser(newUser, field, value);
+      }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
-    return null;
+    return u;
+  }
 
+  /**
+   * Set the user's role as or not as a moderator.
+   */
+  @Override
+  public User setModerator(User user) {
+    try {
+      user = api.setModerator(user);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return user;
   }
 
   /**
@@ -126,8 +144,8 @@ public class UserServiceImpl implements UserService {
    */
   public boolean isValidPassword(User user) {
     HashMap<String, Boolean> passwordCheck = checkRequirement(user.getPassword());
-    return !(user.getPassword().length() < 4 || user.getPassword().length() > 20
-            || !passwordCheck.get("low") || !passwordCheck.get("cap") || !passwordCheck.get("num"));
+    return !(!passwordCheck.get("low") || !passwordCheck.get("cap") || !passwordCheck.get("num") || user.getPassword().length() > 20 ||
+            user.getPassword().length() < 4);
   }
 
   /**

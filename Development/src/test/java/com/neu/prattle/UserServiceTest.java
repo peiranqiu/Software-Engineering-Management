@@ -16,6 +16,7 @@ import org.junit.runners.MethodSorters;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -59,8 +60,71 @@ public class UserServiceTest {
    * Test failure of user creation because of invalid username.
    */
   @Test(expected = UserNameInvalidException.class)
-  public void testCreateUserInvalidName() {
-    user2.setName("-1");
+  public void testCreateUserInvalidName0() {
+    user2.setName("1Gg");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid username.
+   */
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName1() {
+    user2.setName("1");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid username.
+   */
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName2() {
+    user2.setName("GfffG3545456547676546745645646");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid username.
+   */
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName3() {
+    user2.setName("adfddfdfd");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid username.
+   */
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName4() {
+    user2.setName("GFDFGDGRHGDFG");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid username.
+   */
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName5() {
+    user2.setName("GFDFGdfdsgsdf");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid username.
+   */
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName6() {
+    user2.setName("GFDFG3435");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid username.
+   */
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName7() {
+    user2.setName("sdgfh3435");
     userService.addUser(user2);
   }
 
@@ -68,11 +132,73 @@ public class UserServiceTest {
    * Test failure of user creation because of invalid password.
    */
   @Test(expected = PasswordInvalidException.class)
-  public void testCreateUserInvalidPassword() {
-    user2.setPassword("-1");
+  public void testCreateUserInvalidPassword0() {
+    user2.setPassword("1");
     userService.addUser(user2);
   }
 
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword1() {
+    user2.setPassword("GfffG3545456547676546745645646");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword2() {
+    user2.setPassword("1Gg");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword3() {
+    user2.setPassword("adfddfdfd");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword4() {
+    user2.setPassword("GFDFGDGRHGDFG");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword5() {
+    user2.setPassword("GFDFGdfdsgsdf");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword6() {
+    user2.setPassword("GFDFG3435");
+    userService.addUser(user2);
+  }
+
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword7() {
+    user2.setPassword("sdgfh3435");
+    userService.addUser(user2);
+  }
 
   /**
    * Test find user with a given name.
@@ -98,7 +224,17 @@ public class UserServiceTest {
   @Test
   public void testUpdatePassword(){
     user1.setPassword("Harry12345");
-    assertEquals(userService.updateUser(user1).getName(), user1.getName());
+    assertEquals(userService.updateUser(user1, "password").getName(), user1.getName());
+  }
+
+  /**
+   * Test user password update.
+   */
+  @Test
+  public void testUpdateAvatar(){
+    user1.setAvatar("picture.png");
+    assertEquals(userService.updateUser(user1, "avatar").getName(), user1.getName());
+    assertNull(userService.updateUser(user1, "random"));
   }
 
   /**
@@ -107,7 +243,17 @@ public class UserServiceTest {
   @Test(expected = UserNotFoundException.class)
   public void testUpdatePasswordFail(){
     user2.setPassword("Emma12345");
-    userService.updateUser(user2);
+    userService.updateUser(user2, "password");
+  }
+
+
+  /**
+   * Test set the user as moderator.
+   */
+  @Test
+  public void testSetModerator() {
+    user1.setModerator(true);
+    assertTrue(userService.setModerator(user1).getModerator());
   }
 
   /**

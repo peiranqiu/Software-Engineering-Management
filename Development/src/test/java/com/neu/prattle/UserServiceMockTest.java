@@ -174,8 +174,8 @@ public class UserServiceMockTest {
   @Test
   public void testUpdatePassword(){
     user1.setPassword("Harry12345");
-    when(userService.updateUser(any(User.class))).thenReturn(user1);
-    assertEquals(userService.updateUser(user1).getName(), user1.getName());
+    when(userService.updateUser(any(User.class), anyString())).thenReturn(user1);
+    assertEquals(userService.updateUser(user1, "password").getName(), user1.getName());
   }
 
   /**
@@ -184,8 +184,8 @@ public class UserServiceMockTest {
   @Test(expected = UserNotFoundException.class)
   public void testUpdatePasswordFail(){
     user2.setPassword("Emma12345");
-    when(userService.updateUser(any(User.class))).thenThrow(UserNotFoundException.class);
-    userService.updateUser(user2);
+    when(userService.updateUser(any(User.class), anyString())).thenThrow(UserNotFoundException.class);
+    userService.updateUser(user2, "password");
   }
 
   /**
