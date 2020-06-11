@@ -13,21 +13,34 @@ import com.neu.prattle.service.UserServiceImpl;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * A junit test class for follow operation.
+ * A mockito test class for follow operation.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class FollowServiceTest {
+@RunWith(MockitoJUnitRunner.class)
+public class FollowMockTest {
+
   private User user1 = new User("testFollowUser" + getRandom(), "Password1");
   private User user2 = new User("testFollowUser" + getRandom(),"Password2");
   private Group group1 = new Group("testFollowGroup" + getRandom());
   private UserService userService;
   private GroupService groupService;
+
+  @Mock
   private FollowService followService;
 
   @Before
@@ -35,6 +48,7 @@ public class FollowServiceTest {
     userService = UserServiceImpl.getInstance();
     groupService = GroupServiceImpl.getInstance();
     followService = FollowService.getInstance();
+    followService = mock(FollowService.class);
   }
 
   /**
@@ -42,11 +56,21 @@ public class FollowServiceTest {
    */
   @Test
   public void testUserFollowUser() {
-    userService.addUser(user1);
-    userService.addUser(user2);
-    followService.followUser(user1, user2);
+    assertTrue(userService.addUser(user1));
+    assertTrue(userService.addUser(user2));
+
+    when(followService.followUser(any(User.class), any(User.class))).thenReturn(true);
+    assertTrue(followService.followUser(user1, user2));
+
+    List<User> list = new ArrayList<>();
+    list.add(user2);
+    when(followService.getFollowingUsers(any(User.class))).thenReturn(list);
     assertEquals(followService.getFollowingUsers(user1).get(0).getName(), user2.getName());
-    followService.unfollowUser(user1, user2);
+
+    when(followService.unfollowUser(any(User.class), any(User.class))).thenReturn(true);
+    assertTrue(followService.unfollowUser(user1, user2));
+
+    when(followService.getFollowingUsers(any(User.class))).thenReturn(new ArrayList<>());
     assertTrue(followService.getFollowingUsers(user1).isEmpty());
   }
 
@@ -58,6 +82,8 @@ public class FollowServiceTest {
     userService.addUser(user1);
     userService.addUser(user2);
     followService.followUser(user1, user2);
+
+    when(followService.followUser(any(User.class), any(User.class))).thenThrow(AlreadyFollowException.class);
     followService.followUser(user1, user2);
   }
 
@@ -68,6 +94,8 @@ public class FollowServiceTest {
   public void testUnfollowUserFail() {
     userService.addUser(user1);
     userService.addUser(user2);
+
+    when(followService.unfollowUser(any(User.class), any(User.class))).thenThrow(FollowNotFoundException.class);
     followService.unfollowUser(user1, user2);
   }
 
@@ -78,8 +106,16 @@ public class FollowServiceTest {
   public void testUserGetFollowers() {
     userService.addUser(user1);
     userService.addUser(user2);
+
+    when(followService.userGetFollowers(any(User.class))).thenReturn(new ArrayList<>());
     assertTrue(followService.userGetFollowers(user2).isEmpty());
-    followService.followUser(user1, user2);
+
+    when(followService.followUser(any(User.class), any(User.class))).thenReturn(true);
+    assertTrue(followService.followUser(user1, user2));
+
+    List<User> list = new ArrayList<>();
+    list.add(user1);
+    when(followService.userGetFollowers(any(User.class))).thenReturn(list);
     assertEquals(followService.userGetFollowers(user2).get(0).getName(), user1.getName());
   }
 
@@ -90,8 +126,16 @@ public class FollowServiceTest {
   public void testGetFollowingUsers() {
     userService.addUser(user1);
     userService.addUser(user2);
+
+    when(followService.getFollowingUsers(any(User.class))).thenReturn(new ArrayList<>());
     assertTrue(followService.getFollowingUsers(user1).isEmpty());
+
+    when(followService.followUser(any(User.class), any(User.class))).thenReturn(true);
     followService.followUser(user1, user2);
+
+    List<User> list = new ArrayList<>();
+    list.add(user2);
+    when(followService.getFollowingUsers(any(User.class))).thenReturn(list);
     assertEquals(followService.getFollowingUsers(user1).get(0).getName(), user2.getName());
   }
 
@@ -102,9 +146,19 @@ public class FollowServiceTest {
   public void testFollowGroup() {
     userService.addUser(user1);
     groupService.addGroup(group1);
+
+    when(followService.followGroup(any(User.class), any(Group.class))).thenReturn(true);
     followService.followGroup(user1, group1);
+
+    List<Group> list = new ArrayList<>();
+    list.add(group1);
+    when(followService.getFollowingGroups(any(User.class))).thenReturn(list);
     assertEquals(followService.getFollowingGroups(user1).get(0).getName(), group1.getName());
-    followService.unfollowGroup(user1, group1);
+
+    when(followService.unfollowGroup(any(User.class), any(Group.class))).thenReturn(true);
+    assertTrue(followService.unfollowGroup(user1, group1));
+
+    when(followService.getFollowingGroups(any(User.class))).thenReturn(new ArrayList<>());
     assertTrue(followService.getFollowingGroups(user1).isEmpty());
   }
 
@@ -116,6 +170,8 @@ public class FollowServiceTest {
     userService.addUser(user1);
     groupService.addGroup(group1);
     followService.followGroup(user1, group1);
+
+    when(followService.followGroup(any(User.class), any(Group.class))).thenThrow(AlreadyFollowException.class);
     followService.followGroup(user1, group1);
   }
 
@@ -126,6 +182,8 @@ public class FollowServiceTest {
   public void testUnfollowGroupFail() {
     userService.addUser(user1);
     groupService.addGroup(group1);
+
+    when(followService.unfollowGroup(any(User.class), any(Group.class))).thenThrow(FollowNotFoundException.class);
     followService.unfollowGroup(user1, group1);
   }
 
@@ -139,6 +197,11 @@ public class FollowServiceTest {
     groupService.addGroup(group1);
     followService.followGroup(user1, group1);
     followService.followGroup(user2, group1);
+
+    List<User> list = new ArrayList<>();
+    list.add(user1);
+    list.add(user2);
+    when(followService.groupGetFollowers(any(Group.class))).thenReturn(list);
     assertEquals(followService.groupGetFollowers(group1).get(0).getName(), user1.getName());
     assertEquals(followService.groupGetFollowers(group1).get(1).getName(), user2.getName());
   }
@@ -150,8 +213,16 @@ public class FollowServiceTest {
   public void testGetFollowingGroups() {
     userService.addUser(user1);
     groupService.addGroup(group1);
+
+    when(followService.getFollowingGroups(any(User.class))).thenReturn(new ArrayList<>());
     assertTrue(followService.getFollowingGroups(user1).isEmpty());
-    followService.followGroup(user1, group1);
+
+    when(followService.followGroup(any(User.class), any(Group.class))).thenReturn(true);
+    assertTrue(followService.followGroup(user1, group1));
+
+    List<Group> list = new ArrayList<>();
+    list.add(group1);
+    when(followService.getFollowingGroups(any(User.class))).thenReturn(list);
     assertEquals(followService.getFollowingGroups(user1).get(0).getName(), group1.getName());
   }
 

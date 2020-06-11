@@ -1,6 +1,7 @@
 package com.neu.prattle.service;
 
 
+import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
 
 import java.sql.Connection;
@@ -50,6 +51,9 @@ public class GroupAPI extends DBUtils {
       rs = stmt.executeQuery();
       if (rs.next()) {
         return constructGroup(rs);
+      }
+      else {
+        throw new GroupNotFoundException("Group not found with given name.");
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());

@@ -169,7 +169,6 @@ public class UserAPI extends DBUtils {
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     } finally {
-      rs.close();
       stmt.close();
     }
     return null;

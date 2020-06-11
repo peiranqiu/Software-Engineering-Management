@@ -1,5 +1,6 @@
 package com.neu.prattle;
 
+import com.neu.prattle.exceptions.FollowNotFoundException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
@@ -13,35 +14,44 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
- * Junit test for user moderates groups.
+ * Mockito test class for user moderating groups.
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(MockitoJUnitRunner.class)
-public class ModerateServiceTest {
+public class ModerateMockTest {
 
   private GroupService groupService;
   private UserService userService;
+
+  @Mock
   private ModerateService moderateService;
-  private User user1 = new User("testModerator1", "Password1");
+
+  private User user1 = new User("testModerator11", "Password1");
   private User user2 = new User("testModerator" + getRandom(),"Password" + getRandom());
-  private User user3 = new User("testModerator3", "Password3");
-  private User user4 = new User("testModerator4", "Password4");
-  private Group group1 = new Group("testModerateGroup1");
+  private User user3 = new User("testModerator33", "Password3");
+  private User user4 = new User("testModerator44", "Password4");
+  private Group group1 = new Group("testModerateGroup11");
 
   @Before
   public void setUp() {
     userService = UserServiceImpl.getInstance();
     groupService = GroupServiceImpl.getInstance();
     moderateService = ModerateService.getInstance();
+    moderateService = mock(ModerateService.class);
   }
 
   /**
@@ -51,10 +61,21 @@ public class ModerateServiceTest {
   public void test0UserCreateGroup() {
     userService.addUser(user1);
     groupService.addGroup(group1);
-    User moderator = moderateService.addGroupModerator(group1, user1, user1);
-    assertTrue(moderator.getModerator());
-    assertTrue(moderateService.addGroupMember(group1, moderator, user1));
+
+    user1.setModerator(true);
+    userService.setModerator(user1);
+    when(moderateService.addGroupModerator(any(Group.class), any(User.class), any(User.class))).thenReturn(user1);
+    moderateService.addGroupModerator(group1, user1, user1);
+
+    when(moderateService.addGroupMember(any(Group.class), any(User.class), any(User.class))).thenReturn(true);
+    assertTrue(moderateService.addGroupMember(group1, user1, user1));
+
+    List<User> list = new ArrayList<>();
+    list.add(user1);
+    when(moderateService.getModerators(any(Group.class))).thenReturn(list);
     assertEquals(moderateService.getModerators(group1).get(0).getName(), user1.getName());
+
+    when(moderateService.getMembers(any(Group.class))).thenReturn(list);
     assertEquals(moderateService.getMembers(group1).get(0).getName(), user1.getName());
   }
 
@@ -63,10 +84,9 @@ public class ModerateServiceTest {
    */
   @Test
   public void test1AddGroupMember() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
     userService.addUser(user3);
-    assertTrue(moderateService.addGroupMember(group1, moderator, user3));
+    when(moderateService.addGroupMember(any(Group.class), any(User.class), any(User.class))).thenReturn(true);
+    assertTrue(moderateService.addGroupMember(group1, user1, user3));
   }
 
   /**
@@ -74,18 +94,22 @@ public class ModerateServiceTest {
    */
   @Test
   public void test1GetUserGroup() {
+    List<Group> list = new ArrayList<>();
+    list.add(group1);
+    when(moderateService.getModerateGroups(any(User.class))).thenReturn(list);
     assertEquals(moderateService.getModerateGroups(user1).get(0).getName(), group1.getName());
+
+    when(moderateService.getHasGroups(any(User.class))).thenReturn(list);
     assertEquals(moderateService.getHasGroups(user3).get(0).getName(), group1.getName());
   }
 
   /**
-   * Test a moderator sets a user as moderator failed because the user is already the group moderator.
+   * Test a moderator sets a user as moderator failed because the user to add is already the group moderator.
    */
   @Test(expected = IllegalStateException.class)
   public void test2AddModeratorFail1() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
-    moderateService.addGroupModerator(group1, moderator, user1);
+    when(moderateService.addGroupModerator(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
+    moderateService.addGroupModerator(group1, user1, user1);
   }
 
   /**
@@ -93,10 +117,9 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test2AddModeratorFail2() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
     userService.addUser(user2);
-    moderateService.addGroupModerator(group1, moderator, user2);
+    when(moderateService.addGroupModerator(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
+    moderateService.addGroupModerator(group1, user1, user2);
   }
 
   /**
@@ -105,6 +128,7 @@ public class ModerateServiceTest {
   @Test(expected = IllegalStateException.class)
   public void test2AddModeratorFail3() {
     userService.addUser(user2);
+    when(moderateService.addGroupModerator(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
     moderateService.addGroupModerator(group1, user3, user2);
   }
 
@@ -113,9 +137,8 @@ public class ModerateServiceTest {
    */
   @Test
   public void test2AddModeratorSuccess() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
-    assertEquals(moderateService.addGroupModerator(group1, moderator, user3).getName(), user3.getName());
+    when(moderateService.addGroupModerator(any(Group.class), any(User.class), any(User.class))).thenReturn(user3);
+    assertEquals(moderateService.addGroupModerator(group1, user1, user3).getName(), user3.getName());
   }
 
   /**
@@ -123,9 +146,8 @@ public class ModerateServiceTest {
    */
   @Test
   public void test3SetModeratorAsMember() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
-    assertTrue(moderateService.deleteGroupModerator(group1, moderator, user3));
+    when(moderateService.deleteGroupModerator(any(Group.class), any(User.class), any(User.class))).thenReturn(true);
+    assertTrue(moderateService.deleteGroupModerator(group1, user1, user3));
   }
 
   /**
@@ -133,6 +155,7 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test3SetModeratorAsMemberFail1() {
+    when(moderateService.deleteGroupModerator(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
     moderateService.deleteGroupModerator(group1, user3, user1);
   }
 
@@ -141,9 +164,8 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test3SetModeratorAsMemberFail2() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
-    moderateService.deleteGroupModerator(group1, moderator, user3);
+    when(moderateService.deleteGroupModerator(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
+    moderateService.deleteGroupModerator(group1, user1, user3);
   }
 
   /**
@@ -151,9 +173,8 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test3SetModeratorAsMemberFail3() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
-    moderateService.deleteGroupModerator(group1, moderator, user1);
+    when(moderateService.deleteGroupModerator(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
+    moderateService.deleteGroupModerator(group1, user1, user1);
   }
 
   /**
@@ -162,6 +183,7 @@ public class ModerateServiceTest {
   @Test(expected = IllegalStateException.class)
   public void test4AddGroupMemberFail1() {
     userService.addUser(user2);
+    when(moderateService.addGroupMember(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
     moderateService.addGroupMember(group1, user3, user2);
   }
 
@@ -170,9 +192,8 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test4AddGroupMemberFail2() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
-    moderateService.addGroupMember(group1, moderator, user3);
+    when(moderateService.addGroupMember(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
+    moderateService.addGroupMember(group1, user1, user3);
   }
 
   /**
@@ -180,10 +201,9 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test5DeleteMemberFail1() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
+    when(moderateService.deleteGroupMember(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
     userService.addUser(user2);
-    assertFalse(moderateService.deleteGroupMember(group1, moderator, user2));
+    assertFalse(moderateService.deleteGroupMember(group1, user1, user2));
   }
 
   /**
@@ -191,6 +211,7 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test5DeleteMemberFail2() {
+    when(moderateService.deleteGroupMember(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
     assertFalse(moderateService.deleteGroupMember(group1, user3, user3));
   }
 
@@ -199,9 +220,8 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test5DeleteMemberFail3() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
-    assertFalse(moderateService.deleteGroupMember(group1, moderator, user1));
+    when(moderateService.deleteGroupMember(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
+    assertFalse(moderateService.deleteGroupMember(group1, user1, user1));
   }
 
   /**
@@ -210,6 +230,7 @@ public class ModerateServiceTest {
   @Test
   public void test6CreateInvitation() {
     userService.addUser(user4);
+    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class))).thenReturn(true);
     assertTrue(moderateService.createInvitation(group1, user3, user4));
   }
 
@@ -219,6 +240,7 @@ public class ModerateServiceTest {
   @Test(expected = IllegalStateException.class)
   public void test6CreateInvitationFail1() {
     userService.addUser(user2);
+    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
     assertTrue(moderateService.createInvitation(group1, user2, user2));
   }
 
@@ -227,6 +249,7 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test6CreateInvitationFail2() {
+    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
     assertTrue(moderateService.createInvitation(group1, user3, user1));
   }
 
@@ -235,9 +258,8 @@ public class ModerateServiceTest {
    */
   @Test
   public void test7ApproveInvitation() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
-    assertTrue(moderateService.approveInvitation(group1, moderator, user4));
+    when(moderateService.approveInvitation(any(Group.class), any(User.class), any(User.class))).thenReturn(true);
+    assertTrue(moderateService.approveInvitation(group1, user1, user4));
   }
 
   /**
@@ -245,6 +267,7 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test7ApproveInvitationFail() {
+    when(moderateService.approveInvitation(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
     moderateService.approveInvitation(group1, user3, user4);
   }
 
@@ -253,9 +276,8 @@ public class ModerateServiceTest {
    */
   @Test
   public void test8DeleteMemberSuccess() {
-    List<User> list = moderateService.getModerators(group1);
-    User moderator = list.get(0);
-    assertTrue(moderateService.deleteGroupMember(group1, moderator, user3));
+    when(moderateService.deleteGroupMember(any(Group.class), any(User.class), any(User.class))).thenReturn(true);
+    assertTrue(moderateService.deleteGroupMember(group1, user1, user3));
   }
 
   /**
