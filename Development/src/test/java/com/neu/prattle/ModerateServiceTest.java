@@ -1,5 +1,6 @@
 package com.neu.prattle;
 
+import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
@@ -126,7 +127,7 @@ public class ModerateServiceTest {
   /**
    * Test a user sets another user as moderator failed because the current user is not group moderator.
    */
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = NoPrivilegeException.class)
   public void test2AddModeratorFail3() {
     userService.addUser(user2);
     moderateService.addGroupModerator(group1, user3, user2);
@@ -164,7 +165,7 @@ public class ModerateServiceTest {
   /**
    * Test user downgrades another moderator as group member failed because the current user is not group moderator.
    */
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = NoPrivilegeException.class)
   public void test3SetModeratorAsMemberFail1() {
     moderateService.deleteGroupModerator(group1, user3, user3);
   }
@@ -201,7 +202,7 @@ public class ModerateServiceTest {
   /**
    * Test adds another user into a group failed because the current user is not group moderator.
    */
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = NoPrivilegeException.class)
   public void test4AddGroupMemberFail1() {
     userService.addUser(user2);
     moderateService.addGroupMember(group1, user3, user2);
@@ -239,7 +240,7 @@ public class ModerateServiceTest {
   /**
    * Test delete member from group failed because the current user is not group moderator.
    */
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = NoPrivilegeException.class)
   public void test5DeleteMemberFail2() {
     assertFalse(moderateService.deleteGroupMember(group1, user3, user3));
   }
@@ -312,7 +313,7 @@ public class ModerateServiceTest {
   /**
    * Test approves an invitation failed because the current user is not group moderator.
    */
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = NoPrivilegeException.class)
   public void test7ApproveInvitationFail1() {
     moderateService.approveInvitation(group1, user3, user4);
   }

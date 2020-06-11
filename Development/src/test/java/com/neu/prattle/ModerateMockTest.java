@@ -1,6 +1,7 @@
 package com.neu.prattle;
 
 import com.neu.prattle.exceptions.FollowNotFoundException;
+import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
