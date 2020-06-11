@@ -280,8 +280,8 @@ public class ModerateService {
    */
   public boolean approveInvitation(Group group, User moderator, User invitee) {
     boolean b = false;
-    if(deleteInvitation(group, moderator, invitee)) {
-      b = addGroupMember(group, moderator, invitee);
+    if(addGroupMember(group, moderator, invitee)) {
+      b = deleteInvitation(group, moderator, invitee);
     }
     return b;
   }
