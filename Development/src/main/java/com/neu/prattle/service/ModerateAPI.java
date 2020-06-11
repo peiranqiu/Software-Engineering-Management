@@ -3,7 +3,6 @@ package com.neu.prattle.service;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,7 +51,7 @@ public class ModerateAPI extends DBUtils {
    */
   public boolean deleteModerator(int groupId, int userId) {
     String sql = "DELETE FROM User_moderates_Group WHERE User_User_id = ? AND Group_Group_id = ?";
-    execute(sql, userId, groupId, "Delete", "Moderator");
+    execute(sql, userId, groupId, "Downgrade", "Moderator");
     return true;
   }
 
@@ -117,13 +116,25 @@ public class ModerateAPI extends DBUtils {
   }
 
   /**
-   * Helper method to execute add/delete member/moderator operation.
+   * Get group list that the user is currently in.
+   * @param userId the user id
+   * @return the group list that user is in
+   */
+  public List<Group> getHasGroups(int userId) {
+    List<Group> list = new ArrayList<>();
+    String sql = "SELECT * FROM User_has_Group WHERE User_User_id =?";
+    getGroupList(sql, list, userId);
+    return list;
+  }
+
+  /**
+   * Helper method to execute add/delete member/moderator/invitation operation.
    *
    * @param sql the sql query string
    * @param id1 the first id to replace in the sql string
    * @param id2 the second id to replace in the sql string
    * @param operation the add or delete operation
-   * @param role the user's role for this group
+   * @param role the target object
    */
   public void execute(String sql, int id1, int id2, String operation, String role) {
     con = getConnection();
@@ -180,4 +191,27 @@ public class ModerateAPI extends DBUtils {
     }
   }
 
+  /**
+   * Create an invitation object.
+   * @param groupId the group id
+   * @param userId the invitee id
+   * @return true if invitation successfully created
+   */
+  public boolean createInvitation(int groupId, int userId) {
+    String sql = "INSERT INTO Invitation (User_User_id, Group_Group_id) VALUES (?, ?)";
+    execute(sql, userId, groupId, "Create", "Invitation");
+    return true;
+  }
+
+  /**
+   * Delete an invitation object.
+   * @param groupId the group id
+   * @param userId the invitee id
+   * @return true if invitation successfully deleted
+   */
+  public boolean deleteInvitation(int groupId, int userId) {
+    String sql = "DELETE FROM Invitation WHERE User_User_id = ? AND Group_Group_id = ?";
+    execute(sql, userId, groupId, "Delete", "Invitation");
+    return true;
+  }
 }
