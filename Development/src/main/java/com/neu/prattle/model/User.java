@@ -50,10 +50,21 @@ public class User {
   private String avatar;
 
   /**
-   * The groups.
+   * Check if the user's role is moderator.
+   */
+  private Boolean isModerator = false;
+
+  /**
+   * Groups the user is in.
    */
   @ManyToMany(mappedBy = "user")
-  private List<Group> groups = new ArrayList<>();
+  private List<Group> hasGroups = new ArrayList<>();
+
+  /**
+   * The groups the user moderates.
+   */
+  @ManyToMany(mappedBy = "user")
+  private List<Group> moderateGroups = new ArrayList<>();
 
   /**
    * The following list.
@@ -195,31 +206,63 @@ public class User {
   }
 
   /**
-   * Get the user's groups.
+   * Get the user's hasGroups.
    */
-  public List<Group> getGroups() {
-    return groups;
+  public List<Group> getHasGroups() {
+    return hasGroups;
   }
 
   /**
-   * Set the user's groups.
+   * Set the user's hasGroups.
    */
-  public void setGroups(List<Group> groups) {
-    this.groups = groups;
+  public void setHasGroups(List<Group> hasGroups) {
+    this.hasGroups = hasGroups;
   }
 
   /**
-   * Get the user's followed groups.
+   * Get the user's followed hasGroups.
    */
   public List<Group> getFollowedGroup() {
     return followedGroup;
   }
 
   /**
-   * Set the groups that the user is following.
+   * Set the hasGroups that the user is following.
    */
   public void setFollowedGroup(List<Group> followedGroup) {
     this.followedGroup = followedGroup;
+  }
+
+  /**
+   * Get the user's role if it's moderator.
+   * @return the user's role
+   */
+  public Boolean getModerator() {
+    return isModerator;
+  }
+
+  /**
+   * Set the user's role.
+   * @param moderator whether the user is moderator
+   */
+  public void setModerator(Boolean moderator) {
+    isModerator = moderator;
+  }
+
+  /**
+   * Get group list that the user moderates.
+   * @return the user's moderated groups
+   */
+  public List<Group> getModerateGroups() {
+    return moderateGroups;
+  }
+
+  /**
+   * Set the group list that the user moderates.
+   * @param moderateGroups
+   */
+  public void setModerateGroups(List<Group> moderateGroups) {
+    this.moderateGroups = moderateGroups;
   }
 
   /***

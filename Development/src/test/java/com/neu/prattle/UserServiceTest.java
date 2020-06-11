@@ -110,6 +110,16 @@ public class UserServiceTest {
     userService.updateUser(user2, "password");
   }
 
+
+  /**
+   * Test set the user as moderator.
+   */
+  @Test
+  public void testSetModerator() {
+    user1.setModerator(true);
+    assertTrue(userService.setModerator(user1).getModerator());
+  }
+
   /**
    * Close an API connection after all the tasks.
    */

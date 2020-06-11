@@ -1,8 +1,6 @@
 package com.neu.prattle;
 
 import com.neu.prattle.model.Group;
-import com.neu.prattle.model.Member;
-import com.neu.prattle.model.Moderator;
 import com.neu.prattle.model.User;
 
 import junit.framework.TestCase;
@@ -35,14 +33,15 @@ public class GroupEntityTest {
     User user = new User("user1");
     group2.setFollower(user);
     assertTrue(group2.getFollowers().contains(user));
-    Member member = new Member();
+    User member = new User();
     member.setName("member1");
     group2.addMember(member);
     assertTrue(group2.getMembers().contains(member));
-    Moderator m = new Moderator();
-    m.setName("moderator1");
-    group2.addModerator(m);
-    assertTrue(group2.getModerators().contains(m));
+    User moderator = new User();
+    moderator.setName("moderator1");
+    moderator.setModerator(true);
+    group2.addModerator(moderator);
+    assertTrue(group2.getModerators().contains(moderator));
     group2.removeMember(member);
     assertFalse(group2.getMembers().contains(member));
 

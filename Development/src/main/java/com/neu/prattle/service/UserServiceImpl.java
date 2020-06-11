@@ -108,7 +108,19 @@ public class UserServiceImpl implements UserService {
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return null;
+  }
 
+  /**
+   * Set the user's role as or not as a moderator.
+   */
+  @Override
+  public User setModerator(User user) {
+    try {
+      user = api.setModerator(user);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return user;
   }
 
   /**

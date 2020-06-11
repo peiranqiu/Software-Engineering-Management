@@ -4,6 +4,7 @@ import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 
 import org.junit.Test;
+import org.junit.jupiter.engine.discovery.predicates.IsTestClassWithTests;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +77,8 @@ public class UserTest {
     List<Group> groups = new ArrayList<>();
     groups.add(group1);
     groups.add(group2);
-    user.setGroups(groups);
-    assertEquals(user.getGroups(), groups);
+    user.setHasGroups(groups);
+    assertEquals(user.getHasGroups(), groups);
   }
 
   /**
