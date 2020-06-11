@@ -53,9 +53,6 @@ public class GroupAPI extends DBUtils {
       if (rs.next()) {
         g = constructGroup(rs);
       }
-      else {
-        throw new GroupNotFoundException("Group not found with given name.");
-      }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     } finally {
