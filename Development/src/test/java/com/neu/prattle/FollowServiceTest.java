@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -56,6 +57,9 @@ public class FollowServiceTest {
   @Test(expected = AlreadyFollowException.class)
   public void testFollowUserFail() {
     userService.addUser(user1);
+    assertFalse(followService.followUser(user1, user2));
+    assertFalse(followService.followUser(user2, user1));
+    assertFalse(followService.followUser(user2, new User("Random1", "Random1")));
     userService.addUser(user2);
     followService.followUser(user1, user2);
     followService.followUser(user1, user2);
@@ -67,6 +71,9 @@ public class FollowServiceTest {
   @Test(expected = FollowNotFoundException.class)
   public void testUnfollowUserFail() {
     userService.addUser(user1);
+    assertFalse(followService.unfollowUser(user1, user2));
+    assertFalse(followService.unfollowUser(user2, user1));
+    assertFalse(followService.unfollowUser(user2, new User("Random1", "Random1")));
     userService.addUser(user2);
     followService.unfollowUser(user1, user2);
   }
@@ -76,6 +83,7 @@ public class FollowServiceTest {
    */
   @Test
   public void testUserGetFollowers() {
+    assertTrue(followService.userGetFollowers(user1).isEmpty());
     userService.addUser(user1);
     userService.addUser(user2);
     assertTrue(followService.userGetFollowers(user2).isEmpty());
@@ -88,6 +96,7 @@ public class FollowServiceTest {
    */
   @Test
   public void testGetFollowingUsers() {
+    assertTrue(followService.getFollowingUsers(user1).isEmpty());
     userService.addUser(user1);
     userService.addUser(user2);
     assertTrue(followService.getFollowingUsers(user1).isEmpty());
@@ -100,30 +109,53 @@ public class FollowServiceTest {
    */
   @Test
   public void testFollowGroup() {
-    userService.addUser(user1);
     groupService.addGroup(group1);
-    followService.followGroup(user1, group1);
+    assertFalse(followService.followGroup(user1, group1));
+
+    userService.addUser(user1);
+    assertTrue(followService.followGroup(user1, group1));
     assertEquals(followService.getFollowingGroups(user1).get(0).getName(), group1.getName());
-    followService.unfollowGroup(user1, group1);
+
+    assertTrue(followService.unfollowGroup(user1, group1));
     assertTrue(followService.getFollowingGroups(user1).isEmpty());
+  }
+
+  /**
+   * Test group follow failure because the target group is not found.
+   */
+  @Test
+  public void testFollowGroupFail0() {
+    userService.addUser(user1);
+    assertFalse(followService.followGroup(user1, group1));
   }
 
   /**
    * Test group follow failure because of an already followed group.
    */
   @Test(expected = AlreadyFollowException.class)
-  public void testFollowGroupFail() {
-    userService.addUser(user1);
+  public void testFollowGroupFail1() {
     groupService.addGroup(group1);
+    assertFalse(followService.unfollowGroup(user1, group1));
+
+    userService.addUser(user1);
     followService.followGroup(user1, group1);
     followService.followGroup(user1, group1);
+  }
+
+  /**
+   * Test group unfollow failure because the target group is not found.
+   */
+  @Test
+  public void testUnfollowGroupFail0() {
+    userService.addUser(user1);
+    assertFalse(followService.unfollowGroup(user1, group1));
   }
 
   /**
    * Test group unfollow failure because of a non existing follow.
    */
   @Test(expected = FollowNotFoundException.class)
-  public void testUnfollowGroupFail() {
+  public void testUnfollowGroupFail1() {
     userService.addUser(user1);
     groupService.addGroup(group1);
     followService.unfollowGroup(user1, group1);
@@ -136,6 +168,7 @@ public class FollowServiceTest {
   public void testGroupGetFollowers() {
     userService.addUser(user1);
     userService.addUser(user2);
+    assertTrue(followService.groupGetFollowers(group1).isEmpty());
     groupService.addGroup(group1);
     followService.followGroup(user1, group1);
     followService.followGroup(user2, group1);
@@ -148,6 +181,7 @@ public class FollowServiceTest {
    */
   @Test
   public void testGetFollowingGroups() {
+    assertTrue(followService.getFollowingGroups(user1).isEmpty());
     userService.addUser(user1);
     groupService.addGroup(group1);
     assertTrue(followService.getFollowingGroups(user1).isEmpty());

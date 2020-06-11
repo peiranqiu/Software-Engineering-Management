@@ -49,6 +49,7 @@ public class FollowService {
    * @return true if follow is successful
    */
   public boolean followUser(User user1, User user2) {
+    boolean b = false;
     Optional<User> optionalA = userService.findUserByName(user1.getName());
     Optional<User> optionalB = userService.findUserByName(user2.getName());
     if(optionalA.isPresent() && optionalB.isPresent()) {
@@ -59,9 +60,9 @@ public class FollowService {
         throw new AlreadyFollowException(String.format("User %s already followed user %s.", user1.getName(), user2.getName()));
       }
       api.userFollowUser(userA.getUserId(), userB.getUserId());
-      return true;
+      b = true;
     }
-    return false;
+    return b;
   }
 
   /**
@@ -71,6 +72,7 @@ public class FollowService {
    * @return true if unfollow is successful
    */
   public boolean unfollowUser(User user1, User user2) {
+    boolean b = false;
     Optional<User> optionalA = userService.findUserByName(user1.getName());
     Optional<User> optionalB = userService.findUserByName(user2.getName());
     if(optionalA.isPresent() && optionalB.isPresent()) {
@@ -81,9 +83,9 @@ public class FollowService {
         throw new FollowNotFoundException(String.format("User %s has not followed user %s.", user1.getName(), user2.getName()));
       }
       api.userUnfollowUser(userA.getUserId(), userB.getUserId());
-      return true;
+      b = true;
     }
-    return false;
+    return b;
   }
 
   /**
@@ -92,12 +94,13 @@ public class FollowService {
    * @return the list of users the user follows
    */
   public List<User> getFollowingUsers(User user) {
+    List<User> list = new ArrayList<>();
     Optional<User> optional = userService.findUserByName(user.getName());
     if(optional.isPresent()) {
       int userId = optional.get().getUserId();
-      return api.getFollowingUsers(userId);
+      list = api.getFollowingUsers(userId);
     }
-    return new ArrayList<>();
+    return list;
   }
 
   /**
@@ -106,12 +109,13 @@ public class FollowService {
    * @return the list of the user's followers
    */
   public List<User> userGetFollowers(User user) {
+    List<User> list = new ArrayList<>();
     Optional<User> optional = userService.findUserByName(user.getName());
     if(optional.isPresent()) {
       int userId = optional.get().getUserId();
-      return api.userGetFollowers(userId);
+      list = api.userGetFollowers(userId);
     }
-    return new ArrayList<>();
+    return list;
   }
 
   /**
@@ -121,6 +125,7 @@ public class FollowService {
    * @return true if follow is successful
    */
   public boolean followGroup(User user, Group group) {
+    boolean b = false;
     Optional<User> optionalUser = userService.findUserByName(user.getName());
     Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
     if(optionalGroup.isPresent() && optionalUser.isPresent()) {
@@ -131,9 +136,9 @@ public class FollowService {
         throw new AlreadyFollowException(String.format("User %s already followed group %s.", u.getName(), g.getName()));
       }
       api.userFollowGroup(u.getUserId(), g.getGroupId());
-      return true;
+      b = true;
     }
-    return false;
+    return b;
   }
 
   /**
@@ -143,6 +148,7 @@ public class FollowService {
    * @return true if unfollow is successful
    */
   public boolean unfollowGroup(User user, Group group) {
+    boolean b = false;
     Optional<User> optionalUser = userService.findUserByName(user.getName());
     Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
     if(optionalGroup.isPresent() && optionalUser.isPresent()) {
@@ -153,9 +159,9 @@ public class FollowService {
         throw new FollowNotFoundException(String.format("User %s has not followed group %s.", u.getName(), g.getName()));
       }
       api.userUnfollowGroup(u.getUserId(), g.getGroupId());
-      return true;
+      b = true;
     }
-    return false;
+    return b;
   }
 
   /**
@@ -164,12 +170,13 @@ public class FollowService {
    * @return the list of groups the user follows
    */
   public List<Group> getFollowingGroups(User user) {
+    List<Group> list = new ArrayList<>();
     Optional<User> optional = userService.findUserByName(user.getName());
     if(optional.isPresent()) {
       int userId = optional.get().getUserId();
-      return api.getFollowingGroups(userId);
+      list = api.getFollowingGroups(userId);
     }
-    return new ArrayList<>();
+    return list;
   }
 
   /**
@@ -178,11 +185,12 @@ public class FollowService {
    * @return the list of the group's followers
    */
   public List<User> groupGetFollowers(Group group) {
+    List<User> list = new ArrayList<>();
     Optional<Group> optional = groupService.findGroupByName(group.getName());
     if(optional.isPresent()) {
       int groupId = optional.get().getGroupId();
-      return api.groupGetFollowers(groupId);
+      list = api.groupGetFollowers(groupId);
     }
-    return new ArrayList<>();
+    return list;
   }
 }
