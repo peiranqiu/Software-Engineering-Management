@@ -55,7 +55,7 @@ public class ChatEndpoint {
   /**
    * The account service.
    */
-  private UserService accountService = UserServiceImpl.getInstance();
+  private static UserService accountService = UserServiceImpl.getInstance();
   /**
    * The session.
    */
@@ -231,8 +231,8 @@ public class ChatEndpoint {
   private static void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
 //    List<Member> members = currentGroupObject.getMembers();
     //Following two lines will need to be removed
-    List<User> members = new ArrayList<User>();
-    members.add(new User("testName1"));
+    List<String> members = new ArrayList<String>();
+    members.add("testName1");
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
       if (members.contains(users.get(endpoint.session.getId()))) {

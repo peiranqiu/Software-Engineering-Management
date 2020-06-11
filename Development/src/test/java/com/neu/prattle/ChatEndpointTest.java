@@ -19,6 +19,8 @@ import com.neu.prattle.websocket.ChatEndpoint;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import javax.websocket.EncodeException;
 import javax.websocket.RemoteEndpoint.Basic;
@@ -225,6 +227,9 @@ public class ChatEndpointTest {
     message.setMessagePath();
 
     // Sending a message using onMessage method
+    List<User> members = new ArrayList<User>();
+    members.add(new User("testName1"));
+    System.out.println(members.contains(testUser1));
     chatEndpoint1.sendGroupMessage(message, "testGroup1", session1);
 
     // Finding messages with content hey

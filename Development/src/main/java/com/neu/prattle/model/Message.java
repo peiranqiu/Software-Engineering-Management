@@ -195,7 +195,7 @@ public class Message {
   }
 
   /***
-   * Create the MESSAGESENT and messageReceived directories for the current user
+   * Create the messageSent and messageReceived directories for the current user
    */
   public String makeDirectory(String messagePath, int userID) {
     String dirName1 = messagePath + "/" + userID;
@@ -294,13 +294,12 @@ public class Message {
       String groupChatLogName = messagePath + "/Group" + "/" + currentGroupObject.getGroupId() + ".txt";
       File groupChatFile = new File(groupChatLogName);
       if (groupChatFile.createNewFile()) {
-        try(FileWriter myWriter = new FileWriter(groupChatFile)) {
-          myWriter.write(toString());
-        } catch(NullPointerException e) {
-          logger.info(e.getMessage());
-        }
-      } else {
-        throw new IOException();
+        logger.info("Chat log file created for " + currentGroupObject.getName());
+      }
+      try(FileWriter myWriter = new FileWriter(groupChatFile)) {
+        myWriter.write(toString());
+      } catch(NullPointerException e) {
+        logger.info(e.getMessage());
       }
     }
   }
