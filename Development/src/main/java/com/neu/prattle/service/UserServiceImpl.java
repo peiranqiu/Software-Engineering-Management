@@ -90,6 +90,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public User updateUser(User user, String field) {
+    User u = null;
     try {
       User newUser = api.getUserByName(user.getName());
       if (newUser == null) {
@@ -98,16 +99,16 @@ public class UserServiceImpl implements UserService {
       newUser.setPassword(user.getPassword());
       if(field.equals("password")) {
         String value = user.getPassword();
-        return api.updateUser(newUser, field, value);
+        u = api.updateUser(newUser, field, value);
       }
-      if(field.equals("avatar")) {
+      else if(field.equals("avatar")) {
         String value = user.getAvatar();
-        return api.updateUser(newUser, field, value);
+        u = api.updateUser(newUser, field, value);
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
-    return null;
+    return u;
   }
 
   /**
@@ -143,8 +144,8 @@ public class UserServiceImpl implements UserService {
    */
   public boolean isValidPassword(User user) {
     HashMap<String, Boolean> passwordCheck = checkRequirement(user.getPassword());
-    return !(user.getPassword().length() < 4 || user.getPassword().length() > 20
-            || !passwordCheck.get("low") || !passwordCheck.get("cap") || !passwordCheck.get("num"));
+    return !(!passwordCheck.get("low") || !passwordCheck.get("cap") || !passwordCheck.get("num") || user.getPassword().length() > 20 ||
+            user.getPassword().length() < 4);
   }
 
   /**

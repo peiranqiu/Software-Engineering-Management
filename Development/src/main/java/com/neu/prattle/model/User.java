@@ -249,22 +249,6 @@ public class User {
     isModerator = moderator;
   }
 
-  /**
-   * Get group list that the user moderates.
-   * @return the user's moderated groups
-   */
-  public List<Group> getModerateGroups() {
-    return moderateGroups;
-  }
-
-  /**
-   * Set the group list that the user moderates.
-   * @param moderateGroups
-   */
-  public void setModerateGroups(List<Group> moderateGroups) {
-    this.moderateGroups = moderateGroups;
-  }
-
   /***
    * Returns the hashCode of this object.
    *

@@ -43,14 +43,15 @@ public class GroupAPI extends DBUtils {
    * @return the group
    */
   public Group getGroup(String name) throws SQLException {
+    Group g = null;
     try {
-      Connection con = getConnection();
+      con = getConnection();
       String sql = "SELECT * FROM mydb.Group WHERE name =?";
       stmt = con.prepareStatement(sql);
       stmt.setString(1, name);
       rs = stmt.executeQuery();
       if (rs.next()) {
-        return constructGroup(rs);
+        g = constructGroup(rs);
       }
       else {
         throw new GroupNotFoundException("Group not found with given name.");
@@ -61,7 +62,7 @@ public class GroupAPI extends DBUtils {
       rs.close();
       stmt.close();
     }
-    return null;
+    return g;
   }
 
   /**
@@ -71,6 +72,7 @@ public class GroupAPI extends DBUtils {
    * @return the group
    */
   public Group getGroupById(int id) throws SQLException {
+    Group g = null;
     try {
       Connection con = getConnection();
       String sql = "SELECT * FROM mydb.Group WHERE Group_id =?";
@@ -78,7 +80,7 @@ public class GroupAPI extends DBUtils {
       stmt.setInt(1, id);
       rs = stmt.executeQuery();
       if (rs.next()) {
-        return constructGroup(rs);
+        g = constructGroup(rs);
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -86,22 +88,7 @@ public class GroupAPI extends DBUtils {
       rs.close();
       stmt.close();
     }
-    return null;
-  }
-
-  public boolean prepareStatement(String name, String str) {
-    Boolean b = false;
-    try (PreparedStatement pstmt = getConnection().prepareStatement(str)) {
-      pstmt.setString(1, name);
-      try (ResultSet result = pstmt.executeQuery()) {
-        if (result.next()) {
-          b = true;
-        }
-      }
-    } catch (SQLException e) {
-      LOGGER.log(Level.INFO, e.getMessage());
-    }
-    return b;
+    return g;
   }
 
   /**
@@ -120,5 +107,4 @@ public class GroupAPI extends DBUtils {
     }
     return group;
   }
-
 }

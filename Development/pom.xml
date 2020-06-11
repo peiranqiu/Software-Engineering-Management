@@ -111,6 +111,10 @@
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.language>java</sonar.language>
+		<sonar.exclusions>
+			**/PrattleApplication.java,
+			**/websocket.js
+		</sonar.exclusions>
 	</properties>
 	<profiles>
 		<profile>
