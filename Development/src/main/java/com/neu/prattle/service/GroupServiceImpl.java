@@ -2,6 +2,7 @@ package com.neu.prattle.service;
 
 
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
+import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
 
 import java.sql.SQLException;
@@ -46,7 +47,7 @@ public class GroupServiceImpl implements GroupService {
   public Optional<Group> findGroupByName(String name) {
     Optional<Group> optional = Optional.empty();
     try {
-      if (api.getGroup(name) != null) {
+      if(api.getGroup(name) != null) {
         optional = Optional.of(api.getGroup(name));
       }
     } catch (SQLException e) {

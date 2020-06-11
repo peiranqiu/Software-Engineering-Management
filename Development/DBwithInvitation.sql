@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User` (
   `User_id` INT NOT NULL auto_increment,
   `name` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NULL,
+  `avatar` VARCHAR(45) NULL,
   `language` VARCHAR(2) NOT NULL DEFAULT 'en',
   `isModerator` TINYINT NOT NULL DEFAULT 0,
   `logins` VARCHAR(45) NULL,

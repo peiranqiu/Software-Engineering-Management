@@ -29,7 +29,7 @@ public class UserAPI extends DBUtils {
    */
   public boolean addUser(User user) {
 
-    int key = -1;
+    boolean b = false;
     con = getConnection();
     String sqlInsert = "INSERT INTO User (name, password, isModerator) VALUES (?, ?, ?)";
     try (PreparedStatement sttmt = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
@@ -38,12 +38,14 @@ public class UserAPI extends DBUtils {
       sttmt.setBoolean(3, false);
       sttmt.executeUpdate();
       ResultSet result = sttmt.getGeneratedKeys();
-      if (result.next()) key = result.getInt(1);
+      if (result.next()) {
+        b = true;
+      }
       result.close();
     } catch (SQLException e) {
       throw new IllegalStateException("Create user failed.");
     }
-    return key != -1;
+    return b;
   }
 
   /**
@@ -77,6 +79,7 @@ public class UserAPI extends DBUtils {
    * @throws SQLException
    */
   public User getUser(String sql, int id, String name) throws SQLException {
+    User u = null;
     try {
       con = getConnection();
       stmt = con.prepareStatement(sql);
@@ -88,7 +91,7 @@ public class UserAPI extends DBUtils {
       }
       rs = stmt.executeQuery();
       if (rs.next()) {
-        return constructUser(rs);
+        u = constructUser(rs);
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -96,7 +99,7 @@ public class UserAPI extends DBUtils {
       rs.close();
       stmt.close();
     }
-    return null;
+    return u;
   }
 
   /**
@@ -152,6 +155,7 @@ public class UserAPI extends DBUtils {
    * @throws SQLException
    */
   public User executeUpdate(String sql, User user, String value, boolean moderate) throws SQLException{
+    User u = null;
     try {
       con = getConnection();
       stmt = con.prepareStatement(sql);
@@ -164,13 +168,13 @@ public class UserAPI extends DBUtils {
       stmt.setString(2, user.getName());
       int result = stmt.executeUpdate();
       if (result == 1) {
-        return user;
+        u = user;
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     } finally {
       stmt.close();
     }
-    return null;
+    return u;
   }
 }
