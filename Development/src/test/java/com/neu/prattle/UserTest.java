@@ -4,7 +4,6 @@ import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 
 import org.junit.Test;
-import org.junit.jupiter.engine.discovery.predicates.IsTestClassWithTests;
 
 import java.util.ArrayList;
 import java.util.List;

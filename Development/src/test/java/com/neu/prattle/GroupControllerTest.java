@@ -5,7 +5,6 @@ import com.neu.prattle.model.Group;
 
 import org.junit.Test;
 
-
 import static junit.framework.TestCase.assertEquals;
 
 /**

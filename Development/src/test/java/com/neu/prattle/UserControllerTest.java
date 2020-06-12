@@ -5,7 +5,6 @@ import com.neu.prattle.model.User;
 
 import org.junit.Test;
 
-
 import static junit.framework.TestCase.assertEquals;
 
 /**
