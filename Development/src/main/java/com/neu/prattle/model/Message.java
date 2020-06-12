@@ -2,6 +2,7 @@ package com.neu.prattle.model;
 
 import com.neu.prattle.websocket.MessageEncoder;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -71,6 +72,13 @@ public class Message {
             .append("From: ").append(from)
             .append("To: ").append(to)
             .append("Content: ").append(content)
+            .toString();
+  }
+
+  public String toStringForGroupChatLog() {
+    return new StringBuilder()
+            .append(from).append(": ")
+            .append(content)
             .toString();
   }
 
@@ -293,13 +301,24 @@ public class Message {
         }
       String groupChatLogName = messagePath + "/Group" + "/" + currentGroupObject.getGroupId() + ".txt";
       File groupChatFile = new File(groupChatLogName);
-      if (groupChatFile.createNewFile()) {
+//      FileWriter myWriter = new FileWriter(groupChatFile, true);
+      //check if the chat log file already exists
+      if (!Files.exists(Paths.get(groupChatLogName))) {
+        FileWriter myWriter = new FileWriter(groupChatFile);
         logger.info("Chat log file created for " + currentGroupObject.getName());
-      }
-      try(FileWriter myWriter = new FileWriter(groupChatFile)) {
-        myWriter.write(toString());
-      } catch(NullPointerException e) {
-        logger.info(e.getMessage());
+        myWriter.write(toStringForGroupChatLog());
+        myWriter.close();
+      } else {
+        FileWriter myWriter = new FileWriter(groupChatFile, true);
+        BufferedWriter br = new BufferedWriter(myWriter);
+        try {
+          br.newLine();
+          br.write(toStringForGroupChatLog());
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        br.close();
+        myWriter.close();
       }
     }
   }

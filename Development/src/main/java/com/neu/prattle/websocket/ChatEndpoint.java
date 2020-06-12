@@ -232,12 +232,9 @@ public class ChatEndpoint {
 
   private static void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
     List<User> members = moderateService.getMembers(currentGroupObject);
-    //Following two lines will need to be removed
-////    List<String> members = new ArrayList<String>();
-////    members.add("testName1");
     chatEndpoints.forEach(endpoint0 -> {
-      final ChatEndpoint endpoint = endpoint0;
-      if (members.contains(users.get(endpoint.session.getId()))) {
+      ChatEndpoint endpoint = endpoint0;
+      if (members.contains(new User(users.get(endpoint.session.getId())))) {
         synchronized (endpoint) {
           try {
             endpoint.session.getBasicRemote()

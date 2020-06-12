@@ -214,12 +214,12 @@ public class ChatEndpointTest {
   @Test
   public void testSendGroupMessage() throws IOException, EncodeException {
     UserService userService = UserServiceImpl.getInstance();
-    User user1 = userService.findUserByName("testName1").get();
-    User user2 = userService.findUserByName("testName2").get();
+    User user1 = userService.findUserByName("testModerator1").get();
+    User user2 = userService.findUserByName("testModerator4").get();
     chatEndpoint1.onOpen(session1, user1.getName());
     chatEndpoint2.onOpen(session2, user2.getName());
     message.setFrom(user1.getName());
-    message.setTo(user2.getName());
+    message.setTo("testModerateGroup1");
     message.setFromID(user1.getUserId());
     message.setToID(user2.getUserId());
     message.setContent("Welcome to this group!");
@@ -227,15 +227,43 @@ public class ChatEndpointTest {
     message.setMessagePath();
 
     // Sending a message using onMessage method
-    List<User> members = new ArrayList<User>();
-    members.add(new User("testName1"));
-    System.out.println(members.contains(testUser1));
-    chatEndpoint1.sendGroupMessage(message, "testGroup1", session1);
+    chatEndpoint1.sendGroupMessage(message, "testModerateGroup1", session1);
 
     // Finding messages with content hey
     Optional<Message> m = valueCapture.getAllValues().stream()
             .map(val -> (Message) val)
             .filter(msg -> msg.getContent().equals("Welcome to this group!")).findAny();
+
+    if (m.isPresent()) {
+      String messagePath = message.getMessagePath();
+      assertEquals(true, true);
+    } else {
+      fail();
+    }
+  }
+
+  @Test
+  public void testSendGroupMessage2() throws IOException, EncodeException {
+    UserService userService = UserServiceImpl.getInstance();
+    User user1 = userService.findUserByName("testModerator1").get();
+    User user2 = userService.findUserByName("testModerator4").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo("testModerateGroup1");
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Welcome to this group2!");
+    message.setMessageID();
+    message.setMessagePath();
+
+    // Sending a message using onMessage method
+    chatEndpoint1.sendGroupMessage(message, "testModerateGroup1", session1);
+
+    // Finding messages with content hey
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Welcome to this group2!")).findAny();
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();

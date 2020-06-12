@@ -1,0 +1,2 @@
+testModerator1: Welcome to this group!
+testModerator1: Welcome to this group2!
