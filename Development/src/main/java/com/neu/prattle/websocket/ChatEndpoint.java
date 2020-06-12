@@ -8,11 +8,11 @@ package com.neu.prattle.websocket;
  */
 
 import com.neu.prattle.model.Group;
-import com.neu.prattle.model.Member;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 
@@ -64,6 +64,8 @@ public class ChatEndpoint {
    * The group service.
    */
   private static GroupService groupService = GroupServiceImpl.getInstance();
+
+  private static ModerateService moderateService = ModerateService.getInstance();
 
   /**
    * Broadcast.
@@ -197,8 +199,8 @@ public class ChatEndpoint {
    * @param message the message to be sent
    */
   public static void sendPersonalMessage(Message message) throws IOException, EncodeException {
-    chatEndpoints.forEach(endpoint ->
-    {
+    chatEndpoints.forEach(endpoint0 -> {
+      final ChatEndpoint endpoint = endpoint0;
       if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
         synchronized (endpoint) {
           try {
@@ -229,10 +231,10 @@ public class ChatEndpoint {
   }
 
   private static void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
-//    List<Member> members = currentGroupObject.getMembers();
+    List<User> members = moderateService.getMembers(currentGroupObject);
     //Following two lines will need to be removed
-    List<String> members = new ArrayList<String>();
-    members.add("testName1");
+////    List<String> members = new ArrayList<String>();
+////    members.add("testName1");
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
       if (members.contains(users.get(endpoint.session.getId()))) {
