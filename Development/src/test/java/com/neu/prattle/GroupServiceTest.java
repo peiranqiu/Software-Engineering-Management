@@ -56,9 +56,9 @@ public class GroupServiceTest {
 
   @Test
   public void test6(){
-    groupService.addSubgroupIntoGroup(4,1);
-    groupService.addSubgroupIntoGroup(4,2);
-    assertEquals("Abcdef1234",groupService.getSubGroupList(4).get(1).getName());
+    groupService.addSubgroupIntoGroup(3,1);
+    groupService.addSubgroupIntoGroup(3,2);
+    assertEquals("testModerateGroup3",groupService.getSubGroupList(3).get(1).getName());
   }
 
   @Test
