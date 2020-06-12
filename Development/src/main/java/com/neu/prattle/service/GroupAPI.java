@@ -162,24 +162,6 @@ public class GroupAPI extends DBUtils {
   }
 
   /**
-   * Disconnect a subgroup with all its main groups.
-   */
-  public void deleteMainGroupsOfSubGroup(int subGroupId) throws SQLException {
-    try {
-      con = getConnection();
-      String sql = "DELETE FROM Group_has_Group WHERE sub_Group_id = ?";
-      stmt = con.prepareStatement(sql);
-      stmt.setInt(1, subGroupId);
-      stmt.executeUpdate();
-
-    } catch (SQLException e) {
-      LOGGER.log(Level.INFO, e.getMessage());
-    } finally {
-      stmt.close();
-    }
-  }
-
-  /**
    * method to set password for a group so that it can be private group
    *
    * @param groupId  groupId
@@ -219,6 +201,25 @@ public class GroupAPI extends DBUtils {
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return group;
+  }
+
+  /**
+   * delete a group from all group_has_group relationship.
+   */
+  public void deleteGroupFromGroupHasGroup(int groupId) throws SQLException {
+    try {
+      con = getConnection();
+      String sql = "DELETE FROM Group_has_Group WHERE super_Group_id = ? OR sub_Group_id = ?";
+      stmt = con.prepareStatement(sql);
+      stmt.setInt(1, groupId);
+      stmt.setInt(2, groupId);
+      stmt.executeUpdate();
+
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      stmt.close();
+    }
   }
 
   /**
