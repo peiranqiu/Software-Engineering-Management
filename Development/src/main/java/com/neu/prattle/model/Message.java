@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.websocket.EncodeException;
@@ -293,13 +294,15 @@ public class Message {
   }
 
   public void saveChatLog(Group currentGroupObject, boolean sendToGroup) throws IOException {
+    String group ="/Group";
     if (sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
-      if (!Files.exists(Paths.get(messagePath + "/Group"))) {
-        String groupDir = messagePath + "/Group";
-        File GroupDirFile = new File(groupDir);
-        GroupDirFile.mkdir();
+      if (!Files.exists(Paths.get(messagePath + group))) {
+        String groupDir = messagePath + group;
+        File groupDirFile = new File(groupDir);
+        groupDirFile.mkdir();
         }
-      String groupChatLogName = messagePath + "/Group" + "/" + currentGroupObject.getGroupId() + ".txt";
+      String groupChatLogName =
+              messagePath + group + "/" + currentGroupObject.getGroupId() + ".txt";
       File groupChatFile = new File(groupChatLogName);
       //check if the chat log file already exists
       if (!Files.exists(Paths.get(groupChatLogName))) {
@@ -319,7 +322,7 @@ public class Message {
           br.newLine();
           br.write(toStringForGroupChatLog());
         } catch (IOException e) {
-          e.printStackTrace();
+          logger.log(Level.INFO, e.getMessage());
         } finally {
           br.close();
           myWriter.close();

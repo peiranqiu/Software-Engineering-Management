@@ -6,6 +6,7 @@
 package com.neu.prattle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -329,6 +330,7 @@ public class ChatEndpointTest {
     message.setMessagePath();
     Group groupEmpty = new Group();
     chatEndpoint1.broadcastInGroup(message, groupEmpty);
+    assertFalse(user1.equals(user2));
 
   }
 }
