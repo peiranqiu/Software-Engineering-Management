@@ -315,9 +315,10 @@ public class Message {
           br.write(toStringForGroupChatLog());
         } catch (IOException e) {
           e.printStackTrace();
+        } finally {
+          br.close();
+          myWriter.close();
         }
-        br.close();
-        myWriter.close();
       }
     }
   }
