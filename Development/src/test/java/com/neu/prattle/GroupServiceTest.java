@@ -30,6 +30,8 @@ public class GroupServiceTest {
 
   @Mock
   private Group group1 = new Group("testGroup1");
+  private Group group2 = new Group("testGroup2");
+  private Group group3 = new Group("testGroup3");
 
   @Before
   public void setUp() {
@@ -56,5 +58,15 @@ public class GroupServiceTest {
   public void test4() {
     assertFalse(groupService.findGroupByName("testGroup3").isPresent());
   }
+
+
+  @Test
+  public void test6(){
+    groupService.addSubgroupIntoGroup(4,1);
+    groupService.addSubgroupIntoGroup(4,2);
+    assertEquals("Abcdef1234",groupService.getSubGroupList(4).get(1).getName());
+  }
+
+
 
 }

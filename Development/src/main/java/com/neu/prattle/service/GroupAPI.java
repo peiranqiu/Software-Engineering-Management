@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -85,20 +87,78 @@ public class GroupAPI extends DBUtils {
     return null;
   }
 
-  public boolean prepareStatement(String name, String str) {
-    Boolean b = false;
-    try (PreparedStatement pstmt = getConnection().prepareStatement(str)) {
-      pstmt.setString(1, name);
-      try (ResultSet result = pstmt.executeQuery()) {
-        if (result.next()) {
-          b = true;
-        }
+  /**
+   * a method to get sub groups of one group by group id
+   *
+   * @return a list of groups
+   */
+
+  public List<Group> getSubGroupList(int groupId) throws SQLException {
+    List<Group> subGroupList = new ArrayList<>();
+    try {
+      Connection con = getConnection();
+      String sql = "SELECT * FROM Group_has_Group WHERE super_Group_id =?";
+      PreparedStatement stmt1 = con.prepareStatement(sql);
+      stmt1.setInt(1, groupId);
+      ResultSet rs1 = stmt1.executeQuery();
+      while (rs1.next()) {
+        int subGroupId = rs1.getInt("sub_Group_id");
+        subGroupList.add(getGroupById(subGroupId));
       }
+      rs1.close();
+      stmt1.close();
+
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
-    return b;
+
+    return subGroupList;
   }
+
+
+  /**
+   * method to add subgroup into a group
+   */
+  public void addSubgroupIntoGroup(int groupId, int subGroupId) throws SQLException {
+    try {
+      Connection con = getConnection();
+      String sql = "INSERT INTO mydb.Group_has_Group (super_Group_id, sub_Group_id) VALUES (?, ?)";
+      stmt = con.prepareStatement(sql);
+      stmt.setInt(1, groupId);
+      stmt.setInt(2, subGroupId);
+      stmt.executeUpdate();
+
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      stmt.close();
+    }
+  }
+
+  /**
+   * method to set password for a group so that it can be private group
+   *
+   * @param groupId  groupId
+   * @param password password
+   */
+  public void setPasswordforGroup(int groupId, String password) throws SQLException {
+    try {
+      Connection con = getConnection();
+      String sql = "INSERT INTO Group (password) VALUES (?) WHERE Group_id =?";
+      stmt = con.prepareStatement(sql);
+      stmt.setString(1, password);
+      stmt.setInt(2, groupId);
+      rs = stmt.executeQuery();
+
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      rs.close();
+      stmt.close();
+    }
+
+  }
+
 
   /**
    * A helper method to construct a group object with returned result set.
