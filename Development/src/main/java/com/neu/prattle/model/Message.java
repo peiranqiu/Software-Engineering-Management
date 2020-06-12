@@ -305,8 +305,13 @@ public class Message {
       if (!Files.exists(Paths.get(groupChatLogName))) {
         FileWriter myWriter = new FileWriter(groupChatFile);
         logger.info("Chat log file created for " + currentGroupObject.getName());
-        myWriter.write(toStringForGroupChatLog());
-//        myWriter.close();
+        try{
+          myWriter.write(toStringForGroupChatLog());
+        } catch (IOException e) {
+          e.printStackTrace();
+        } finally{
+          myWriter.close();
+        }
       } else {
         FileWriter myWriter = new FileWriter(groupChatFile, true);
         BufferedWriter br = new BufferedWriter(myWriter);
