@@ -309,7 +309,6 @@ public class Message {
         FileWriter myWriter = new FileWriter(groupChatFile);
         logger.info("Chat log file created for " + currentGroupObject.getName());
         myWriter.write(toStringForGroupChatLog());
-//        myWriter.close();
       } else {
         FileWriter myWriter = new FileWriter(groupChatFile, true);
         BufferedWriter br = new BufferedWriter(myWriter);
