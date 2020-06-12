@@ -272,6 +272,7 @@ public class ModerateAPI extends DBUtils {
       deleteInvitation(groupId, u.getUserId());
     }
     try {
+      groupAPI.deleteMainGroupsOfSubGroup(groupId);
       List<Group> subgroups = groupAPI.getSubGroupList(groupId);
       for(Group g: subgroups) {
         groupAPI.deleteSubgroupfromGroup(groupId, g.getGroupId());
