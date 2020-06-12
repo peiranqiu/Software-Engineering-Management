@@ -20,6 +20,7 @@ public class ModerateAPI extends DBUtils {
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   private UserAPI userAPI;
   private GroupAPI groupAPI;
+  private FollowAPI followAPI;
   private ResultSet rs = null;
 
   /**
@@ -29,6 +30,7 @@ public class ModerateAPI extends DBUtils {
     super();
     userAPI = new UserAPI();
     groupAPI = new GroupAPI();
+    followAPI = new FollowAPI();
   }
 
   /**
@@ -197,9 +199,16 @@ public class ModerateAPI extends DBUtils {
    * @param userId the invitee id
    * @return true if invitation successfully created
    */
-  public boolean createInvitation(int groupId, int userId) {
-    String sql = "INSERT INTO Invitation (User_User_id, Group_Group_id) VALUES (?, ?)";
-    execute(sql, userId, groupId, "Create", "Invitation");
+  public boolean createInvitation(int groupId, int userId, boolean isAdd) {
+    if(Boolean.TRUE.equals(isAdd)) {
+      String sql = "INSERT INTO Invitation (User_User_id, Group_Group_id, isAdd) VALUES (?, ?, TRUE)";
+      execute(sql, userId, groupId, "Create", "add-member Invitation");
+    }
+    else {
+      String sql = "INSERT INTO Invitation (User_User_id, Group_Group_id, isAdd) VALUES (?, ?, FALSE)";
+      execute(sql, userId, groupId, "Create", "delete-member Invitation");
+    }
+
     return true;
   }
 
@@ -212,6 +221,53 @@ public class ModerateAPI extends DBUtils {
   public boolean deleteInvitation(int groupId, int userId) {
     String sql = "DELETE FROM Invitation WHERE User_User_id = ? AND Group_Group_id = ?";
     execute(sql, userId, groupId, "Delete", "Invitation");
+    return true;
+  }
+
+  /**
+   * Get invitations corresponding to a group.
+   * @param groupId the group id
+   * @return the list of corresponding users in the group's invitations
+   */
+  public List<User> getInvitationsOfGroup(int groupId) {
+    List<User> list = new ArrayList<>();
+    String sql = "SELECT * FROM Invitation WHERE Group_Group_id =" + groupId;
+    con = getConnection();
+    try (PreparedStatement stmt = con.prepareStatement(sql)) {
+      rs = stmt.executeQuery();
+      while (rs.next()) {
+        int userId = rs.getInt("User_User_id");
+        User user = userAPI.getUserById(userId);
+        list.add(user);
+      }
+      rs.close();
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return list;
+  }
+
+  /**
+   * Delete a group and its moderators, members, followers and invitations.
+   */
+  public boolean deleteGroup(int groupId) {
+    List<User> moderators = getModerators(groupId);
+    for(User u: moderators) {
+      deleteModerator(groupId, u.getUserId());
+    }
+    List<User> members = getMembers(groupId);
+    for(User u: members) {
+      deleteMember(groupId, u.getUserId());
+    }
+    List<User> followers = followAPI.groupGetFollowers(groupId);
+    for(User u: followers) {
+      followAPI.userUnfollowGroup(u.getUserId(), groupId);
+    }
+    List<User> users = getInvitationsOfGroup(groupId);
+    for(User u: users) {
+      deleteInvitation(groupId, u.getUserId());
+    }
+    groupAPI.deleteGroup(groupId);
     return true;
   }
 }

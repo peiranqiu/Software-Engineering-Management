@@ -57,6 +57,7 @@ DROP TABLE IF EXISTS `mydb`.`Invitation` ;
 CREATE TABLE IF NOT EXISTS `mydb`.`Invitation` (
   `User_User_id` INT NOT NULL,
   `Group_Group_id` INT NOT NULL,
+  `isAdd` TINYINT NOT NULL DEFAULT 0,
   PRIMARY KEY (`User_User_id`, `Group_Group_id`),
   INDEX `fk_Invitation_Group1_idx` (`Group_Group_id` ASC),
   INDEX `fk_Invitation_User_idx` (`User_User_id` ASC),

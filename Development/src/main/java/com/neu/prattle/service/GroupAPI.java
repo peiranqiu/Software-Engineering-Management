@@ -1,13 +1,14 @@
 package com.neu.prattle.service;
 
-
-import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,15 +44,14 @@ public class GroupAPI extends DBUtils {
    * @return the group
    */
   public Group getGroup(String name) throws SQLException {
-    Group g = null;
     try {
-      con = getConnection();
+      Connection con = getConnection();
       String sql = "SELECT * FROM mydb.Group WHERE name =?";
       stmt = con.prepareStatement(sql);
       stmt.setString(1, name);
       rs = stmt.executeQuery();
       if (rs.next()) {
-        g = constructGroup(rs);
+        return constructGroup(rs);
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -59,7 +59,7 @@ public class GroupAPI extends DBUtils {
       rs.close();
       stmt.close();
     }
-    return g;
+    return null;
   }
 
   /**
@@ -69,15 +69,14 @@ public class GroupAPI extends DBUtils {
    * @return the group
    */
   public Group getGroupById(int id) throws SQLException {
-    Group g = null;
     try {
       Connection con = getConnection();
-      String sql = "SELECT * FROM mydb.Group WHERE Group_id =?";
+      String sql = "SELECT * FROM mydb.Group WHERE Group_id = ?";
       stmt = con.prepareStatement(sql);
       stmt.setInt(1, id);
       rs = stmt.executeQuery();
       if (rs.next()) {
-        g = constructGroup(rs);
+        return constructGroup(rs);
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -85,11 +84,84 @@ public class GroupAPI extends DBUtils {
       rs.close();
       stmt.close();
     }
-    return g;
+    return null;
   }
 
   /**
+   * a method to get sub groups of one group by group id
+   *
+   * @return a list of groups
+   */
+
+  public List<Group> getSubGroupList(int groupId) throws SQLException {
+    List<Group> subGroupList = new ArrayList<>();
+    try {
+      Connection con = getConnection();
+      String sql = "SELECT * FROM Group_has_Group WHERE super_Group_id =?";
+      PreparedStatement stmt1 = con.prepareStatement(sql);
+      stmt1.setInt(1, groupId);
+      ResultSet rs1 = stmt1.executeQuery();
+      while (rs1.next()) {
+        int subGroupId = rs1.getInt("sub_Group_id");
+        subGroupList.add(getGroupById(subGroupId));
+      }
+      rs1.close();
+      stmt1.close();
+
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+
+    return subGroupList;
+  }
+
+
+  /**
+   * method to add subgroup into a group
+   */
+  public void addSubgroupIntoGroup(int groupId, int subGroupId) throws SQLException {
+    try {
+      Connection con = getConnection();
+      String sql = "INSERT INTO mydb.Group_has_Group (super_Group_id, sub_Group_id) VALUES (?, ?)";
+      stmt = con.prepareStatement(sql);
+      stmt.setInt(1, groupId);
+      stmt.setInt(2, subGroupId);
+      stmt.executeUpdate();
+
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      stmt.close();
+    }
+  }
+
+  /**
+   * method to set password for a group so that it can be private group
+   *
+   * @param groupId  groupId
+   * @param password password
+   */
+  public void setPasswordforGroup(int groupId, String password) throws SQLException {
+    try {
+      Connection con = getConnection();
+      String sql = "UPDATE  mydb.Group SET password = ? WHERE Group_id =?";
+      stmt = con.prepareStatement(sql);
+      stmt.setString(1, password);
+      stmt.setInt(2, groupId);
+      stmt.executeUpdate();
+
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      stmt.close();
+    }
+
+  }
+
+
+  /**
    * A helper method to construct a group object with returned result set.
+   *
    * @param rs the result set
    * @return the group
    */
@@ -103,5 +175,25 @@ public class GroupAPI extends DBUtils {
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return group;
+  }
+
+  /**
+   * delete a group object
+   *
+   * @param groupId id of the group object to be deleted
+   */
+  public boolean deleteGroup(int groupId) {
+    boolean b;
+    String sql = "DELETE FROM mydb.Group WHERE Group_id = ?";
+    con = getConnection();
+    try (PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+      stmt.setInt(1, groupId);
+      stmt.executeUpdate();
+      b = true;
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+      throw new IllegalStateException("Delete group failed.");
+    }
+    return b;
   }
 }
