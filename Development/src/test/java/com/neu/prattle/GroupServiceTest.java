@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,6 +77,19 @@ public class GroupServiceTest {
   @Test
   public void testSetPasswordforGroup() {
     assertTrue(groupService.setPasswordforGroup(2, "test1234"));
+  }
+
+
+  @Test
+  public void testgetSubGroupList() {
+    List<Group> groupList = groupService.getSubGroupList(4);
+
+    assertEquals(groupList, groupService.getSubGroupList(4));
+  }
+
+  @Test
+  public void testAddSubgroupIntoGroup() {
+    assertTrue(groupService.addSubgroupIntoGroup(1, 4));
   }
 
 
