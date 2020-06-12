@@ -4,6 +4,7 @@ package com.neu.prattle.service;
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
+import com.neu.prattle.model.User;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class GroupServiceImpl implements GroupService {
   }
 
   private GroupAPI api = new GroupAPI();
+  private FollowAPI followAPI = new FollowAPI();
 
   /***
    * UserServiceImpl is a Singleton class.
@@ -85,8 +87,13 @@ public class GroupServiceImpl implements GroupService {
   public boolean setPasswordforGroup(int groupId, String password) {
     try {
       api.setPasswordforGroup(groupId, password);
+
     } catch (SQLException e) {
       throw new GroupNotFoundException(String.format("Group not found"));
+    }
+    List<User> followers = followAPI.groupGetFollowers(groupId);
+    for (User u : followers) {
+      followAPI.userUnfollowGroup(u.getUserId(), groupId);
     }
     return true;
   }
