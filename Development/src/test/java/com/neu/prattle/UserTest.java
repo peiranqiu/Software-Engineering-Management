@@ -76,8 +76,8 @@ public class UserTest {
     List<Group> groups = new ArrayList<>();
     groups.add(group1);
     groups.add(group2);
-    user.setGroups(groups);
-    assertEquals(user.getGroups(), groups);
+    user.setHasGroups(groups);
+    assertEquals(user.getHasGroups(), groups);
   }
 
   /**

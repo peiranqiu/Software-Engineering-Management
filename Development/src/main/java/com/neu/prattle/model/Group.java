@@ -37,16 +37,18 @@ public class Group {
    * a private group should have password.
    */
   @Column(name = "password")
-  private String password;
+  private String password=null;
     /**
    * moderator list of this group. One group should have at least one moderator.
    */
+
+
   @OneToMany(targetEntity = Group.class)
   @JoinTable(name = "User_moderates_Group", joinColumns = {
           @JoinColumn(name = "User_User_id", referencedColumnName = "User_id"),
           @JoinColumn(name = "Group_Group_id", referencedColumnName = "Group_id")})
   @JsonIgnore
-  private List<Moderator> moderators = new ArrayList<>();
+  private List<User> moderators = new ArrayList<>();
   /**
    * member list of this group.
    */
@@ -55,7 +57,7 @@ public class Group {
           @JoinColumn(name = "User_User_id", referencedColumnName = "User_id"),
           @JoinColumn(name = "Group_Group_id", referencedColumnName = "Group_id")})
   @JsonIgnore
-  private List<Member> members = new ArrayList<>();
+  private List<User> members = new ArrayList<>();
   /**
    * a list of sub-groups inside this group.
    */
@@ -107,23 +109,23 @@ public class Group {
     this.groupId = groupId;
   }
 
-  public List<Moderator> getModerators() {
+  public List<User> getModerators() {
     return this.moderators;
   }
 
-  public void addModerator(Moderator moderator) {
+  public void addModerator(User moderator) {
     this.moderators.add(moderator);
   }
 
-  public List<Member> getMembers() {
+  public List<User> getMembers() {
     return members;
   }
 
-  public void addMember(Member member) {
+  public void addMember(User member) {
     this.members.add(member);
   }
 
-  public void removeMember(Member member) {
+  public void removeMember(User member) {
     this.members.remove(member);
   }
 

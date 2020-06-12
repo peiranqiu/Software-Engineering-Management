@@ -2,6 +2,8 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.model.Group;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public interface GroupService {
@@ -31,5 +33,40 @@ public interface GroupService {
    *
    */
   boolean addGroup(Group group);
+
+  /***
+   * method to set password for a group so that it can be private group
+   * @param groupId groupId
+   * @param password password
+   */
+
+  boolean setPasswordforGroup(int groupId, String password);
+
+
+  /**
+   * method to add subgroup into a group
+   * @param groupId group id
+   * @param subGroupId subgroup id
+   * @throws SQLException if groupId or subgroupId not exist.
+   */
+  boolean addSubgroupIntoGroup(int groupId, int subGroupId);
+
+  /**
+   * a method to get sub groups of one group by group id
+   * @param groupId
+   * @return a list of groups
+   * @throws SQLException
+   */
+
+  List<Group> getSubGroupList(int groupId);
+
+  /**
+   * get group by Id
+   *
+   * @param id group id
+   * @return the group
+   */
+  Group getGroupById(int id);
+
 
 }

@@ -3,17 +3,19 @@ package com.neu.prattle;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.websocket.MessageDecoder;
 import com.neu.prattle.websocket.MessageEncoder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
 
 import javax.websocket.EncodeException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class MessageTest {
   /***
@@ -160,4 +162,5 @@ public class MessageTest {
     assertFalse(decode.willDecode(null));
     assertTrue(decode.willDecode("test"));
   }
+
 }

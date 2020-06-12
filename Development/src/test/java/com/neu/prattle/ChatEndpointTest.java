@@ -5,29 +5,32 @@
 
 package com.neu.prattle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 import com.neu.prattle.websocket.ChatEndpoint;
-import java.io.IOException;
-import java.util.Optional;
-import javax.websocket.EncodeException;
-import javax.websocket.RemoteEndpoint.Basic;
-import javax.websocket.Session;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+import javax.websocket.EncodeException;
+import javax.websocket.RemoteEndpoint.Basic;
+import javax.websocket.Session;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class ChatEndpointTest {
@@ -175,7 +178,35 @@ public class ChatEndpointTest {
     } else {
       fail();
     }
-
   }
 
+  @Test
+  public void testSendPersonalMessage() throws IOException, EncodeException {
+    UserService userService = UserServiceImpl.getInstance();
+    User user1 = userService.findUserByName("testName1").get();
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo(user2.getName());
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Hey");
+    message.setMessageID();
+
+    // Sending a message using onMessage method
+    chatEndpoint1.sendPersonalMessage(message);
+
+    // Finding messages with content hey
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Hey")).findAny();
+
+     if (m.isPresent()) {
+       String messagePath = message.getMessagePath();
+      assertEquals(true, Files.exists(Paths.get(messagePath + "/" + message.getFromID())));
+    } else {
+      fail();
+    }
+  }
 }
