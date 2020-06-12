@@ -193,9 +193,9 @@ public class GroupAPI extends DBUtils {
     boolean b;
     String sql = "DELETE FROM mydb.Group WHERE Group_id = ?";
     con = getConnection();
-    try (PreparedStatement stmt1 = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-      stmt1.setInt(1, groupId);
-      stmt1.executeUpdate();
+    try (PreparedStatement stmt2 = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+      stmt2.setInt(1, groupId);
+      stmt2.executeUpdate();
       b = true;
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
