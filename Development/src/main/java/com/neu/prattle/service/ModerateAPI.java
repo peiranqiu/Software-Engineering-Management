@@ -231,9 +231,10 @@ public class ModerateAPI extends DBUtils {
    */
   public List<User> getInvitationsOfGroup(int groupId) {
     List<User> list = new ArrayList<>();
-    String sql = "SELECT * FROM Invitation WHERE Group_Group_id =" + groupId;
+    String sql = "SELECT * FROM Invitation WHERE Group_Group_id = ?";
     con = getConnection();
     try (PreparedStatement stmt = con.prepareStatement(sql)) {
+      stmt.setInt(1, groupId);
       rs = stmt.executeQuery();
       while (rs.next()) {
         int userId = rs.getInt("User_User_id");

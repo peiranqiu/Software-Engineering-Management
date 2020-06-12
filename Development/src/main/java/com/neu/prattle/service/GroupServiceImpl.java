@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GroupServiceImpl implements GroupService {
   private static GroupService groupService;
@@ -18,6 +20,7 @@ public class GroupServiceImpl implements GroupService {
 
   private GroupAPI api = new GroupAPI();
   private FollowAPI followAPI = new FollowAPI();
+  private Logger logger = Logger.getLogger(this.getClass().getName());
 
   /***
    * UserServiceImpl is a Singleton class.
@@ -88,6 +91,7 @@ public class GroupServiceImpl implements GroupService {
       api.setPasswordforGroup(groupId, password);
 
     } catch (SQLException e) {
+      logger.log(Level.INFO, "failed in set psw for group");
     }
     List<User> followers = followAPI.groupGetFollowers(groupId);
     for (User u : followers) {
@@ -108,6 +112,7 @@ public class GroupServiceImpl implements GroupService {
     try {
       api.addSubgroupIntoGroup(groupId, subGroupId);
     } catch (SQLException e) {
+      logger.log(Level.INFO, "failed in add subgroup for group");
     }
     return true;
   }
@@ -123,6 +128,7 @@ public class GroupServiceImpl implements GroupService {
     try{
       groups=api.getSubGroupList(groupId);
     } catch (SQLException e) {
+      logger.log(Level.INFO, "failed in get subgroup for group");
     }
     return groups;
   }
@@ -138,7 +144,9 @@ public class GroupServiceImpl implements GroupService {
     Group group=null;
     try{
       group=api.getGroupById(id);
-    }catch (SQLException e){}
+    }catch (SQLException e){
+      logger.log(Level.INFO, "failed in get id for group");
+    }
     return group;
   }
 }
