@@ -329,6 +329,5 @@ public class ChatEndpointTest {
     message.setMessagePath();
     Group groupEmpty = new Group();
     chatEndpoint1.broadcastInGroup(message, groupEmpty);
-
   }
 }
