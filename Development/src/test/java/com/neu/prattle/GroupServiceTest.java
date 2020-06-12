@@ -28,19 +28,25 @@ public class GroupServiceTest {
   private Group group2 = new Group("testGroup2");
   private Group group3 = new Group("testGroup3");
 
+
   @Before
   public void setUp() {
     groupService = GroupServiceImpl.getInstance();
+
   }
 
   @Test
   public void test1() {
     assertTrue(groupService.addGroup(group1));
+    groupService.addGroup(group2);
+    groupService.addGroup(group3);
+
   }
 
   @Test(expected = GroupAlreadyPresentException.class)
   public void test2() {
     groupService.addGroup(group1);
+
   }
 
   @Test
@@ -56,9 +62,14 @@ public class GroupServiceTest {
 
   @Test
   public void test6(){
-    groupService.addSubgroupIntoGroup(3,1);
-    groupService.addSubgroupIntoGroup(3,2);
-    assertEquals("testModerateGroup3",groupService.getSubGroupList(3).get(1).getName());
+
+    int id1 = groupService.findGroupByName("testGroup1").get().getGroupId();
+    int id2 = groupService.findGroupByName("testGroup2").get().getGroupId();
+    int id3 = groupService.findGroupByName("testGroup3").get().getGroupId();
+
+    groupService.addSubgroupIntoGroup(id1,id2);
+    groupService.addSubgroupIntoGroup(id1,id3);
+    assertEquals("testGroup3",groupService.getSubGroupList(id1).get(1).getName());
   }
 
   @Test
