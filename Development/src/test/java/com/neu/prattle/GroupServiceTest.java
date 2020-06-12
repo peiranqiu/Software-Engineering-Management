@@ -12,8 +12,8 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -25,6 +25,8 @@ public class GroupServiceTest {
 
   @Mock
   private Group group1 = new Group("testGroup1");
+  private Group group2 = new Group("testGroup2");
+  private Group group3 = new Group("testGroup3");
 
   @Before
   public void setUp() {
@@ -50,4 +52,21 @@ public class GroupServiceTest {
   public void test4() {
     assertFalse(groupService.findGroupByName("emptyName1").isPresent());
   }
+
+
+  @Test
+  public void test6(){
+    groupService.addSubgroupIntoGroup(3,1);
+    groupService.addSubgroupIntoGroup(3,2);
+    assertEquals("testModerateGroup3",groupService.getSubGroupList(3).get(1).getName());
+  }
+
+  @Test
+  public void testSetPasswordforGroup() {
+    assertTrue(groupService.setPasswordforGroup(2, "test1234"));
+  }
+
+
+
+
 }

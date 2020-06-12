@@ -37,10 +37,12 @@ public class Group {
    * a private group should have password.
    */
   @Column(name = "password")
-  private String password;
+  private String password=null;
     /**
    * moderator list of this group. One group should have at least one moderator.
    */
+
+
   @OneToMany(targetEntity = Group.class)
   @JoinTable(name = "User_moderates_Group", joinColumns = {
           @JoinColumn(name = "User_User_id", referencedColumnName = "User_id"),
