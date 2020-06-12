@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 public abstract class DBUtils {
 
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-//  protected String url = "jdbc:mysql://mydb.cd4ztimoe6ek.us-east-1.rds.amazonaws.com:3306/mydb?";
-  protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
+  protected String url = "jdbc:mysql://mydb.cd4ztimoe6ek.us-east-1.rds.amazonaws.com:3306/mydb?";
+//  protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
   protected String user = "mydb";
   protected String pd = "CS5500team4";
   protected Connection con = null;
