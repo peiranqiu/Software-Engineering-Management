@@ -301,7 +301,6 @@ public class Message {
         }
       String groupChatLogName = messagePath + "/Group" + "/" + currentGroupObject.getGroupId() + ".txt";
       File groupChatFile = new File(groupChatLogName);
-//      FileWriter myWriter = new FileWriter(groupChatFile, true);
       //check if the chat log file already exists
       if (!Files.exists(Paths.get(groupChatLogName))) {
         FileWriter myWriter = new FileWriter(groupChatFile);

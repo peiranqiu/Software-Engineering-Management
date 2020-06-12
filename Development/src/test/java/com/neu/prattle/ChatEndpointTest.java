@@ -16,12 +16,17 @@ import com.neu.prattle.model.User;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 import com.neu.prattle.websocket.ChatEndpoint;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
+
 import javax.websocket.EncodeException;
 import javax.websocket.RemoteEndpoint.Basic;
 import javax.websocket.Session;
@@ -236,7 +241,8 @@ public class ChatEndpointTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      assertEquals(true, true);
+      File file = new File(messagePath + "/Group" + "/" + "1.txt");
+      assertEquals(true, checkLogHasMessage("testModerator1: Welcome to this group!", file));
     } else {
       fail();
     }
@@ -253,7 +259,7 @@ public class ChatEndpointTest {
     message.setTo("testModerateGroup1");
     message.setFromID(user1.getUserId());
     message.setToID(user2.getUserId());
-    message.setContent("Welcome to this group2!");
+    message.setContent("Welcome to this group again!");
     message.setMessageID();
     message.setMessagePath();
 
@@ -263,13 +269,32 @@ public class ChatEndpointTest {
     // Finding messages with content hey
     Optional<Message> m = valueCapture.getAllValues().stream()
             .map(val -> (Message) val)
-            .filter(msg -> msg.getContent().equals("Welcome to this group2!")).findAny();
+            .filter(msg -> msg.getContent().equals("Welcome to this group again!")).findAny();
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      assertEquals(true, true);
+      File file = new File(messagePath + "/Group" + "/" + "1.txt");
+      assertEquals(true, checkLogHasMessage("testModerator1: Welcome to this group again!", file));
     } else {
       fail();
     }
+  }
+
+
+  public boolean checkLogHasMessage(String msgSent, File file) {
+    try {
+      Scanner scanner = new Scanner(file);
+      int lineNum = 0;
+      while (scanner.hasNextLine()) {
+        String line = scanner.nextLine();
+        lineNum++;
+        if(line.equals(msgSent)) {
+          return true;
+        }
+      }
+    } catch(FileNotFoundException e) {
+      return false;
+    }
+    return false;
   }
 }
