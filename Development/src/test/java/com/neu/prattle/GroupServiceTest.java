@@ -4,7 +4,6 @@ package com.neu.prattle;
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
-import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.UserService;
@@ -65,6 +64,11 @@ public class GroupServiceTest {
     groupService.addSubgroupIntoGroup(4,1);
     groupService.addSubgroupIntoGroup(4,2);
     assertEquals("Abcdef1234",groupService.getSubGroupList(4).get(1).getName());
+  }
+
+  @Test
+  public void testSetPasswordforGroup() {
+    assertTrue(groupService.setPasswordforGroup(2, "test1234"));
   }
 
 

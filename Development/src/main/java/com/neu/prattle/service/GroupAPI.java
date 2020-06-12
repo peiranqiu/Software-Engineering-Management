@@ -144,16 +144,15 @@ public class GroupAPI extends DBUtils {
   public void setPasswordforGroup(int groupId, String password) throws SQLException {
     try {
       Connection con = getConnection();
-      String sql = "INSERT INTO Group (password) VALUES (?) WHERE Group_id =?";
+      String sql = "UPDATE  mydb.Group SET password = ? WHERE Group_id =?";
       stmt = con.prepareStatement(sql);
       stmt.setString(1, password);
       stmt.setInt(2, groupId);
-      rs = stmt.executeQuery();
+      stmt.executeUpdate();
 
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     } finally {
-      rs.close();
       stmt.close();
     }
 

@@ -2,6 +2,7 @@ package com.neu.prattle.service;
 
 
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
+import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
 
 import java.sql.SQLException;
@@ -85,6 +86,7 @@ public class GroupServiceImpl implements GroupService {
     try {
       api.setPasswordforGroup(groupId, password);
     } catch (SQLException e) {
+      throw new GroupNotFoundException(String.format("Group not found"));
     }
     return true;
   }
@@ -101,6 +103,7 @@ public class GroupServiceImpl implements GroupService {
     try {
       api.addSubgroupIntoGroup(groupId, subGroupId);
     } catch (SQLException e) {
+      throw new GroupNotFoundException(String.format("Group not found"));
     }
     return true;
   }
@@ -116,6 +119,7 @@ public class GroupServiceImpl implements GroupService {
     try{
       groups=api.getSubGroupList(groupId);
     }catch (SQLException e) {
+      throw new GroupNotFoundException(String.format("Group not found"));
     }
     return groups;
   }
