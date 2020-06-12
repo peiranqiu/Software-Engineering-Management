@@ -311,7 +311,7 @@ public class Message {
         try{
           myWriter.write(toStringForGroupChatLog());
         } catch (IOException e) {
-          e.printStackTrace();
+          logger.log(Level.INFO, e.getMessage());
         } finally {
           myWriter.close();
         }
