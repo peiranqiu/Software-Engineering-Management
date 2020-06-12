@@ -1,7 +1,5 @@
 package com.neu.prattle;
 
-import com.neu.prattle.exceptions.FollowNotFoundException;
-import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
@@ -25,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -231,27 +230,40 @@ public class ModerateMockTest {
   @Test
   public void test6CreateInvitation() {
     userService.addUser(user4);
-    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class))).thenReturn(true);
-    assertTrue(moderateService.createInvitation(group1, user3, user4));
+    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class), anyBoolean())).thenReturn(true);
+    assertTrue(moderateService.createInvitation(group1, user3, user4, true));
+
+    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class), anyBoolean())).thenReturn(true);
+    assertTrue(moderateService.createInvitation(group1, user3, user3, false));
   }
 
   /**
-   * Test create invitation failed because the current user is not the group member yet.
+   * Test create invitation failed because the current user is already the group member.
+   */
+  @Test(expected = IllegalStateException.class)
+  public void test6CreateInvitationFail0() {
+    userService.addUser(user2);
+    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class), anyBoolean())).thenThrow(IllegalStateException.class);
+    assertTrue(moderateService.createInvitation(group1, user2, user2, true));
+  }
+
+  /**
+   * Test create delete member invitation failed because the member to be deleted is not the group member yet.
    */
   @Test(expected = IllegalStateException.class)
   public void test6CreateInvitationFail1() {
     userService.addUser(user2);
-    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
-    assertTrue(moderateService.createInvitation(group1, user2, user2));
+    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class), anyBoolean())).thenThrow(IllegalStateException.class);
+    moderateService.createInvitation(group1, user3, user2, false);
   }
 
   /**
-   * Test create invitation failed because the invitee is already the group member.
+   * Test create add member invitation failed because the invitee is already the group member.
    */
   @Test(expected = IllegalStateException.class)
   public void test6CreateInvitationFail2() {
-    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
-    assertTrue(moderateService.createInvitation(group1, user3, user1));
+    when(moderateService.createInvitation(any(Group.class), any(User.class), any(User.class), anyBoolean())).thenThrow(IllegalStateException.class);
+    moderateService.createInvitation(group1, user3, user1, true);
   }
 
   /**
@@ -259,8 +271,10 @@ public class ModerateMockTest {
    */
   @Test
   public void test7ApproveInvitation() {
-    when(moderateService.approveInvitation(any(Group.class), any(User.class), any(User.class))).thenReturn(true);
-    assertTrue(moderateService.approveInvitation(group1, user1, user4));
+    when(moderateService.approveInvitation(any(Group.class), any(User.class), any(User.class), anyBoolean())).thenReturn(true);
+    assertTrue(moderateService.approveInvitation(group1, user1, user4, true));
+    when(moderateService.approveInvitation(any(Group.class), any(User.class), any(User.class), anyBoolean())).thenReturn(true);
+    assertTrue(moderateService.approveInvitation(group1, user3, user3, false));
   }
 
   /**
@@ -268,8 +282,8 @@ public class ModerateMockTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test7ApproveInvitationFail() {
-    when(moderateService.approveInvitation(any(Group.class), any(User.class), any(User.class))).thenThrow(IllegalStateException.class);
-    moderateService.approveInvitation(group1, user3, user4);
+    when(moderateService.approveInvitation(any(Group.class), any(User.class), any(User.class), anyBoolean())).thenThrow(IllegalStateException.class);
+    moderateService.approveInvitation(group1, user3, user4, true);
   }
 
   /**

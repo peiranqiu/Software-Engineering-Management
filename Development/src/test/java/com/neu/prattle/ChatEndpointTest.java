@@ -17,6 +17,13 @@ import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 import com.neu.prattle.websocket.ChatEndpoint;
 
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,11 +38,11 @@ import javax.websocket.EncodeException;
 import javax.websocket.RemoteEndpoint.Basic;
 import javax.websocket.Session;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class ChatEndpointTest {

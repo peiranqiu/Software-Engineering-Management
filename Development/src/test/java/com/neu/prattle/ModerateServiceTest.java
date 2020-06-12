@@ -17,6 +17,7 @@ import org.junit.runners.MethodSorters;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -261,7 +262,7 @@ public class ModerateServiceTest {
   @Test
   public void test6CreateInvitation() {
     userService.addUser(user4);
-    assertTrue(moderateService.createInvitation(group1, user3, user4));
+    assertTrue(moderateService.createInvitation(group1, user3, user4, true));
   }
 
   /**
@@ -269,9 +270,9 @@ public class ModerateServiceTest {
    */
   @Test
   public void test6CreateInvitationFail0() {
-    assertFalse(moderateService.createInvitation(group2, user1, new User("randomUser1", "passWord1")));
-    assertFalse(moderateService.createInvitation(group1, user1, new User("randomUser2", "passWord1")));
-    assertFalse(moderateService.createInvitation(group2, user1, user4));
+    assertFalse(moderateService.createInvitation(group2, user1, new User("randomUser1", "passWord1"), true));
+    assertFalse(moderateService.createInvitation(group1, user1, new User("randomUser2", "passWord1"), true));
+    assertFalse(moderateService.createInvitation(group2, user1, user4, true));
   }
 
   /**
@@ -280,7 +281,7 @@ public class ModerateServiceTest {
   @Test(expected = IllegalStateException.class)
   public void test6CreateInvitationFail1() {
     userService.addUser(user2);
-    moderateService.createInvitation(group1, user2, user2);
+    moderateService.createInvitation(group1, user2, user2, true);
   }
 
   /**
@@ -288,7 +289,7 @@ public class ModerateServiceTest {
    */
   @Test(expected = IllegalStateException.class)
   public void test6CreateInvitationFail2() {
-    assertTrue(moderateService.createInvitation(group1, user3, user1));
+    assertTrue(moderateService.createInvitation(group1, user3, user1, true));
   }
 
   /**
@@ -298,7 +299,7 @@ public class ModerateServiceTest {
   public void test7ApproveInvitation() {
     List<User> list = moderateService.getModerators(group1);
     User moderator = list.get(0);
-    assertTrue(moderateService.approveInvitation(group1, moderator, user4));
+    assertTrue(moderateService.approveInvitation(group1, moderator, user4, true));
   }
 
   /**
@@ -306,8 +307,8 @@ public class ModerateServiceTest {
    */
   @Test
   public void test7ApproveInvitationFail0() {
-    assertFalse(moderateService.approveInvitation(group2, user1, user2));
-    assertFalse(moderateService.approveInvitation(group1, user1, user2));
+    assertFalse(moderateService.approveInvitation(group2, user1, user2, true));
+    assertFalse(moderateService.approveInvitation(group1, user1, user2, true));
   }
 
   /**
@@ -315,7 +316,7 @@ public class ModerateServiceTest {
    */
   @Test(expected = NoPrivilegeException.class)
   public void test7ApproveInvitationFail1() {
-    moderateService.approveInvitation(group1, user3, user4);
+    moderateService.approveInvitation(group1, user3, user4, true);
   }
 
   /**
@@ -334,6 +335,30 @@ public class ModerateServiceTest {
     assertFalse(moderateService.deleteGroupMember(group2, user1, user3));
     assertFalse(moderateService.deleteGroupMember(group2, user1, user2));
     assertFalse(moderateService.deleteGroupMember(group1, user1, user2));
+  }
+
+  /**
+   * Test delete a group fail because the current user is not group moderator.
+   */
+  @Test(expected = NoPrivilegeException.class)
+  public void test9DeleteGroupFail() {
+    Optional<Group> optional = groupService.findGroupByName(group3.getName());
+    if(optional.isPresent()) {
+      moderateService.deleteGroup(optional.get(), user3);
+    }
+  }
+
+  /**
+   * Test delete a group.
+   */
+  @Test
+  public void test9DeleteGroupSuccess() {
+    Optional<Group> optional = groupService.findGroupByName(group3.getName());
+    if(optional.isPresent()) {
+      Group group = optional.get();
+      User moderator = moderateService.getModerators(group).get(0);
+      assertTrue(moderateService.deleteGroup(group, moderator));
+    }
   }
 
   /**

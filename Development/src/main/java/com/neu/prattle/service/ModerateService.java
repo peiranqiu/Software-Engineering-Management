@@ -224,28 +224,33 @@ public class ModerateService {
   }
 
   /**
-   * Member invites a user to a group by creating an invitation for the group moderator to approve.
+   * Member invites/deletes a user to a group by creating an invitation for the group moderator to approve.
    * @param group the group
    * @param inviter the inviter
    * @param invitee the invitee
+   * @param isInvite true if this is an add member invitation, false if this is a delete member request
    * @return true if invitation created successfully
    */
-  public boolean createInvitation(Group group, User inviter, User invitee) {
+  public boolean createInvitation(Group group, User inviter, User invitee, boolean isInvite) {
     boolean b = false;
     Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
     Optional<User> optionalUser = userService.findUserByName(invitee.getName());
     if(optionalGroup.isPresent() && optionalUser.isPresent()) {
       List<User> members = getMembers(group);
+      String operation = Boolean.TRUE.equals(isInvite)? "invite" : "remove";
       if(!members.contains(inviter)) {
-        throw new IllegalStateException("The current user is not a member of the group and cannot invite members.");
+        throw new IllegalStateException("The current user is not a member of the group and cannot " + operation + " members.");
       }
-      if(members.contains(invitee)) {
+      if(Boolean.TRUE.equals(isInvite) && members.contains(invitee)) {
         throw new IllegalStateException("The user to be added is already the group member.");
+      }
+      if(Boolean.FALSE.equals(isInvite) && !members.contains(invitee)) {
+        throw new IllegalStateException("The user to be deleted is currently not the group member.");
       }
 
       Group g = optionalGroup.get();
       User u = optionalUser.get();
-      b = api.createInvitation(g.getGroupId(), u.getUserId());
+      b = api.createInvitation(g.getGroupId(), u.getUserId(), isInvite);
     }
     return b;
   }
@@ -278,12 +283,29 @@ public class ModerateService {
    * @param invitee the invitee
    * @return true if approve success
    */
-  public boolean approveInvitation(Group group, User moderator, User invitee) {
+  public boolean approveInvitation(Group group, User moderator, User invitee, boolean isInvite) {
     boolean b = false;
     if(deleteInvitation(group, moderator, invitee)) {
-      b = addGroupMember(group, moderator, invitee);
+      if(Boolean.TRUE.equals(isInvite)) {
+        b = addGroupMember(group, moderator, invitee);
+      }
+      else {
+        b = deleteGroupMember(group, moderator, invitee);
+      }
     }
     return b;
+  }
+
+  /**
+   * A user deletes a group and its corresponding members, followers, invitations.
+   * @param group the group to delete
+   * @param moderator the current user
+   * @return true if delete successful
+   */
+  public boolean deleteGroup(Group group, User moderator) {
+    checkModerator(group, moderator);
+    api.deleteGroup(group.getGroupId());
+    return true;
   }
 
   /**

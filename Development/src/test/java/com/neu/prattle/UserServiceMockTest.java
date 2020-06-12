@@ -5,7 +5,6 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.UserAPI;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 
