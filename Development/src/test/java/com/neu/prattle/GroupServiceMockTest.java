@@ -1,7 +1,6 @@
 package com.neu.prattle;
 
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
-import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
@@ -14,7 +13,6 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,11 +70,6 @@ public class GroupServiceMockTest {
     assertFalse(groupService.findGroupByName("testGroup3").isPresent());
   }
 
-  @Test(expected = GroupNotFoundException.class)
-  public void testGroupNotFound(){
-    when(groupService.findGroupByName(anyString())).thenThrow(GroupNotFoundException.class);
-    assertFalse(groupService.findGroupByName("^^&*(").isPresent());
-  }
 
   @Test
   public void testSetPasswordforGroup() {
@@ -98,22 +91,6 @@ public class GroupServiceMockTest {
     assertTrue(groupService.addSubgroupIntoGroup(1, 4));
   }
 
-  @Test(expected = GroupNotFoundException.class)
-  public void testgetSubGroupListException() {
-    when(groupService.getSubGroupList(anyInt())).thenThrow(GroupNotFoundException.class);
-    groupService.getSubGroupList(100);
-  }
-  @Test(expected = GroupNotFoundException.class)
-  public void testAddSubGroupListException() {
-    when(groupService.addSubgroupIntoGroup(anyInt(),anyInt())).thenThrow(GroupNotFoundException.class);
-    groupService.addSubgroupIntoGroup(100,100);
-  }
-
-  @Test(expected = GroupNotFoundException.class)
-  public void testSetPasswordforGroupException() {
-    when(groupService.setPasswordforGroup(anyInt(),anyString())).thenThrow(GroupNotFoundException.class);
-    groupService.setPasswordforGroup(100,"12434");
-  }
 
 
 
