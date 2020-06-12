@@ -2,6 +2,7 @@ package com.neu.prattle.model;
 
 import com.neu.prattle.websocket.MessageEncoder;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.websocket.EncodeException;
@@ -57,6 +59,10 @@ public class Message {
    * Initialize the ID of receiver
    */
   private int toID = -1;
+  /***
+   * Message to group or not
+   */
+  private boolean sendToGroup = false;
 
   /***
    * Return the completed message with sender and receiver
@@ -67,6 +73,13 @@ public class Message {
             .append("From: ").append(from)
             .append("To: ").append(to)
             .append("Content: ").append(content)
+            .toString();
+  }
+
+  public String toStringForGroupChatLog() {
+    return new StringBuilder()
+            .append(from).append(": ")
+            .append(content)
             .toString();
   }
 
@@ -162,6 +175,19 @@ public class Message {
   }
 
   /***
+   * Return send to group or not
+   */
+  public boolean getSendToGroup() {
+    return sendToGroup;
+  }
+  /***
+   * Retrieve sent to group or not
+   */
+  public void setSendToGroup(boolean sendToGroup) {
+    this.sendToGroup = sendToGroup;
+  }
+
+  /***
    * Get the parent directory of the message folder
    */
   public String getMessagePath() {
@@ -178,7 +204,7 @@ public class Message {
   }
 
   /***
-   * Create the MESSAGESENT and messageReceived directories for the current user
+   * Create the messageSent and messageReceived directories for the current user
    */
   public String makeDirectory(String messagePath, int userID) {
     String dirName1 = messagePath + "/" + userID;
@@ -206,8 +232,7 @@ public class Message {
    * Make directories and save the current message into a JSON file under the folder of the current sender and receiver
    */
   public boolean storeMessage() throws IOException, EncodeException {
-    if (fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
-      messagePath = getMessagePath();
+    if (!sendToGroup && fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
       if (!Files.exists(Paths.get(messagePath + "/" + fromID))) {
         makeDirectory(messagePath, fromID);
       }
@@ -255,7 +280,6 @@ public class Message {
    * Remove the current message sent by sender
    */
   public String deleteMessage(int userID, String messageID) {
-    messagePath = getMessagePath();
     String output = "File remove fails.";
     String s = messagePath + "/" + userID + MESSAGESENT + "/" + messageID + JSON;
     Path path = Paths.get(s);
@@ -267,6 +291,44 @@ public class Message {
       logger.info("File not deleted.");
     }
     return output;
+  }
+
+  public void saveChatLog(Group currentGroupObject, boolean sendToGroup) throws IOException {
+    String group ="/Group";
+    if (sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
+      if (!Files.exists(Paths.get(messagePath + group))) {
+        String groupDir = messagePath + group;
+        File groupDirFile = new File(groupDir);
+        groupDirFile.mkdir();
+        }
+      String groupChatLogName =
+              messagePath + group + "/" + currentGroupObject.getGroupId() + ".txt";
+      File groupChatFile = new File(groupChatLogName);
+      //check if the chat log file already exists
+      if (!Files.exists(Paths.get(groupChatLogName))) {
+        FileWriter myWriter = new FileWriter(groupChatFile);
+        logger.info("Chat log file created for " + currentGroupObject.getName());
+        try{
+          myWriter.write(toStringForGroupChatLog());
+        } catch (IOException e) {
+          logger.log(Level.INFO, e.getMessage());
+        } finally {
+          myWriter.close();
+        }
+      } else {
+        FileWriter myWriter = new FileWriter(groupChatFile, true);
+        BufferedWriter br = new BufferedWriter(myWriter);
+        try {
+          br.newLine();
+          br.write(toStringForGroupChatLog());
+        } catch (IOException e) {
+          logger.log(Level.INFO, e.getMessage());
+        } finally {
+          br.close();
+          myWriter.close();
+        }
+      }
+    }
   }
 
   /***
