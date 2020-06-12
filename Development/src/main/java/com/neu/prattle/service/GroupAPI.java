@@ -19,6 +19,8 @@ public class GroupAPI extends DBUtils {
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   private PreparedStatement stmt = null;
   private ResultSet rs = null;
+  private ResultSet rs1=null;
+  private PreparedStatement stmt1=null;
 
   public GroupAPI() {
     super();
@@ -98,9 +100,9 @@ public class GroupAPI extends DBUtils {
     try {
       Connection con = getConnection();
       String sql = "SELECT * FROM Group_has_Group WHERE super_Group_id =?";
-      PreparedStatement stmt1 = con.prepareStatement(sql);
+      stmt1 = con.prepareStatement(sql);
       stmt1.setInt(1, groupId);
-      ResultSet rs1 = stmt1.executeQuery();
+      rs1= stmt1.executeQuery();
       while (rs1.next()) {
         int subGroupId = rs1.getInt("sub_Group_id");
         subGroupList.add(getGroupById(subGroupId));
@@ -111,6 +113,11 @@ public class GroupAPI extends DBUtils {
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
+    finally {
+      rs1.close();
+      stmt1.close();
+    }
+
 
     return subGroupList;
   }
@@ -186,9 +193,9 @@ public class GroupAPI extends DBUtils {
     boolean b;
     String sql = "DELETE FROM mydb.Group WHERE Group_id = ?";
     con = getConnection();
-    try (PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-      stmt.setInt(1, groupId);
-      stmt.executeUpdate();
+    try (PreparedStatement stmt1 = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+      stmt1.setInt(1, groupId);
+      stmt1.executeUpdate();
       b = true;
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
