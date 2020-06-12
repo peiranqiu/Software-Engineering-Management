@@ -263,5 +263,6 @@ public class UserServiceTest {
   public void closeConnection(){
     UserAPI api = new UserAPI();
     assertTrue(api.closeConnection());
+
   }
 }
