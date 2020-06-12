@@ -52,6 +52,13 @@ public interface GroupService {
   boolean addSubgroupIntoGroup(int groupId, int subGroupId);
 
   /**
+   * remove a subgroup from group.
+   * @param groupId group id
+   * @param subGroupId subgroup id
+   */
+  boolean removeSubgroupFromGroup(int groupId, int subGroupId);
+
+  /**
    * a method to get sub groups of one group by group id
    * @param groupId
    * @return a list of groups
@@ -67,6 +74,7 @@ public interface GroupService {
    * @return the group
    */
   Group getGroupById(int id);
+
 
 
 }

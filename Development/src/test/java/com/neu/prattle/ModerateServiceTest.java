@@ -338,10 +338,67 @@ public class ModerateServiceTest {
   }
 
   /**
+   * Test add a subgroup into a group failed because the current user is not group moderator.
+   */
+  @Test(expected = NoPrivilegeException.class)
+  public void test9_1AddSubgroupFail() {
+    Optional<Group> optional3 = groupService.findGroupByName(group3.getName());
+    Optional<Group> optional1 = groupService.findGroupByName(group1.getName());
+    if(optional1.isPresent() && optional3.isPresent()) {
+      Group g1 = optional1.get();
+      Group g3 = optional3.get();
+      moderateService.addSubgroup(g1, user3, g3);
+    }
+  }
+
+  /**
+   * Test add a subgroup into a group success.
+   */
+  @Test
+  public void test9_1AddSubgroupSuccess() {
+    Optional<Group> optional3 = groupService.findGroupByName(group3.getName());
+    Optional<Group> optional1 = groupService.findGroupByName(group1.getName());
+    if(optional1.isPresent() && optional3.isPresent()) {
+      Group g1 = optional1.get();
+      Group g3 = optional3.get();
+      assertTrue(moderateService.addSubgroup(g1, user1, g3));
+    }
+  }
+
+  /**
+   * Test delete a subgroup from a group failed because the current user is not group moderator.
+   */
+  @Test(expected = NoPrivilegeException.class)
+  public void test9_2DeleteSubgroupFail() {
+    Optional<Group> optional3 = groupService.findGroupByName(group3.getName());
+    Optional<Group> optional1 = groupService.findGroupByName(group1.getName());
+    if(optional1.isPresent() && optional3.isPresent()) {
+      Group g1 = optional1.get();
+      Group g3 = optional3.get();
+      moderateService.addSubgroup(g1, user3, g3);
+    }
+  }
+
+
+  /**
+   * Test delete a subgroup from a group success.
+   */
+  @Test
+  public void test9_2DeleteSubgroupSuccess() {
+    Optional<Group> optional3 = groupService.findGroupByName(group3.getName());
+    Optional<Group> optional1 = groupService.findGroupByName(group1.getName());
+    if(optional1.isPresent() && optional3.isPresent()) {
+      Group g1 = optional1.get();
+      Group g3 = optional3.get();
+      assertTrue(moderateService.addSubgroup(g1, user1, g3));
+    }
+  }
+
+  /**
    * Test delete a group fail because the current user is not group moderator.
    */
   @Test(expected = NoPrivilegeException.class)
-  public void test9DeleteGroupFail() {
+  public void test9_3DeleteGroupFail() {
     Optional<Group> optional = groupService.findGroupByName(group3.getName());
     if(optional.isPresent()) {
       moderateService.deleteGroup(optional.get(), user3);
@@ -352,8 +409,8 @@ public class ModerateServiceTest {
    * Test delete a group.
    */
   @Test
-  public void test9DeleteGroupSuccess() {
-    Optional<Group> optional = groupService.findGroupByName(group3.getName());
+  public void test9_3DeleteGroupSuccess() {
+    Optional<Group> optional = groupService.findGroupByName(group1.getName());
     if(optional.isPresent()) {
       Group group = optional.get();
       User moderator = moderateService.getModerators(group).get(0);

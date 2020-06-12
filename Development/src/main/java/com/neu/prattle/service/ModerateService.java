@@ -309,6 +309,32 @@ public class ModerateService {
   }
 
   /**
+   * A user deletes a subgroup from a group.
+   * @param group the group
+   * @param moderator the current user
+   * @param subGroup the subgroup
+   * @return true if remove success
+   */
+  public boolean removeSubgroup(Group group, User moderator, Group subGroup) {
+    checkModerator(group, moderator);
+    groupService.removeSubgroupFromGroup(group.getGroupId(), subGroup.getGroupId());
+    return true;
+  }
+
+  /**
+   * A user adds a subgroup into a group.
+   * @param group the group
+   * @param moderator the current user
+   * @param subGroup the subgroup
+   * @return true if add success
+   */
+  public boolean addSubgroup(Group group, User moderator, Group subGroup) {
+    checkModerator(group, moderator);
+    groupService.addSubgroupIntoGroup(group.getGroupId(), subGroup.getGroupId());
+    return true;
+  }
+
+  /**
    * Helper method to check if current user is moderator of the group.
    * @param group the group
    * @param moderator the user to be checked

@@ -93,6 +93,11 @@ public class GroupServiceTest {
   }
 
 
+  @Test
+  public void testRemoveSubgroupFromGroup() {
+    assertTrue(groupService.removeSubgroupFromGroup(1, 4));
+  }
+
 
 
 }
