@@ -14,12 +14,15 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,14 +34,18 @@ public class GroupServiceMockTest {
   private GroupService groupService;
   @Mock
   private Group group1;
-
+  @Mock
   private Group group2=new Group("testGroup2");
+  @Mock
+  private Group group3 = new Group("testGroup3");
 
   @Before
   public void setUp(){
     groupService= GroupServiceImpl.getInstance();
     groupService=mock(GroupService.class);
     group1=mock(Group.class);
+    group2 = mock(Group.class);
+    group3 = mock(Group.class);
 
   }
 
@@ -70,5 +77,46 @@ public class GroupServiceMockTest {
     when(groupService.findGroupByName(anyString())).thenThrow(GroupNotFoundException.class);
     assertFalse(groupService.findGroupByName("^^&*(").isPresent());
   }
+
+  @Test
+  public void testSetPasswordforGroup() {
+    when(groupService.setPasswordforGroup(anyInt(), anyString())).thenReturn(true);
+    assertTrue(groupService.setPasswordforGroup(1, "test1234"));
+  }
+
+  @Test
+  public void testgetSubGroupList() {
+    List<Group> groupList = groupService.getSubGroupList(4);
+
+    when(groupService.getSubGroupList(anyInt())).thenReturn(groupList);
+    assertEquals(groupList, groupService.getSubGroupList(4));
+  }
+
+  @Test
+  public void testAddSubgroupIntoGroup() {
+    when(groupService.addSubgroupIntoGroup(anyInt(), anyInt())).thenReturn(true);
+    assertTrue(groupService.addSubgroupIntoGroup(1, 4));
+  }
+
+  @Test(expected = GroupNotFoundException.class)
+  public void testgetSubGroupListException() {
+    when(groupService.getSubGroupList(anyInt())).thenThrow(GroupNotFoundException.class);
+    groupService.getSubGroupList(100);
+  }
+  @Test(expected = GroupNotFoundException.class)
+  public void testAddSubGroupListException() {
+    when(groupService.addSubgroupIntoGroup(anyInt(),anyInt())).thenThrow(GroupNotFoundException.class);
+    groupService.addSubgroupIntoGroup(100,100);
+  }
+
+  @Test(expected = GroupNotFoundException.class)
+  public void testSetPasswordforGroupException() {
+    when(groupService.setPasswordforGroup(anyInt(),anyString())).thenThrow(GroupNotFoundException.class);
+    groupService.setPasswordforGroup(100,"12434");
+  }
+
+
+
+
 }
 
