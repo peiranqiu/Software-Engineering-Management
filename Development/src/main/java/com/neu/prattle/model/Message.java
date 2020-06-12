@@ -312,7 +312,7 @@ public class Message {
           myWriter.write(toStringForGroupChatLog());
         } catch (IOException e) {
           e.printStackTrace();
-        } finally{
+        } finally {
           myWriter.close();
         }
       } else {
