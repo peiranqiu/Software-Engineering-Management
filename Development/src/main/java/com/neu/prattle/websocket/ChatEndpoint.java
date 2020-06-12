@@ -229,8 +229,9 @@ public class ChatEndpoint {
     broadcastInGroup(message, currentGroupObject);
   }
 
-  private static void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
+  public static void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
     List<User> members = moderateService.getMembers(currentGroupObject);
+    if (members.isEmpty()) return;
     chatEndpoints.forEach(endpoint0 -> {
       ChatEndpoint endpoint = endpoint0;
       if (members.contains(new User(users.get(endpoint.session.getId())))) {
