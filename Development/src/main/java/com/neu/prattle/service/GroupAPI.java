@@ -1,13 +1,12 @@
 package com.neu.prattle.service;
 
-
-import com.neu.prattle.exceptions.GroupNotFoundException;
 import com.neu.prattle.model.Group;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,7 +71,7 @@ public class GroupAPI extends DBUtils {
     Group g = null;
     try {
       Connection con = getConnection();
-      String sql = "SELECT * FROM mydb.Group WHERE Group_id =?";
+      String sql = "SELECT * FROM mydb.Group WHERE Group_id = ?";
       stmt = con.prepareStatement(sql);
       stmt.setInt(1, id);
       rs = stmt.executeQuery();
@@ -90,6 +89,7 @@ public class GroupAPI extends DBUtils {
 
   /**
    * A helper method to construct a group object with returned result set.
+   *
    * @param rs the result set
    * @return the group
    */
@@ -103,5 +103,25 @@ public class GroupAPI extends DBUtils {
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return group;
+  }
+
+  /**
+   * delete a group object
+   *
+   * @param groupId id of the group object to be deleted
+   */
+  public boolean deleteGroup(int groupId) {
+    boolean b;
+    String sql = "DELETE FROM mydb.Group WHERE Group_id = ?";
+    con = getConnection();
+    try (PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+      stmt.setInt(1, groupId);
+      stmt.executeUpdate();
+      b = true;
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+      throw new IllegalStateException("Delete group failed.");
+    }
+    return b;
   }
 }

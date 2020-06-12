@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.util.Pair;
+
 /**
  * This class are api for crud in User_has_Group and User_moderates_Group table.
  */
@@ -20,6 +22,7 @@ public class ModerateAPI extends DBUtils {
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   private UserAPI userAPI;
   private GroupAPI groupAPI;
+  private FollowAPI followAPI;
   private ResultSet rs = null;
 
   /**
@@ -29,6 +32,7 @@ public class ModerateAPI extends DBUtils {
     super();
     userAPI = new UserAPI();
     groupAPI = new GroupAPI();
+    followAPI = new FollowAPI();
   }
 
   /**
@@ -197,9 +201,16 @@ public class ModerateAPI extends DBUtils {
    * @param userId the invitee id
    * @return true if invitation successfully created
    */
-  public boolean createInvitation(int groupId, int userId) {
-    String sql = "INSERT INTO Invitation (User_User_id, Group_Group_id) VALUES (?, ?)";
-    execute(sql, userId, groupId, "Create", "Invitation");
+  public boolean createInvitation(int groupId, int userId, boolean isAdd) {
+    if(Boolean.TRUE.equals(isAdd)) {
+      String sql = "INSERT INTO Invitation (User_User_id, Group_Group_id, isAdd) VALUES (?, ?, TRUE)";
+      execute(sql, userId, groupId, "Create", "add-member Invitation");
+    }
+    else {
+      String sql = "INSERT INTO Invitation (User_User_id, Group_Group_id, isAdd) VALUES (?, ?, FALSE)";
+      execute(sql, userId, groupId, "Create", "delete-member Invitation");
+    }
+
     return true;
   }
 
@@ -212,6 +223,54 @@ public class ModerateAPI extends DBUtils {
   public boolean deleteInvitation(int groupId, int userId) {
     String sql = "DELETE FROM Invitation WHERE User_User_id = ? AND Group_Group_id = ?";
     execute(sql, userId, groupId, "Delete", "Invitation");
+    return true;
+  }
+
+  /**
+   * Get invitations corresponding to a group.
+   * @param groupId the group id
+   * @return the list of corresponding users in the group's invitations
+   */
+  public List<Pair<User, Boolean>> getInvitationsOfGroup(int groupId) {
+    List<Pair<User, Boolean>> list = new ArrayList<>();
+    String sql = "SELECT * FROM Invitation WHERE Group_Group_id =" + groupId;
+    con = getConnection();
+    try (PreparedStatement stmt = con.prepareStatement(sql)) {
+      rs = stmt.executeQuery();
+      while (rs.next()) {
+        int userId = rs.getInt("User_User_id");
+        boolean isAdd = rs.getBoolean("isAdd");
+        User user = userAPI.getUserById(userId);
+        list.add(new Pair(user,isAdd));
+      }
+      rs.close();
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return list;
+  }
+
+  /**
+   * Delete a group and its moderators, members, followers and invitations.
+   */
+  public boolean deleteGroup(int groupId) {
+    List<User> moderators = getModerators(groupId);
+    for(User u: moderators) {
+      deleteModerator(groupId, u.getUserId());
+    }
+    List<User> members = getMembers(groupId);
+    for(User u: members) {
+      deleteMember(groupId, u.getUserId());
+    }
+    List<User> followers = followAPI.groupGetFollowers(groupId);
+    for(User u: followers) {
+      followAPI.userUnfollowGroup(u.getUserId(), groupId);
+    }
+    List<Pair<User, Boolean>> invitations = getInvitationsOfGroup(groupId);
+    for(Pair<User, Boolean> pair: invitations) {
+      deleteInvitation(groupId, pair.getKey().getUserId());
+    }
+    groupAPI.deleteGroup(groupId);
     return true;
   }
 }
