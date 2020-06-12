@@ -5,40 +5,51 @@
 
 package com.neu.prattle;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.neu.prattle.model.Group;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.GroupService;
+import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 import com.neu.prattle.websocket.ChatEndpoint;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.Scanner;
 
 import javax.websocket.EncodeException;
 import javax.websocket.RemoteEndpoint.Basic;
 import javax.websocket.Session;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ChatEndpointTest {
 
-  @Mock
+
   private static User testUser1;
 
-  @Mock
+
   private static User testUser2;
   private Message message;
 
@@ -53,6 +64,12 @@ public class ChatEndpointTest {
   // Mocking basic which is used by session to send message
   @Mock
   private Basic basic;
+
+
+  private Group group1;
+
+
+  private Group group2;
 
 
   // To capture messages sent by Websockets
@@ -70,10 +87,6 @@ public class ChatEndpointTest {
     testUser2.setPassword("User2Password");
     testUser3.setPassword("User2Password");
 
-    // Adding users
-    UserService userService = UserServiceImpl.getInstance();
-    userService.addUser(testUser1);
-    userService.addUser(testUser2);
   }
 
   @Before
@@ -100,6 +113,9 @@ public class ChatEndpointTest {
     // Capturing method calls to session.getId() using when and then
     when(session1.getId()).thenReturn("id1");
     when(session2.getId()).thenReturn("id2");
+
+    group1 = new Group("testChatGroup1");
+    group2 = new Group("testChatGroup2");
   }
 
   @Test
@@ -137,6 +153,14 @@ public class ChatEndpointTest {
 
   @Test
   public void testOnClose() throws IOException, EncodeException {
+    GroupService groupService = GroupServiceImpl.getInstance();
+    groupService.addGroup(group1);
+    UserService userService = UserServiceImpl.getInstance();
+    ModerateService moderateService = ModerateService.getInstance();
+    userService.addUser(testUser1);
+    userService.addUser(testUser2);
+    User moderator1 = moderateService.addGroupModerator(group1,testUser1,testUser1);
+    moderateService.addGroupMember(group1,testUser1,testUser2);
     chatEndpoint1.onOpen(session1, testUser1.getName());
     chatEndpoint2.onOpen(session2, testUser2.getName());
 
@@ -193,6 +217,7 @@ public class ChatEndpointTest {
     message.setToID(user2.getUserId());
     message.setContent("Hey");
     message.setMessageID();
+    message.setMessagePath();
 
     // Sending a message using onMessage method
     chatEndpoint1.sendPersonalMessage(message);
@@ -208,5 +233,106 @@ public class ChatEndpointTest {
     } else {
       fail();
     }
+  }
+
+  @Test
+  public void testSendGroupMessage() throws IOException, EncodeException {
+    UserService userService = UserServiceImpl.getInstance();
+    User user1 = userService.findUserByName("testName1").get();
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo("testChatGroup1");
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Welcome to this group!");
+    message.setMessageID();
+    message.setMessagePath();
+
+    // Sending a message using onMessage method
+    chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
+
+    // Finding messages with content hey
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Welcome to this group!")).findAny();
+
+    if (m.isPresent()) {
+      String messagePath = message.getMessagePath();
+      File file = new File(messagePath + "/Group" + "/" + "1.txt");
+      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!", file));
+    } else {
+      fail();
+    }
+  }
+
+  @Test
+  public void testSendGroupMessage2() throws IOException, EncodeException {
+    UserService userService = UserServiceImpl.getInstance();
+    User user1 = userService.findUserByName("testName1").get();
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo("testChatGroup1");
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Welcome to this group again!");
+    message.setMessageID();
+    message.setMessagePath();
+
+    // Sending a message using onMessage method
+    chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
+
+    // Finding messages with content hey
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Welcome to this group again!")).findAny();
+
+    if (m.isPresent()) {
+      String messagePath = message.getMessagePath();
+      File file = new File(messagePath + "/Group" + "/" + "1.txt");
+      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!", file));
+    } else {
+      fail();
+    }
+  }
+
+  public boolean checkLogHasMessage(String msgSent, File file) {
+    try {
+      Scanner scanner = new Scanner(file);
+      int lineNum = 0;
+      while (scanner.hasNextLine()) {
+        String line = scanner.nextLine();
+        lineNum++;
+        if(line.equals(msgSent)) {
+          return true;
+        }
+      }
+    } catch(FileNotFoundException e) {
+      return false;
+    }
+    return false;
+  }
+
+  @Test
+  public void testbroadcastInGroupFails() throws IOException, EncodeException {
+    UserService userService = UserServiceImpl.getInstance();
+    User user1 = userService.findUserByName("testName1").get();
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo("testChatGroup1");
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Welcome to this group again!");
+    message.setMessageID();
+    message.setMessagePath();
+    Group groupEmpty = new Group();
+    chatEndpoint1.broadcastInGroup(message, groupEmpty);
+    assertFalse(user1.equals(user2));
+
   }
 }
