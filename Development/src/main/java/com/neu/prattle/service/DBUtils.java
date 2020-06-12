@@ -20,6 +20,9 @@ public abstract class DBUtils {
   protected String pd = "CS5500team4";
   protected Connection con = null;
 
+  /**
+   * Construct a DBUtils object.
+   */
   public DBUtils() {
     this.con = getConnection();
   }
