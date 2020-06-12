@@ -24,7 +24,9 @@ import com.neu.prattle.websocket.ChatEndpoint;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
@@ -41,6 +43,7 @@ import javax.websocket.EncodeException;
 import javax.websocket.RemoteEndpoint.Basic;
 import javax.websocket.Session;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ChatEndpointTest {
 
 
@@ -113,15 +116,6 @@ public class ChatEndpointTest {
 
     group1 = new Group("testChatGroup1");
     group2 = new Group("testChatGroup2");
-    // Adding users
-    UserService userService = UserServiceImpl.getInstance();
-    GroupService groupService = GroupServiceImpl.getInstance();
-    groupService.addGroup(group1);
-    ModerateService moderateService = ModerateService.getInstance();
-    userService.addUser(testUser1);
-    userService.addUser(testUser2);
-    User moderator1 = moderateService.addGroupModerator(group1,testUser1,testUser1);
-    moderateService.addGroupMember(group1,testUser1,testUser2);
   }
 
   @Test
@@ -159,6 +153,14 @@ public class ChatEndpointTest {
 
   @Test
   public void testOnClose() throws IOException, EncodeException {
+    GroupService groupService = GroupServiceImpl.getInstance();
+    groupService.addGroup(group1);
+    UserService userService = UserServiceImpl.getInstance();
+    ModerateService moderateService = ModerateService.getInstance();
+    userService.addUser(testUser1);
+    userService.addUser(testUser2);
+    User moderator1 = moderateService.addGroupModerator(group1,testUser1,testUser1);
+    moderateService.addGroupMember(group1,testUser1,testUser2);
     chatEndpoint1.onOpen(session1, testUser1.getName());
     chatEndpoint2.onOpen(session2, testUser2.getName());
 
