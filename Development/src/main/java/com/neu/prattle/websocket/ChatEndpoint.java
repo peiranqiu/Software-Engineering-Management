@@ -187,8 +187,9 @@ public class ChatEndpoint {
    * @param message the message to be sent
    */
   public static void sendPersonalMessage(Message message) throws IOException, EncodeException {
-    chatEndpoints.forEach(endpoint ->
+    chatEndpoints.forEach(endpoint0 ->
     {
+      final ChatEndpoint endpoint = endpoint0;
       if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
         synchronized (endpoint) {
           try {
