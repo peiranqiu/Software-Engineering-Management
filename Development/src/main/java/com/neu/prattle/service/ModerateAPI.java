@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javafx.util.Pair;
-
 /**
  * This class are api for crud in User_has_Group and User_moderates_Group table.
  */
@@ -231,17 +229,16 @@ public class ModerateAPI extends DBUtils {
    * @param groupId the group id
    * @return the list of corresponding users in the group's invitations
    */
-  public List<Pair<User, Boolean>> getInvitationsOfGroup(int groupId) {
-    List<Pair<User, Boolean>> list = new ArrayList<>();
+  public List<User> getInvitationsOfGroup(int groupId) {
+    List<User> list = new ArrayList<>();
     String sql = "SELECT * FROM Invitation WHERE Group_Group_id =" + groupId;
     con = getConnection();
     try (PreparedStatement stmt = con.prepareStatement(sql)) {
       rs = stmt.executeQuery();
       while (rs.next()) {
         int userId = rs.getInt("User_User_id");
-        boolean isAdd = rs.getBoolean("isAdd");
         User user = userAPI.getUserById(userId);
-        list.add(new Pair(user,isAdd));
+        list.add(user);
       }
       rs.close();
     } catch (SQLException e) {
@@ -266,9 +263,9 @@ public class ModerateAPI extends DBUtils {
     for(User u: followers) {
       followAPI.userUnfollowGroup(u.getUserId(), groupId);
     }
-    List<Pair<User, Boolean>> invitations = getInvitationsOfGroup(groupId);
-    for(Pair<User, Boolean> pair: invitations) {
-      deleteInvitation(groupId, pair.getKey().getUserId());
+    List<User> users = getInvitationsOfGroup(groupId);
+    for(User u: users) {
+      deleteInvitation(groupId, u.getUserId());
     }
     groupAPI.deleteGroup(groupId);
     return true;
