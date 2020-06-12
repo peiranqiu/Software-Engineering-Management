@@ -8,7 +8,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -229,8 +231,8 @@ public class ModerateAPI extends DBUtils {
    * @param groupId the group id
    * @return the list of corresponding users in the group's invitations
    */
-  public List<User> getInvitationsOfGroup(int groupId) {
-    List<User> list = new ArrayList<>();
+  public Map<User, Boolean> getInvitationsOfGroup(int groupId) {
+    Map<User, Boolean> list = new HashMap<>();
     String sql = "SELECT * FROM Invitation WHERE Group_Group_id = ?";
     con = getConnection();
     try (PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -239,7 +241,8 @@ public class ModerateAPI extends DBUtils {
       while (rs.next()) {
         int userId = rs.getInt("User_User_id");
         User user = userAPI.getUserById(userId);
-        list.add(user);
+        boolean isAdd = rs.getBoolean("isAdd");
+        list.put(user, isAdd);
       }
       rs.close();
     } catch (SQLException e) {
@@ -249,7 +252,7 @@ public class ModerateAPI extends DBUtils {
   }
 
   /**
-   * Delete a group and its moderators, members, followers and invitations.
+   * Delete a group and its moderators, members, followers subgroups and invitations.
    */
   public boolean deleteGroup(int groupId) {
     List<User> moderators = getModerators(groupId);
@@ -264,9 +267,17 @@ public class ModerateAPI extends DBUtils {
     for(User u: followers) {
       followAPI.userUnfollowGroup(u.getUserId(), groupId);
     }
-    List<User> users = getInvitationsOfGroup(groupId);
-    for(User u: users) {
+    Map<User, Boolean> invitations = getInvitationsOfGroup(groupId);
+    for(User u: invitations.keySet()) {
       deleteInvitation(groupId, u.getUserId());
+    }
+    try {
+      List<Group> subgroups = groupAPI.getSubGroupList(groupId);
+      for(Group g: subgroups) {
+        groupAPI.deleteSubgroupfromGroup(groupId, g.getGroupId());
+      }
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
     }
     groupAPI.deleteGroup(groupId);
     return true;

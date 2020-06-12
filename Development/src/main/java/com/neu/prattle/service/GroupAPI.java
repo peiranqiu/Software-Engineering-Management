@@ -129,7 +129,26 @@ public class GroupAPI extends DBUtils {
   public void addSubgroupIntoGroup(int groupId, int subGroupId) throws SQLException {
     try {
       Connection con = getConnection();
-      String sql = "INSERT INTO mydb.Group_has_Group (super_Group_id, sub_Group_id) VALUES (?, ?)";
+      String sql = "INSERT INTO Group_has_Group (super_Group_id, sub_Group_id) VALUES (?, ?)";
+      stmt = con.prepareStatement(sql);
+      stmt.setInt(1, groupId);
+      stmt.setInt(2, subGroupId);
+      stmt.executeUpdate();
+
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      stmt.close();
+    }
+  }
+
+  /**
+   * method to delete a subgroup from a group
+   */
+  public void deleteSubgroupfromGroup(int groupId, int subGroupId) throws SQLException {
+    try {
+      con = getConnection();
+      String sql = "DELETE FROM Group_has_Group WHERE super_Group_id = ? AND sub_Group_id = ?";
       stmt = con.prepareStatement(sql);
       stmt.setInt(1, groupId);
       stmt.setInt(2, subGroupId);
@@ -151,7 +170,7 @@ public class GroupAPI extends DBUtils {
   public void setPasswordforGroup(int groupId, String password) throws SQLException {
     try {
       Connection con = getConnection();
-      String sql = "UPDATE  mydb.Group SET password = ? WHERE Group_id =?";
+      String sql = "UPDATE mydb.Group SET password = ? WHERE Group_id =?";
       stmt = con.prepareStatement(sql);
       stmt.setString(1, password);
       stmt.setInt(2, groupId);
