@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -301,8 +304,7 @@ public class Message {
         File groupDirFile = new File(groupDir);
         groupDirFile.mkdir();
         }
-      String groupChatLogName =
-              messagePath + group + "/" + currentGroupObject.getGroupId() + ".txt";
+      String groupChatLogName = messagePath + group + "/" + getCurrDate() + "_" + currentGroupObject.getGroupId() + ".txt";
       File groupChatFile = new File(groupChatLogName);
       //check if the chat log file already exists
       if (!Files.exists(Paths.get(groupChatLogName))) {
@@ -330,6 +332,14 @@ public class Message {
       }
     }
   }
+
+  public String getCurrDate() {
+    DateFormat dateFormat = new SimpleDateFormat("MMddyyyy");
+    Date date = new Date();
+    return dateFormat.format(date);
+  }
+
+//  public void deleteChatLog(String groupName, )
 
   /***
    * Create an object of MessageBuilder class

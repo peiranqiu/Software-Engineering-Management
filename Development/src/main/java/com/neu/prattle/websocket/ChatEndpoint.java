@@ -205,7 +205,6 @@ public class ChatEndpoint {
           try {
             endpoint.session.getBasicRemote()
                     .sendObject(message);
-
           } catch (IOException | EncodeException e) {
             LOGGER.log(Level.INFO, e.getMessage());
           }

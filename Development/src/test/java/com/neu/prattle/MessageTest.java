@@ -160,9 +160,14 @@ public class MessageTest {
    * Test for willDecode() in Message Decoder class
    */
   @Test
-  public void testWillDecode(){
+  public void testWillDecode() {
     MessageDecoder decode = new MessageDecoder();
     assertFalse(decode.willDecode(null));
     assertTrue(decode.willDecode("test"));
+  }
+
+  @Test
+  public void testGetCurrDate() {
+    System.out.println(message.getCurrDate());
   }
 }

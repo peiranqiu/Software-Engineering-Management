@@ -260,7 +260,7 @@ public class ChatEndpointTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + "1.txt");
+      File file = new File(messagePath + "/Group" + "/" + message.getCurrDate() + "_" + "1.txt");
       assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!", file));
     } else {
       fail();
@@ -292,7 +292,7 @@ public class ChatEndpointTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + "1.txt");
+      File file = new File(messagePath + "/Group" + "/" + message.getCurrDate() + "_" + "1.txt");
       assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!", file));
     } else {
       fail();
@@ -317,7 +317,7 @@ public class ChatEndpointTest {
   }
 
   @Test
-  public void testbroadcastInGroupFails() throws IOException, EncodeException {
+  public void testBroadcastInGroupFails() throws IOException, EncodeException {
     UserService userService = UserServiceImpl.getInstance();
     User user1 = userService.findUserByName("testName1").get();
     User user2 = userService.findUserByName("testName2").get();
@@ -333,6 +333,5 @@ public class ChatEndpointTest {
     Group groupEmpty = new Group();
     chatEndpoint1.broadcastInGroup(message, groupEmpty);
     assertFalse(user1.equals(user2));
-
   }
 }
