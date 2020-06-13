@@ -165,9 +165,4 @@ public class MessageTest {
     assertFalse(decode.willDecode(null));
     assertTrue(decode.willDecode("test"));
   }
-
-  @Test
-  public void testGetCurrDate() {
-    System.out.println(message.getCurrDate());
-  }
 }

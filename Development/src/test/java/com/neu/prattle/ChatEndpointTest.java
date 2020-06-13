@@ -153,14 +153,6 @@ public class ChatEndpointTest {
 
   @Test
   public void testOnClose() throws IOException, EncodeException {
-//    GroupService groupService = GroupServiceImpl.getInstance();
-//    groupService.addGroup(group1);
-//    UserService userService = UserServiceImpl.getInstance();
-//    ModerateService moderateService = ModerateService.getInstance();
-//    userService.addUser(testUser1);
-//    userService.addUser(testUser2);
-//    User moderator1 = moderateService.addGroupModerator(group1,testUser1,testUser1);
-//    moderateService.addGroupMember(group1,testUser1,testUser2);
     chatEndpoint1.onOpen(session1, testUser1.getName());
     chatEndpoint2.onOpen(session2, testUser2.getName());
 
@@ -260,7 +252,7 @@ public class ChatEndpointTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + message.getCurrDate() + "_" + "1.txt");
+      File file = new File(messagePath + "/Group" + "/" + 1 + "_" + message.getCurrDate() + ".txt");
       assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!", file));
     } else {
       fail();
@@ -292,7 +284,7 @@ public class ChatEndpointTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + message.getCurrDate() + "_" + "1.txt");
+      File file = new File(messagePath + "/Group" + "/" + 1 + "_" + message.getCurrDate() + ".txt");
       assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!", file));
     } else {
       fail();

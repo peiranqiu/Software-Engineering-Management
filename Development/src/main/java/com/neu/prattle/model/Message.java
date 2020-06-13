@@ -304,7 +304,7 @@ public class Message {
         File groupDirFile = new File(groupDir);
         groupDirFile.mkdir();
         }
-      String groupChatLogName = messagePath + group + "/" + getCurrDate() + "_" + currentGroupObject.getGroupId() + ".txt";
+      String groupChatLogName = messagePath + group + "/" + currentGroupObject.getGroupId() + "_" + getCurrDate() + ".txt";
       File groupChatFile = new File(groupChatLogName);
       //check if the chat log file already exists
       if (!Files.exists(Paths.get(groupChatLogName))) {
@@ -338,8 +338,6 @@ public class Message {
     Date date = new Date();
     return dateFormat.format(date);
   }
-
-//  public void deleteChatLog(String groupName, )
 
   /***
    * Create an object of MessageBuilder class
