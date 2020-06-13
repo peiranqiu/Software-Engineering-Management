@@ -6,7 +6,7 @@
 package com.neu.prattle;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
@@ -153,14 +153,14 @@ public class ChatEndpointTest {
 
   @Test
   public void testOnClose() throws IOException, EncodeException {
-    GroupService groupService = GroupServiceImpl.getInstance();
-    groupService.addGroup(group1);
-    UserService userService = UserServiceImpl.getInstance();
-    ModerateService moderateService = ModerateService.getInstance();
-    userService.addUser(testUser1);
-    userService.addUser(testUser2);
-    User moderator1 = moderateService.addGroupModerator(group1,testUser1,testUser1);
-    moderateService.addGroupMember(group1,testUser1,testUser2);
+//    GroupService groupService = GroupServiceImpl.getInstance();
+//    groupService.addGroup(group1);
+//    UserService userService = UserServiceImpl.getInstance();
+//    ModerateService moderateService = ModerateService.getInstance();
+//    userService.addUser(testUser1);
+//    userService.addUser(testUser2);
+//    User moderator1 = moderateService.addGroupModerator(group1,testUser1,testUser1);
+//    moderateService.addGroupMember(group1,testUser1,testUser2);
     chatEndpoint1.onOpen(session1, testUser1.getName());
     chatEndpoint2.onOpen(session2, testUser2.getName());
 
@@ -318,7 +318,15 @@ public class ChatEndpointTest {
 
   @Test
   public void testBroadcastInGroupFails() throws IOException, EncodeException {
+    GroupService groupService = GroupServiceImpl.getInstance();
+    groupService.addGroup(group1);
     UserService userService = UserServiceImpl.getInstance();
+    ModerateService moderateService = ModerateService.getInstance();
+    userService.addUser(testUser1);
+    userService.addUser(testUser2);
+    User moderator1 = moderateService.addGroupModerator(group1,testUser1,testUser1);
+    moderateService.addGroupMember(group1,testUser1,testUser2);
+
     User user1 = userService.findUserByName("testName1").get();
     User user2 = userService.findUserByName("testName2").get();
     chatEndpoint1.onOpen(session1, user1.getName());
@@ -332,6 +340,6 @@ public class ChatEndpointTest {
     message.setMessagePath();
     Group groupEmpty = new Group();
     chatEndpoint1.broadcastInGroup(message, groupEmpty);
-    assertFalse(user1.equals(user2));
+    assertNotEquals(testUser1, testUser2);
   }
 }
