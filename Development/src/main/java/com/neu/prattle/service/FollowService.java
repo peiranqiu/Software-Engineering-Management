@@ -2,6 +2,7 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.exceptions.AlreadyFollowException;
 import com.neu.prattle.exceptions.FollowNotFoundException;
+import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 
@@ -131,6 +132,9 @@ public class FollowService {
     if(optionalGroup.isPresent() && optionalUser.isPresent()) {
       User u = optionalUser.get();
       Group g = optionalGroup.get();
+      if(g.getPassword() != null) {
+        throw new NoPrivilegeException("The group is a private group and can not be followed.");
+      }
       List<Group> list = followService.getFollowingGroups(u);
       if(list.contains(g)) {
         throw new AlreadyFollowException(String.format("User %s already followed group %s.", u.getName(), g.getName()));
