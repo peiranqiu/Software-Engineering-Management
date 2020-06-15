@@ -102,15 +102,22 @@ async function userGetFollower(evt) {
         }
     }).then(rs => rs.json());
     console.log(response);
-    let list = generateList(response);
+    let list = generateList(response, "getFollowers");
 
     openTab(evt, "Followers", list);
 }
 
-function generateList(response){
+function generateList(response, operatoin){
     let list = document.createElement('ul');
+   // list.style.listStyleType = 'none';
+    list.id = operatoin + '-list';
+    list.addEventListener('click', (event)=>{
+        document.getElementById('to').value = event.target.innerHTML;
+
+    });
     response.forEach((u)=>{
         let user = document.createElement('li');
+        user.style.cursor ='pointer';
         user.innerText = u.name;
         list.appendChild(user);
     });
@@ -131,7 +138,7 @@ async function userGetFollowee(evt) {
     }).then(rs => rs.json());
     console.log(response);
 
-    let list = generateList(response);
+    let list = generateList(response, 'getFollowees');
 
     openTab(evt, "Followees", list);
 }
@@ -403,10 +410,11 @@ function openTab(evt, tabName, content) {
 
 
     evt.target.className += " active";
-    if (cur.children.length === 0){
-        console.log('empty');
+    if (cur.childNodes.length === 0){
         cur.appendChild(content);
 
     }
+    else {
+    cur.replaceChild(content, cur.childNodes[0]);}
     cur.style.display = "block";
 }

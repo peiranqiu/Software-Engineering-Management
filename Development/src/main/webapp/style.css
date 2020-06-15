@@ -178,3 +178,8 @@ p {
 #tab-container{
     vertical-align: top;
 }
+
+#getFollowers-list, #getFollowees-list{
+    list-style-type: none;
+    padding-inline-start: 5px;
+}
