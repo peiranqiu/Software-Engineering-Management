@@ -19,6 +19,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 
@@ -94,10 +95,10 @@ public final class UserController {
    * @return followers.
    */
   @GET
-  @Path("/getFollower")
+  @Path("/{userId}/getFollower")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getFollower(User user){
-    List<User> list = followService.userGetFollowers(user);
+  public String getFollower(@PathParam("userId") int id){
+    List<User> list = followService.userGetFollowers(id);
     return new Gson().toJson(list);
   }
 
@@ -106,10 +107,10 @@ public final class UserController {
    * @return followees.
    */
   @GET
-  @Path("/getFollowee")
+  @Path("/{userId}/getFollowee")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getFollowedUser(User user){
-    List<User> list = followService.getFollowingUsers(user);
+  public String getFollowedUser(@PathParam("userId") int id){
+    List<User> list = followService.getFollowingUsers(id);
     return new Gson().toJson(list);
   }
 
@@ -118,10 +119,10 @@ public final class UserController {
    * @return groups
    */
   @GET
-  @Path("/getHasGroup")
+  @Path("/{userId}/getHasGroup")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getHasGroup(User user){
-    List<Group> list = moderateService.getHasGroups(user);
+  public String getHasGroup(@PathParam("userId") int id){
+    List<Group> list = moderateService.getHasGroups(id);
     return new Gson().toJson(list);
   }
 
@@ -130,10 +131,10 @@ public final class UserController {
    * @return groups
    */
   @GET
-  @Path("/getFollowedGroup")
+  @Path("/{userId}/getFollowedGroup")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getFollowedGroup(User user){
-    List<Group> list = followService.getFollowingGroups(user);
+  public String getFollowedGroup(@PathParam("userId") int id){
+    List<Group> list = followService.getFollowingGroups(id);
     return new Gson().toJson(list);
   }
 
@@ -141,15 +142,11 @@ public final class UserController {
    * follow a user
    */
   @POST
-  @Path("/follow")
+  @Path("/{followerId}/follow/{followeeId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String followUser(JsonObject follow){
-    Object follower = follow.get("follower");
-    Object followee = follow.get("followee");
-    if(follower instanceof User && followee instanceof User) {
-      if(followService.followUser((User) follower, (User) followee)) {
-        return new Gson().toJson("Follow successful");
-      }
+  public String followUser(@PathParam("followerId") int followerId, @PathParam("followeeId") int followeeId){
+    if(followService.followUser(followerId, followeeId)) {
+      return new Gson().toJson("Follow successful");
     }
     return new Gson().toJson("Follow failed");
   }
@@ -158,16 +155,13 @@ public final class UserController {
    * unollow a user
    */
   @DELETE
-  @Path("/unfollow")
+  @Path("/{followerId}/unfollow/{followeeId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String unfollowUser(JsonObject follow){
-    Object follower = follow.get("follower");
-    Object followee = follow.get("followee");
-    if(follower instanceof User && followee instanceof User) {
-      if(followService.unfollowUser((User) follower, (User) followee)) {
-        return new Gson().toJson("Unfollow successful");
-      }
+  public String unfollowUser(@PathParam("followerId") int followerId, @PathParam("followeeId") int followeeId){
+    if(followService.unfollowUser(followerId, followeeId)) {
+      return new Gson().toJson("Unfollow successful");
     }
     return new Gson().toJson("Unfollow failed");
   }
+
 }

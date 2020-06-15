@@ -66,6 +66,12 @@ public class FollowService {
     return b;
   }
 
+  public boolean followUser(int user1Id, int user2Id) {
+    User user1 = userService.findUserById(user1Id);
+    User user2 = userService.findUserById(user2Id);
+    return followUser(user1, user2);
+  }
+
   /**
    * User1 unfollows user2. Return true if successfully unfollowed.
    * @param user1 the follower
@@ -89,6 +95,12 @@ public class FollowService {
     return b;
   }
 
+  public boolean unfollowUser(int user1Id, int user2Id) {
+    User user1 = userService.findUserById(user1Id);
+    User user2 = userService.findUserById(user2Id);
+    return unfollowUser(user1, user2);
+  }
+
   /**
    * Get a list of users that the specific user follows.
    * @param user the specific user
@@ -104,6 +116,10 @@ public class FollowService {
     return list;
   }
 
+  public List<User> getFollowingUsers(int userId) {
+    return api.getFollowingUsers(userId);
+  }
+
   /**
    * Get follower list for the given user.
    * @param user the given user
@@ -117,6 +133,10 @@ public class FollowService {
       list = api.userGetFollowers(userId);
     }
     return list;
+  }
+
+  public List<User> userGetFollowers(int userId) {
+    return api.userGetFollowers(userId);
   }
 
   /**
@@ -145,6 +165,12 @@ public class FollowService {
     return b;
   }
 
+  public boolean followGroup(int userId, int groupId) {
+    User user = userService.findUserById(userId);
+    Group group = groupService.getGroupById(groupId);
+    return followGroup(user, group);
+  }
+
   /**
    * User unfollows group. Return true if successfully unfollowed.
    * @param user the user
@@ -168,6 +194,12 @@ public class FollowService {
     return b;
   }
 
+  public boolean unfollowGroup(int userId, int groupId) {
+    User user = userService.findUserById(userId);
+    Group group = groupService.getGroupById(groupId);
+    return unfollowGroup(user, group);
+  }
+
   /**
    * Get a list of groups that the specific user follows.
    * @param user the specific user
@@ -181,6 +213,10 @@ public class FollowService {
       list = api.getFollowingGroups(userId);
     }
     return list;
+  }
+
+  public List<Group> getFollowingGroups(int userId) {
+    return api.getFollowingGroups(userId);
   }
 
   /**

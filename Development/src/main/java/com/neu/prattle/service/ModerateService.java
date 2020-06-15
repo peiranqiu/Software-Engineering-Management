@@ -223,6 +223,10 @@ public class ModerateService {
     return list;
   }
 
+  public List<Group> getHasGroups(int userId) {
+    return api.getHasGroups(userId);
+  }
+
   /**
    * Member invites/deletes a user to a group by creating an invitation for the group moderator to approve.
    * @param group the group

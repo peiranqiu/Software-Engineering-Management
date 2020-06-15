@@ -19,6 +19,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -68,15 +69,11 @@ public class GroupController {
    * follow a group
    */
   @POST
-  @Path("/follow")
+  @Path("/{userId}/follow/{groupId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String followGroup(JsonObject follow){
-    Object user = follow.get("user");
-    Object group = follow.get("group");
-    if(user instanceof User && group instanceof Group) {
-      if(followService.followGroup((User) user, (Group) group)) {
-        return new Gson().toJson("Follow successful");
-      }
+  public String followGroup(@PathParam("userId") int userId, @PathParam("groupId") int groupId){
+    if(followService.followGroup(userId, groupId)) {
+      return new Gson().toJson("Follow successful");
     }
     return new Gson().toJson("Follow failed");
   }
@@ -85,15 +82,11 @@ public class GroupController {
    * unollow a group
    */
   @DELETE
-  @Path("/unfollow")
+  @Path("/{userId}/unfollow/{groupId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String unfollowGroup(JsonObject follow){
-    Object user = follow.get("user");
-    Object group = follow.get("group");
-    if(user instanceof User && group instanceof Group) {
-      if(followService.unfollowGroup((User) user, (Group) group)) {
-        return new Gson().toJson("Unfollow successful");
-      }
+  public String unfollowGroup(@PathParam("userId") int userId, @PathParam("groupId") int groupId){
+    if(followService.unfollowGroup(userId, groupId)) {
+      return new Gson().toJson("Unfollow successful");
     }
     return new Gson().toJson("Unfollow failed");
   }
