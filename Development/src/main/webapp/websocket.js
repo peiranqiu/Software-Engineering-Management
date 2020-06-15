@@ -17,7 +17,7 @@ async function createUser (){
         headers: {
             'content-type': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -30,7 +30,7 @@ async function getAllUsers (){
         headers: {
             'content-type': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -48,7 +48,7 @@ async function connect() {
         headers: {
             'content-type': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(rs => rs.json());
     console.log(response);
 
     if(response !== null) {
@@ -92,7 +92,7 @@ async function userGetFollower() {
         headers: {
             'content-type': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -106,7 +106,7 @@ async function userGetFollowee() {
         headers: {
             'content-type': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -120,7 +120,7 @@ async function getHasGroup() {
         headers: {
             'content-type': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -134,7 +134,7 @@ async function getFollowedGroup() {
         headers: {
             'content-type': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -293,7 +293,7 @@ async function addGroupModerator() {
         headers: {
             'content-type': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -338,7 +338,7 @@ async function addGroupMember() {
         headers: {
             'content-type': 'application/json'
         }
-    }).then(response => response.json());
+    }).then(rs => rs.json());
     console.log(response);
 }
 

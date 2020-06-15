@@ -33,11 +33,16 @@ public class GroupController {
   private FollowService followService = FollowService.getInstance();
   private static final GroupController groupController = new GroupController();
 
+  private static final String GROUP = "group";
+  private static final String MODERATOR = "moderator";
+  private static final String USER = "user";
+
   /**
    * Singleton instance for group controller
+   *
    * @return a singleton instance
    */
-  public static GroupController getInstance(){
+  public static GroupController getInstance() {
     return groupController;
   }
 
@@ -52,7 +57,7 @@ public class GroupController {
   @Consumes(MediaType.APPLICATION_JSON)
   public String createGroup(Group group) {
     try {
-      if(groupService.addGroup(group)) {
+      if (groupService.addGroup(group)) {
         return new Gson().toJson(group);
       }
     } catch (GroupAlreadyPresentException e) {
@@ -64,14 +69,14 @@ public class GroupController {
   /**
    * follow a group
    *
-   * @param userId the user id
+   * @param userId  the user id
    * @param groupId the group id
    */
   @POST
   @Path("/{userId}/follow/{groupId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String followGroup(@PathParam("userId") int userId, @PathParam("groupId") int groupId){
-    if(followService.followGroup(userId, groupId)) {
+  public String followGroup(@PathParam("userId") int userId, @PathParam("groupId") int groupId) {
+    if (followService.followGroup(userId, groupId)) {
       return new Gson().toJson("Follow successful");
     }
     return new Gson().toJson("Follow failed");
@@ -79,14 +84,15 @@ public class GroupController {
 
   /**
    * unollow a group
-   * @param userId the user id
+   *
+   * @param userId  the user id
    * @param groupId the group id
    */
   @DELETE
   @Path("/{userId}/unfollow/{groupId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String unfollowGroup(@PathParam("userId") int userId, @PathParam("groupId") int groupId){
-    if(followService.unfollowGroup(userId, groupId)) {
+  public String unfollowGroup(@PathParam("userId") int userId, @PathParam("groupId") int groupId) {
+    if (followService.unfollowGroup(userId, groupId)) {
       return new Gson().toJson("Unfollow successful");
     }
     return new Gson().toJson("Unfollow failed");
@@ -94,17 +100,18 @@ public class GroupController {
 
   /**
    * add group moderator
+   *
    * @param obj the json object contains user group and moderator information
    */
   @POST
   @Path("/moderator/add")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String addModerator(JsonObject obj){
-    Object user = obj.get("user");
-    Object group = obj.get("group");
-    Object moderator = obj.get("moderator");
-    if(user instanceof User && moderator instanceof User && group instanceof Group) {
-      User newModerator = moderateService.addGroupModerator((Group) group, (User) moderator, (User) user);
+  public String addModerator(JsonObject obj) {
+    User user = (User) ((Object) obj.get(USER));
+    Group group = (Group) ((Object) obj.get(GROUP));
+    User moderator = (User) ((Object) obj.get(MODERATOR));
+    User newModerator = moderateService.addGroupModerator(group, moderator, user);
+    if(newModerator != null) {
       return new Gson().toJson(newModerator);
     }
     return new Gson().toJson("Add moderator failed");
@@ -113,19 +120,18 @@ public class GroupController {
 
   /**
    * remove group moderator
+   *
    * @param obj the json object contains user group and moderator information
    */
   @DELETE
   @Path("/moderator/delete")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String deleteModerator(JsonObject obj){
-    Object user = obj.get("user");
-    Object group = obj.get("group");
-    Object moderator = obj.get("moderator");
-    if(user instanceof User && moderator instanceof User && group instanceof Group) {
-      if(moderateService.deleteGroupModerator((Group) group, (User) moderator, (User) user)) {
-        return new Gson().toJson("Delete moderator successful");
-      }
+  public String deleteModerator(JsonObject obj) {
+    User user = (User) ((Object) obj.get(USER));
+    Group group = (Group) ((Object) obj.get(GROUP));
+    User moderator = (User) ((Object) obj.get(MODERATOR));
+    if (moderateService.deleteGroupModerator(group, moderator, user)) {
+      return new Gson().toJson("Delete moderator successful");
     }
     return new Gson().toJson("Delete moderator failed");
   }
@@ -133,39 +139,36 @@ public class GroupController {
 
   /**
    * add group member
+   *
    * @param obj the json object contains user group and moderator information
    */
   @POST
   @Path("/member/add")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String addMember(JsonObject obj){
-    Object user = obj.get("user");
-    Object group = obj.get("group");
-    Object moderator = obj.get("moderator");
-
-    if(user instanceof User && moderator instanceof User && group instanceof Group) {
-      if(moderateService.addGroupMember((Group) group, (User) moderator, (User) user)) {
-        return new Gson().toJson("Add member successful");
-      }
+  public String addMember(JsonObject obj) {
+    User user = (User) ((Object) obj.get(USER));
+    Group group = (Group) ((Object) obj.get(GROUP));
+    User moderator = (User) ((Object) obj.get(MODERATOR));
+    if (moderateService.addGroupMember(group, moderator, user)) {
+      return new Gson().toJson("Add member successful");
     }
     return new Gson().toJson("Add member failed");
   }
 
   /**
    * delete group member
+   *
    * @param obj the json object contains user group and moderator information
    */
   @DELETE
   @Path("/member/delete")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String deleteMember(JsonObject obj){
-    Object user = obj.get("user");
-    Object group = obj.get("group");
-    Object moderator = obj.get("moderator");
-    if(user instanceof User && moderator instanceof User && group instanceof Group) {
-      if(moderateService.deleteGroupMember((Group) group, (User) moderator, (User) user)) {
-        return new Gson().toJson("Delete member successful");
-      }
+  public String deleteMember(JsonObject obj) {
+    User user = (User) ((Object) obj.get(USER));
+    Group group = (Group) ((Object) obj.get(GROUP));
+    User moderator = (User) ((Object) obj.get(MODERATOR));
+    if (moderateService.deleteGroupMember(group, moderator, user)) {
+      return new Gson().toJson("Delete member successful");
     }
     return new Gson().toJson("Delete member failed");
   }

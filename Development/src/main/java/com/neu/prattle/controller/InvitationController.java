@@ -25,6 +25,9 @@ public class InvitationController {
   private ModerateService moderateService = ModerateService.getInstance();
   private static final InvitationController invitationController = new InvitationController();
 
+  private static final String GROUP = "group";
+  private static final String INVITER = "inviter";
+  private static final String INVITEE = "invitee";
   /**
    * Singleton instance for invitation controller
    * @return a singleton instance
@@ -43,15 +46,12 @@ public class InvitationController {
   @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
   public String createInvitation(JsonObject invitation) {
-    Object group = invitation.get("group");
-    Object inviter = invitation.get("inviter");
-    Object invitee = invitation.get("invitee");
-    Object isInvite = invitation.get("isInvite");
-    if(group instanceof Group && inviter instanceof User
-            && invitee instanceof User && isInvite instanceof Boolean) {
-      if(moderateService.createInvitation((Group) group, (User) inviter, (User) invitee, (Boolean) isInvite)) {
-        return new Gson().toJson("Invitation created successfully");
-      }
+    Group group = (Group) ((Object) invitation.get(GROUP));
+    User inviter = (User) ((Object) invitation.get(INVITER));
+    User invitee = (User) ((Object) invitation.get(INVITEE));
+    Boolean isInvite = (Boolean) ((Object) invitation.get("isInvite"));
+    if(moderateService.createInvitation(group, inviter, invitee, isInvite)) {
+      return new Gson().toJson("Invitation created successfully");
     }
     return new Gson().toJson("Creating invitation failed");
   }
@@ -65,13 +65,11 @@ public class InvitationController {
   @Path("/delete")
   @Consumes(MediaType.APPLICATION_JSON)
   public String deleteInvitation(JsonObject invitation) {
-    Object group = invitation.get("group");
-    Object inviter = invitation.get("inviter");
-    Object invitee = invitation.get("invitee");
-    if(group instanceof Group && inviter instanceof User && invitee instanceof User) {
-      if(moderateService.deleteInvitation((Group) group, (User) inviter, (User) invitee)) {
-        return new Gson().toJson("Invitation deleted successfully");
-      }
+    Group group = (Group) ((Object) invitation.get(GROUP));
+    User inviter = (User) ((Object) invitation.get(INVITER));
+    User invitee = (User) ((Object) invitation.get(INVITEE));
+    if(moderateService.deleteInvitation(group, inviter, invitee)) {
+      return new Gson().toJson("Invitation deleted successfully");
     }
     return new Gson().toJson("Deleting invitation failed");
   }
@@ -85,15 +83,12 @@ public class InvitationController {
   @Path("/approve")
   @Consumes(MediaType.APPLICATION_JSON)
   public String approveInvitation(JsonObject invitation) {
-    Object group = invitation.get("group");
-    Object inviter = invitation.get("inviter");
-    Object invitee = invitation.get("invitee");
-    Object isInvite = invitation.get("isInvite");
-    if(group instanceof Group && inviter instanceof User
-            && invitee instanceof User && isInvite instanceof Boolean) {
-      if(moderateService.approveInvitation((Group) group, (User) inviter, (User) invitee, (Boolean) isInvite)) {
-        return new Gson().toJson("Invitation approved");
-      }
+    Group group = (Group) ((Object) invitation.get(GROUP));
+    User inviter = (User) ((Object) invitation.get(INVITER));
+    User invitee = (User) ((Object) invitation.get(INVITEE));
+    Boolean isInvite = (Boolean) ((Object) invitation.get("isInvite"));
+    if(moderateService.approveInvitation(group, inviter, invitee, isInvite)) {
+      return new Gson().toJson("Invitation approved");
     }
     return new Gson().toJson("Invitation not approved. Please try again.");
   }
