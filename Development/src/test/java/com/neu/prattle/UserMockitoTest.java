@@ -5,9 +5,9 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.api.UserAPI;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
+import com.neu.prattle.service.api.UserAPI;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -18,12 +18,16 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -154,6 +158,38 @@ public class UserMockitoTest {
   }
 
   /**
+   * Test find user with a given id.
+   */
+  @Test
+  public void testFindUserById() throws SQLException {
+    when(api.getUserById(anyInt())).thenReturn(user1);
+    userService.setAPI(api);
+    assertEquals(userService.findUserById(user1.getUserId()), user1);
+
+    when(api.getUserById(anyInt())).thenReturn(null);
+    userService.setAPI(api);
+    assertNull(userService.findUserById(-1));
+  }
+
+  /**
+   * Test get all users in db
+   */
+  @Test
+  public void testGetAllUsers() throws SQLException {
+
+    List<User> allUsers = Arrays.asList(user1, user2);
+    when(api.getAllUsers()).thenReturn(allUsers);
+    userService.setAPI(api);
+    assertEquals(userService.getAllUsers().size(), allUsers.size());
+
+
+    when(api.getAllUsers()).thenReturn(new ArrayList<>());
+    userService.setAPI(api);
+    assertTrue(userService.getAllUsers().isEmpty());
+  }
+
+
+  /**
    * Test get current information for the user.
    */
   @Test
@@ -182,6 +218,22 @@ public class UserMockitoTest {
   }
 
   /**
+   * Test user avatar update.
+   */
+  @Test
+  public void testUpdateAvatar() throws SQLException{
+    User newUser = new User("Hhhhhhh323", "Hhhhhhh123");
+    when(api.addUser(any(User.class))).thenReturn(true);
+    when(api.getUserByName(anyString())).thenReturn(newUser);
+    when(api.updateUser(any(User.class), anyString(), anyString())).thenReturn(newUser);
+    userService.setAPI(api);
+    assertTrue(userService.addUser(newUser));
+
+    newUser.setAvatar("newPassword123");
+    assertEquals(userService.updateUser(newUser, "avatar").getName(), newUser.getName());
+  }
+
+  /**
    * Test user password update failure.
    */
   @Test(expected = UserNotFoundException.class)
@@ -191,6 +243,14 @@ public class UserMockitoTest {
     userService.updateUser(user2, "password");
   }
 
+  @Test
+  public void setModerator() throws SQLException{
+    User u = new User("newUser123", "ererererf5F");
+    u.setModerator(true);
+    when(api.setModerator(any(User.class))).thenReturn(u);
+    userService.setAPI(api);
+    assertTrue(userService.setModerator(u).getModerator());
+  }
   /**
    * Generate random number range from 1 to 10000.
    * @return the generated number

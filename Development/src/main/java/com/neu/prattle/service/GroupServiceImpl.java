@@ -40,6 +40,11 @@ public class GroupServiceImpl implements GroupService {
   public void setAPI(GroupAPI groupAPI) {
     api = groupAPI;
   }
+
+  @Override
+  public void setFollowAPI(FollowAPI newFollowAPI) {
+    followAPI = newFollowAPI;
+  }
   /**
    * Call this method to return an instance of this service.
    *
