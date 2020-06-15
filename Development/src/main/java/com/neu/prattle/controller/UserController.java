@@ -1,7 +1,6 @@
 package com.neu.prattle.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.model.Group;
@@ -24,8 +23,7 @@ import javax.ws.rs.core.MediaType;
 
 
 /***
- * A Resource class responsible for handling CRUD operations on User objects.
- *
+ * A user controller class to handle http requests.
  */
 
 @Path(value = "/user")
@@ -47,8 +45,8 @@ public final class UserController {
   /***
    * Handles a HTTP POST request for user creation
    *
-   * @param user -> The User object decoded from the payload of POST request.
-   * @return -> A Response indicating the outcome of the requested operation.
+   * @param user the user
+   * @return the created user
    */
   @POST
   @Path("/create")
@@ -66,7 +64,7 @@ public final class UserController {
 
   /**
    * Get all users
-   * @return all users.
+   * @return all users
    */
   @GET
   @Path("/getAllUser")
@@ -76,6 +74,11 @@ public final class UserController {
     return new Gson().toJson(list);
   }
 
+  /**
+   * user login
+   * @param user the user
+   * @return login-ed user
+   */
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -92,6 +95,7 @@ public final class UserController {
 
   /**
    * Get followers of a user
+   * @param id the user id
    * @return followers.
    */
   @GET
@@ -104,6 +108,7 @@ public final class UserController {
 
   /**
    * Get followees of a user
+   * @param id the user id
    * @return followees.
    */
   @GET
@@ -116,6 +121,7 @@ public final class UserController {
 
   /**
    * Get list of groups the user has
+   * @param id the user id
    * @return groups
    */
   @GET
@@ -127,7 +133,8 @@ public final class UserController {
   }
 
   /**
-   * Get list of groups the user has
+   * Get list of groups the user is following
+   * @param id the user id
    * @return groups
    */
   @GET
@@ -140,6 +147,8 @@ public final class UserController {
 
   /**
    * follow a user
+   * @param followerId the follower id
+   * @param followeeId the followee id
    */
   @POST
   @Path("/{followerId}/follow/{followeeId}")
@@ -153,6 +162,8 @@ public final class UserController {
 
   /**
    * unollow a user
+   * @param followerId the follower id
+   * @param followeeId the followee id
    */
   @DELETE
   @Path("/{followerId}/unfollow/{followeeId}")

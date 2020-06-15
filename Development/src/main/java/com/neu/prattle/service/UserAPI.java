@@ -48,7 +48,7 @@ public class UserAPI extends DBUtils {
   }
 
   /**
-   * Add a user the db
+   * Add a user into the db
    *
    * @param user the user to add
    */

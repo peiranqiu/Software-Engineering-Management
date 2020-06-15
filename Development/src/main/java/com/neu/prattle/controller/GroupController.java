@@ -10,8 +10,6 @@ import com.neu.prattle.service.FollowService;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.ModerateService;
-import com.neu.prattle.service.UserService;
-import com.neu.prattle.service.UserServiceImpl;
 
 import org.springframework.stereotype.Controller;
 
@@ -21,10 +19,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /***
- * A Resource class responsible for handling CRUD operations on Group objects.
+ * A group controller class to handle http requests.
  *
  */
 @Controller
@@ -33,12 +30,11 @@ public class GroupController {
 
   private GroupService groupService = GroupServiceImpl.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
-  private UserService userService = UserServiceImpl.getInstance();
   private FollowService followService = FollowService.getInstance();
   private static final GroupController groupController = new GroupController();
 
   /**
-   * Singleton instance for user controller
+   * Singleton instance for group controller
    * @return a singleton instance
    */
   public static GroupController getInstance(){
@@ -46,10 +42,10 @@ public class GroupController {
   }
 
   /***
-   * Handles a HTTP POST request for group creation
+   * create a group
    *
-   * @param group -> The Group object decoded from the payload of POST request.
-   * @return -> A Response indicating the outcome of the requested operation.
+   * @param group the group
+   * @return the created group
    */
   @POST
   @Path("/create")
@@ -67,6 +63,9 @@ public class GroupController {
 
   /**
    * follow a group
+   *
+   * @param userId the user id
+   * @param groupId the group id
    */
   @POST
   @Path("/{userId}/follow/{groupId}")
@@ -80,6 +79,8 @@ public class GroupController {
 
   /**
    * unollow a group
+   * @param userId the user id
+   * @param groupId the group id
    */
   @DELETE
   @Path("/{userId}/unfollow/{groupId}")
@@ -93,6 +94,7 @@ public class GroupController {
 
   /**
    * add group moderator
+   * @param obj the json object contains user group and moderator information
    */
   @POST
   @Path("/moderator/add")
@@ -111,6 +113,7 @@ public class GroupController {
 
   /**
    * remove group moderator
+   * @param obj the json object contains user group and moderator information
    */
   @DELETE
   @Path("/moderator/delete")
@@ -130,6 +133,7 @@ public class GroupController {
 
   /**
    * add group member
+   * @param obj the json object contains user group and moderator information
    */
   @POST
   @Path("/member/add")
@@ -149,6 +153,7 @@ public class GroupController {
 
   /**
    * delete group member
+   * @param obj the json object contains user group and moderator information
    */
   @DELETE
   @Path("/member/delete")

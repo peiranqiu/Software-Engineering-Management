@@ -5,11 +5,7 @@ import com.google.gson.JsonObject;
 
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.GroupService;
-import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.ModerateService;
-import com.neu.prattle.service.UserService;
-import com.neu.prattle.service.UserServiceImpl;
 
 import org.springframework.stereotype.Controller;
 
@@ -21,15 +17,12 @@ import javax.ws.rs.core.MediaType;
 
 /***
  * A controller class for invitation.
- *
  */
 @Controller
 @Path(value = "/invitation")
 public class InvitationController {
 
-  private GroupService groupService = GroupServiceImpl.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
-  private UserService userService = UserServiceImpl.getInstance();
   private static final InvitationController invitationController = new InvitationController();
 
   /**
@@ -41,10 +34,10 @@ public class InvitationController {
   }
 
   /***
-   * Handles a HTTP POST request for invitation creation
+   * create an invitation
    *
-   * @param invitation -> The invitation object decoded from the payload of POST request.
-   * @return -> A Response indicating the outcome of the requested operation.
+   * @param invitation the invitation
+   * @return the created invitation
    */
   @POST
   @Path("/create")
@@ -64,10 +57,9 @@ public class InvitationController {
   }
 
   /***
-   * Handles a HTTP POST request for invitation deletion
+   * delete an invitation
    *
-   * @param invitation -> The invitation object decoded from the payload of POST request.
-   * @return -> A Response indicating the outcome of the requested operation.
+   * @param invitation the invitation
    */
   @DELETE
   @Path("/delete")
@@ -85,10 +77,9 @@ public class InvitationController {
   }
 
   /***
-   * Handles a HTTP POST request to approve an invitation
+   * approve an invitation
    *
-   * @param invitation -> The invitation object decoded from the payload of POST request.
-   * @return -> A Response indicating the outcome of the requested operation.
+   * @param invitation the invitation
    */
   @POST
   @Path("/approve")
