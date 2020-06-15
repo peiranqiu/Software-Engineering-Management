@@ -5,6 +5,14 @@ import com.neu.prattle.model.User;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -20,6 +28,8 @@ import javax.ws.rs.core.Response;
 
 @Path(value = "/user")
 public final class UserController {
+
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
   private UserService userService = UserServiceImpl.getInstance();
   private static final UserController userController = new UserController();
@@ -41,22 +51,41 @@ public final class UserController {
   @POST
   @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response createUserAccount(User user) {
+  public String createUserAccount(User user) {
     try {
-      userService.addUser(user);
+      if(userService.addUser(user)) {
+        return new Gson().toJson(user);
+      }
     } catch (UserAlreadyPresentException e) {
-      return Response.status(409).build();
+      return new Gson().toJson("User Already Present");
     }
-
-    return Response.ok().build();
+    return null;
   }
 
-
+  /**
+   * Get all users
+   * @return all users.
+   */
   @GET
   @Path("/getAll")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getAllUsers(){
-    return "Test";
+    List<User> list = userService.getAllUsers();
+    return new Gson().toJson(list);
+  }
+
+  @POST
+  @Path("/login")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String login(User user) {
+    Optional<User> optional = userService.findUserByName(user.getName());
+    if(optional.isPresent()) {
+      User u = optional.get();
+      if(u.getPassword().equals(user.getPassword())) {
+        return new Gson().toJson(u);
+      }
+    }
+    return new Gson().toJson(null);
   }
 
 }

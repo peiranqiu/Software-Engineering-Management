@@ -1,66 +1,89 @@
-function createUser (){
-    var markers = {'name': document.getElementById('newName').value,
+let ws;
+
+
+/**
+ * Create a new user
+ */
+async function createUser (){
+    let markers = {'name': document.getElementById('newName').value,
         'password': document.getElementById('newPsw').value};
-    var xhr = new XMLHttpRequest();
-    var url = "http://localhost:8080/java-websocket/rest/user/create";
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-// xhr.onreadystatechange = function () {
-//     if (xhr.readyState === 4 && xhr.status === 200) {
-//         var json = JSON.parse(xhr.responseText);
-//         console.log(json.name + ", " + json.password);
-//     }
-// };
-    var data = JSON.stringify(markers);
-    xhr.send(data);}
-
-
-
-var ws;
-
-function connect() {
-    var username = document.getElementById("username").value;
-
-    var host = document.location.host;
-    var pathname = document.location.pathname;
-
-    ws = new WebSocket("ws://" +host  + pathname + "chat/" + username);
-
-    ws.onmessage = function(event) {
-        var log = document.getElementById("log");
-        console.log(event.data);
-        var message = JSON.parse(event.data);
-        log.innerHTML += message.from + " : " + message.content + "\n";
-    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/create', {
+        method: 'POST',
+        body: JSON.stringify(markers),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(response => response.json());
+    console.log(response);
 }
 
-function getAllUsers() {
-    // var username = document.getElementById("username").value;
-
-    // var markers = {'name': document.getElementById('newName').value,
-    //     'password': document.getElementById('newPsw').value};
-    var xhr = new XMLHttpRequest();
-    var url = "http://localhost:8080/prattle/rest/user/getAll";
-    xhr.open("GET", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-// xhr.onreadystatechange = function () {
-//     if (xhr.readyState === 4 && xhr.status === 200) {
-//         var json = JSON.parse(xhr.responseText);
-//         console.log(json.name + ", " + json.password);
-//     }
-// };
-//     var data = JSON.stringify(markers);
-    xhr.send();
-    console.log("????");
-    console.log(xhr.response);
+/**
+ * get list of all users.
+ */
+async function getAllUsers (){
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/getAll', {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(response => response.json());
+    console.log(response);
 }
 
+/**
+ * Log in a user
+ */
+async function connect() {
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
+    let markers = {'name': username, 'password': password};
+
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/login', {
+        method: 'POST',
+        body: JSON.stringify(markers),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(response => response.json());
+    console.log(response);
+
+    if(response !== null) {
+        let host = document.location.host;
+        let pathname = document.location.pathname;
+
+        ws = new WebSocket("ws://" +host  + pathname + "chat/" + username);
+
+        ws.onmessage = function(event) {
+            var log = document.getElementById("log");
+            console.log(event.data);
+            var message = JSON.parse(event.data);
+            log.innerHTML += message.from + " : " + message.content + "\n";
+        };
+    }
+    else {
+        console.log("Log in failed.")
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Send message.
+ */
 function send() {
     var content = document.getElementById("msg").value;
     var json = JSON.stringify({
                                   "content":content,
                                   "to":document.getElementById('to').value
                               });
-
     ws.send(json);
 }

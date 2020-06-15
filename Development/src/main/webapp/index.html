@@ -3,7 +3,7 @@
 <head>
     <title>Chat</title>
 </head>
-<body>
+<body onload="getAllUsers()">
 
 <table>
     <caption>Table</caption>
@@ -14,6 +14,7 @@
     <tr>
         <td colspan="2">
             <input type="text" id="username" placeholder="Username"/>
+            <input type="text" id="password" placeholder="Password"/>
             <button type="button" onclick="connect();" >Connect</button>
         </td>
     </tr>
