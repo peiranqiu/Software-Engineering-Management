@@ -3,6 +3,7 @@ package com.neu.prattle.service;
 import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.ModerateAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +15,46 @@ import java.util.Optional;
  */
 public class ModerateService {
 
-  private static UserService userService;
-  private static GroupService groupService;
+  private UserService userService;
+  private GroupService groupService;
   private static ModerateService moderateService;
   private ModerateAPI api;
 
   static {
     moderateService = new ModerateService();
-    userService = UserServiceImpl.getInstance();
-    groupService = GroupServiceImpl.getInstance();
   }
 
   /**
    * ModerateService is a Singleton class.
    */
   private ModerateService() {
+
     api = new ModerateAPI();
+    userService = UserServiceImpl.getInstance();
+    groupService = GroupServiceImpl.getInstance();
+  }
+
+  /**
+   * Set moderate api to be used by this service.
+   * @param moderateAPI
+   */
+  public void setAPI(ModerateAPI moderateAPI) {
+    api = moderateAPI;
+  }
+  /**
+   * Set userService to be used by this service.
+   * @param service
+   */
+  public void setUserService(UserService service) {
+    userService = service;
+  }
+
+  /**
+   * Set groupService to be used by this service.
+   * @param service
+   */
+  public void setGroupService(GroupService service) {
+    groupService = service;
   }
 
   /**

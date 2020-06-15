@@ -1,4 +1,4 @@
-package com.neu.prattle.service;
+package com.neu.prattle.service.api;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

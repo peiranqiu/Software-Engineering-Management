@@ -5,6 +5,7 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.UserAPI;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 
@@ -16,10 +17,11 @@ import org.junit.runners.MethodSorters;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.Optional;
+import java.sql.SQLException;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,13 +34,12 @@ import static org.mockito.Mockito.when;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(MockitoJUnitRunner.class)
-public class UserServiceMockTest {
+public class UserMockitoTest {
 
-  @Mock
   private UserService userService;
 
   @Mock
-  private User u;
+  private UserAPI api;
 
   private User user1;
   private User user2;
@@ -47,8 +48,7 @@ public class UserServiceMockTest {
   @Before
   public void setUp() {
     userService = UserServiceImpl.getInstance();
-    userService = mock(UserService.class);
-    u = mock(User.class);
+    api = mock(UserAPI.class);
 
     user1 = new User("HarryPotter" + getRandom());
     user1.setPassword("Password" + getRandom());
@@ -66,7 +66,8 @@ public class UserServiceMockTest {
    */
   @Test
   public void testCreateUser() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
+    when(api.addUser(any(User.class))).thenReturn(true);
+    userService.setAPI(api);
     assertTrue(userService.addUser(user1));
   }
 
@@ -75,7 +76,8 @@ public class UserServiceMockTest {
    */
   @Test(expected = UserAlreadyPresentException.class)
   public void testCreateUserAlreadyExist() {
-    when(userService.addUser(any(User.class))).thenThrow(UserAlreadyPresentException.class);
+    when(api.addUser(any(User.class))).thenThrow(UserAlreadyPresentException.class);
+    userService.setAPI(api);
     userService.addUser(user1);
   }
 
@@ -84,23 +86,19 @@ public class UserServiceMockTest {
    */
   @Test(expected = UserNameInvalidException.class)
   public void testCreateUserInvalidName() {
-    when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
+    userService.setAPI(api);
     user2.setName("123456nfkgfkgsdfhdjfdkekgfhsdfk");
     userService.addUser(user2);
 
-    when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
     user2.setName("-1");
     userService.addUser(user2);
 
-    when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
     user2.setName("GOODGOODGOOD123");
     userService.addUser(user2);
 
-    when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
     user2.setName("goodgoodgood");
     userService.addUser(user2);
 
-    when(userService.addUser(any(User.class))).thenThrow(UserNameInvalidException.class);
     user2.setName("GoodgoodGood");
     userService.addUser(user2);
   }
@@ -110,23 +108,19 @@ public class UserServiceMockTest {
    */
   @Test(expected = PasswordInvalidException.class)
   public void testCreateUserInvalidPassword() {
-    when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
+    userService.setAPI(api);
     user2.setPassword("-1");
     userService.addUser(user2);
 
-    when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
     user2.setPassword("-112v456nfkgfkgsdfhdjfdkekgfhsd3");
     userService.addUser(user2);
 
-    when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
     user2.setPassword("GOODGOODGOOD123");
     userService.addUser(user2);
 
-    when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
     user2.setPassword("goodgoodgood");
     userService.addUser(user2);
 
-    when(userService.addUser(any(User.class))).thenThrow(PasswordInvalidException.class);
     user2.setPassword("GoodgoodGood");
     userService.addUser(user2);
   }
@@ -139,7 +133,8 @@ public class UserServiceMockTest {
     for (int i = 0; i < 100; i++) {
       User user = new User("RobsUsername" + i);
       user.setPassword("RobsPassword" + i);
-      when(userService.addUser(any(User.class))).thenReturn(true);
+      when(api.addUser(any(User.class))).thenReturn(true);
+      userService.setAPI(api);
       assertTrue(userService.addUser(user));
     }
   }
@@ -148,12 +143,13 @@ public class UserServiceMockTest {
    * Test find user with a given name.
    */
   @Test
-  public void testFindUserByName() {
-    Optional<User> optional = Optional.of(user1);
-    when(userService.findUserByName(anyString())).thenReturn(optional);
+  public void testFindUserByName() throws SQLException {
+    when(api.getUserByName(anyString())).thenReturn(user1);
+    userService.setAPI(api);
     assertEquals(userService.findUserByName("HarryPotter1").get(), user1);
 
-    when(userService.findUserByName(anyString())).thenReturn(Optional.empty());
+    when(api.getUserByName(anyString())).thenReturn(null);
+    userService.setAPI(api);
     assertFalse(userService.findUserByName("EllenDeGeneres").isPresent());
   }
 
@@ -162,7 +158,9 @@ public class UserServiceMockTest {
    */
   @Test
   public void testRetrieveInformationForCurrentUser(){
-    userService.addUser(user3);
+    when(api.addUser(any(User.class))).thenReturn(true);
+    userService.setAPI(api);
+    assertTrue(userService.addUser(user3));
     assertEquals("Kale12345", user3.getName());
     assertEquals("Password12345", user3.getPassword());
   }
@@ -171,19 +169,25 @@ public class UserServiceMockTest {
    * Test user password update.
    */
   @Test
-  public void testUpdatePassword(){
-    user1.setPassword("Harry12345");
-    when(userService.updateUser(any(User.class), anyString())).thenReturn(user1);
-    assertEquals(userService.updateUser(user1, "password").getName(), user1.getName());
+  public void testUpdatePassword() throws SQLException{
+    User newUser = new User("Hhhhhhh123", "Hhhhhhh123");
+    when(api.addUser(any(User.class))).thenReturn(true);
+    when(api.getUserByName(anyString())).thenReturn(newUser);
+    when(api.updateUser(any(User.class), anyString(), anyString())).thenReturn(newUser);
+    userService.setAPI(api);
+    assertTrue(userService.addUser(newUser));
+
+    newUser.setPassword("newPassword123");
+    assertEquals(userService.updateUser(newUser, "password").getName(), newUser.getName());
   }
 
   /**
    * Test user password update failure.
    */
   @Test(expected = UserNotFoundException.class)
-  public void testUpdatePasswordFail(){
+  public void testUpdatePasswordFail() throws SQLException {
     user2.setPassword("Emma12345");
-    when(userService.updateUser(any(User.class), anyString())).thenThrow(UserNotFoundException.class);
+    userService.setAPI(api);
     userService.updateUser(user2, "password");
   }
 

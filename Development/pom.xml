@@ -127,6 +127,7 @@
 		<sonar.coverage.exclusions>
 			src/main/java/com/neu/prattle/controller/**,
 			src/main/java/com/neu/prattle/exceptions/**,
+			src/main/java/com/neu/prattle/service/api/**,
 			src/main/java/com/neu/prattle/main/**,
 			src/main/webapp/**,
 		</sonar.coverage.exclusions>

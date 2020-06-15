@@ -1,6 +1,7 @@
 package com.neu.prattle.service;
 
 import com.neu.prattle.model.Group;
+import com.neu.prattle.service.api.GroupAPI;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -75,6 +76,10 @@ public interface GroupService {
    */
   Group getGroupById(int id);
 
-
+  /**
+   * Set the user api used by this service
+   * @param api
+   */
+  void setAPI(GroupAPI api);
 
 }

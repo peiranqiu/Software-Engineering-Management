@@ -1,4 +1,4 @@
-package com.neu.prattle.service;
+package com.neu.prattle.service.api;
 
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
@@ -178,7 +178,7 @@ public class FollowAPI extends DBUtils {
    * Helper method to get corresponding user list of user's followers, user's following list and
    * group's followers.
    */
-  public void getUserList(Connection con, String sql, List<User> list, int id, String col) {
+  public boolean getUserList(Connection con, String sql, List<User> list, int id, String col) {
     try (PreparedStatement stmt = con.prepareStatement(sql)) {
       stmt.setInt(1, id);
       rs = stmt.executeQuery();
@@ -191,5 +191,6 @@ public class FollowAPI extends DBUtils {
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
+    return true;
   }
 }

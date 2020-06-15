@@ -5,6 +5,7 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.UserAPI;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,6 +33,15 @@ public class UserServiceImpl implements UserService {
    */
   private UserServiceImpl() {
     api = new UserAPI();
+  }
+
+  /**
+   * Set the api useed by user Service.
+   * @param userAPI user api
+   */
+  @Override
+  public void setAPI(UserAPI userAPI) {
+    api = userAPI;
   }
 
   /**
