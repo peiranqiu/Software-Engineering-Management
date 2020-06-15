@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +22,29 @@ public class UserAPI extends DBUtils {
 
   public UserAPI() {
     super();
+  }
+
+  /**
+   * Get all users.
+   */
+  public List<User> getAllUsers() throws SQLException {
+    List<User> allUsers = new ArrayList<>();
+    String sql = "SELECT * FROM User";
+    try {
+      con = getConnection();
+      stmt = con.prepareStatement(sql);
+      rs = stmt.executeQuery();
+      while (rs.next()) {
+        User u = constructUser(rs);
+        allUsers.add(u);
+      }
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      rs.close();
+      stmt.close();
+    }
+    return allUsers;
   }
 
   /**

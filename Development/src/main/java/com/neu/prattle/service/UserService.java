@@ -2,6 +2,7 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 /***
@@ -46,4 +47,10 @@ public interface UserService {
    * @return the updated user
    */
   User setModerator(User user);
+
+  /**
+   * Get all users in the database.
+   * @return all users
+   */
+  List<User> getAllUsers();
 }

@@ -6,10 +6,12 @@ import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 
 /***
  * A Resource class responsible for handling CRUD operations on User objects.
@@ -20,6 +22,15 @@ import javax.ws.rs.core.Response;
 public final class UserController {
 
   private UserService userService = UserServiceImpl.getInstance();
+  private static final UserController userController = new UserController();
+
+  /**
+   * Singleton instance for user controller
+   * @return a singleton instance
+   */
+  public static UserController getInstance(){
+    return userController;
+  }
 
   /***
    * Handles a HTTP POST request for user creation
@@ -39,4 +50,13 @@ public final class UserController {
 
     return Response.ok().build();
   }
+
+
+  @GET
+  @Path("/getAll")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getAllUsers(){
+    return "Test";
+  }
+
 }
