@@ -157,7 +157,15 @@ public class ChatEndpoint {
   @OnMessage
   public void onMessage(Session session, Message message) {
     message.setFrom(users.get(session.getId()));
-    broadcast(message);
+
+    try {
+      sendPersonalMessage(message);
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (EncodeException e) {
+      e.printStackTrace();
+    }
+
   }
 
   /**

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <title>Chat</title>
 </head>
-<body>
+<body onload="getAllUsers()">
 
 <table>
     <caption>Table</caption>
@@ -25,7 +25,10 @@
     </tr>
     <tr>
         <td>
-            <input type="text" id="to" placeholder="To" />
+            <select id="to">
+                <option value ="" disabled selected hidden>To</option>
+            </select>
+
             <input type="text" size="51" id="msg" placeholder="Message"/>
             <button type="button" onclick="send();" >Send</button>
 
@@ -41,7 +44,7 @@
     </tr>
     <tr>
         <td>
-            <button onclick="getAllUsers()"> GetAllUser </button>
+            <!--<button onclick="getAllUsers()"> GetAllUser </button>-->
             <button onclick="userGetFollower()"> GetFollower </button>
             <button onclick="userGetFollowee()"> GetFollowee </button>
             <button onclick="followUser()"> FollowUser1 </button>

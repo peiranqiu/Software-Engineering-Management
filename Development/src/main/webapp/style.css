@@ -134,3 +134,7 @@ p {
 .device a:hover {
     text-decoration: underline;
 }
+
+#to{
+    width: max-content;
+}

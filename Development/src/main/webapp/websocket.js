@@ -32,6 +32,15 @@ async function getAllUsers (){
         }
     }).then(rs => rs.json());
     console.log(response);
+
+    let select = document.getElementById('to');
+    debugger;
+    response.forEach((user)=>{
+        let option = document.createElement("option");
+        option.value = user.name;
+        option.text = user.name;
+        select.appendChild(option);
+    })
 }
 
 /**
