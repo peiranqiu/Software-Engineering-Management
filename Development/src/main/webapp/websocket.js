@@ -34,7 +34,6 @@ async function getAllUsers (){
     console.log(response);
 
     let select = document.getElementById('to');
-    debugger;
     response.forEach((user)=>{
         let option = document.createElement("option");
         option.value = user.name;
@@ -94,7 +93,7 @@ function send() {
 /**
  * a user get list of followers.
  */
-async function userGetFollower() {
+async function userGetFollower(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId +'/getFollower', {
         method: 'GET',
@@ -103,12 +102,33 @@ async function userGetFollower() {
         }
     }).then(rs => rs.json());
     console.log(response);
+    let list = generateList(response, "getFollowers");
+
+    openTab(evt, "Followers", list);
+}
+
+function generateList(response, operatoin){
+    let list = document.createElement('ul');
+   // list.style.listStyleType = 'none';
+    list.id = operatoin + '-list';
+    list.addEventListener('click', (event)=>{
+        document.getElementById('to').value = event.target.innerHTML;
+
+    });
+    response.forEach((u)=>{
+        let user = document.createElement('li');
+        user.style.cursor ='pointer';
+        user.innerText = u.name;
+        list.appendChild(user);
+    });
+    return list;
+
 }
 
 /**
  * a user get list of followees.
  */
-async function userGetFollowee() {
+async function userGetFollowee(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee', {
         method: 'GET',
@@ -117,6 +137,10 @@ async function userGetFollowee() {
         }
     }).then(rs => rs.json());
     console.log(response);
+
+    let list = generateList(response, 'getFollowees');
+
+    openTab(evt, "Followees", list);
 }
 
 /**
@@ -370,4 +394,27 @@ async function deleteGroupMember() {
         }
     });
     console.log(response);
+}
+
+function openTab(evt, tabName, content) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    let cur = document.getElementById(tabName);
+
+
+    evt.target.className += " active";
+    if (cur.childNodes.length === 0){
+        cur.appendChild(content);
+
+    }
+    else {
+    cur.replaceChild(content, cur.childNodes[0]);}
+    cur.style.display = "block";
 }

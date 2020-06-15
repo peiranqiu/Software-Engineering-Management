@@ -2,6 +2,8 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <title>Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 </head>
 <body onload="getAllUsers()">
 
@@ -20,7 +22,30 @@
     </tr>
     <tr>
         <td>
-            <textarea readonly="true" rows="10" cols="80" id="log"></textarea>
+            <textarea readonly="true" rows="10" cols="60" id="log"></textarea>
+        </td>
+        <td id="tab-container">
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'Groups')">
+                    Groups</button>
+                <button class="tablinks"
+                        onclick='userGetFollowee(event)'>Following
+                </button>
+                <button class="tablinks"
+                        onclick
+                                ='userGetFollower(event)'>
+                    Followers
+                </button>
+            </div>
+
+            <div id="Groups" class="tabcontent">
+            </div>
+
+            <div id="Followees" class="tabcontent">
+            </div>
+
+            <div id="Followers" class="tabcontent">
+            </div>
         </td>
     </tr>
     <tr>
@@ -45,8 +70,8 @@
     <tr>
         <td>
             <!--<button onclick="getAllUsers()"> GetAllUser </button>-->
-            <button onclick="userGetFollower()"> GetFollower </button>
-            <button onclick="userGetFollowee()"> GetFollowee </button>
+            <!--<button onclick="userGetFollower()"> GetFollower </button>-->
+            <!--<button onclick="userGetFollowee()"> GetFollowee </button>-->
             <button onclick="followUser()"> FollowUser1 </button>
             <button onclick="unfollowUser()"> UnfollowUser1 </button>
         </td>
@@ -54,5 +79,6 @@
 </table>
 </body>
 <script src="websocket.js"></script>
+
 
 </html>
