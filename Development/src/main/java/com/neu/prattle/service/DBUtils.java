@@ -21,10 +21,12 @@ public abstract class DBUtils {
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   protected Connection con = null;
   protected DataSource ds;
+  
   /**
    * Construct a DBUtils object.
    */
   public DBUtils() {
+
   }
 
   /**
