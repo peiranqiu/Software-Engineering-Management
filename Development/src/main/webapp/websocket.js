@@ -111,15 +111,37 @@ function generateList(response, operatoin){
     let list = document.createElement('ul');
    // list.style.listStyleType = 'none';
     list.id = operatoin + '-list';
-    list.addEventListener('click', (event)=>{
-        document.getElementById('to').value = event.target.innerHTML;
 
-    });
     response.forEach((u)=>{
-        let user = document.createElement('li');
-        user.style.cursor ='pointer';
+        let userRow = document.createElement('li');
+        let user = document.createElement("span");
+        user.classList.add("list-text");
         user.innerText = u.name;
-        list.appendChild(user);
+        user.addEventListener('click', (event)=>{
+            document.getElementById('to').value = event.target.innerHTML;
+
+        });
+        userRow.appendChild(user);
+
+        let follow = document.createElement("span");
+        follow.classList.add('list-follow');
+        if (operatoin === 'getFollowers'){
+            follow.innerText = "+";
+            follow.addEventListener('click', (event) => {
+                followUser(u.userId);
+            });
+        }
+        else if (operatoin === 'getFollowees'){
+            follow.innerText = "-";
+            follow.addEventListener('click', (event) => {
+               unfollowUser(u.userId);
+            });
+        }
+
+
+        userRow.appendChild(follow);
+
+        list.appendChild(userRow);
     });
     return list;
 
@@ -175,12 +197,12 @@ async function getFollowedGroup() {
 /**
  * follow a user.
  */
-async function followUser() {
+async function followUser(followeeId) {
     console.log(currentUser);
 
     let followerId = currentUser.userId;
     // followeeId to be replaced according to your frontend elements!!!
-    let followeeId = 1;
+    // let followeeId = 1;
 
     const response = await fetch(URL + 'user/'+ followerId +'/follow/' + followeeId, {
         method: 'POST',
@@ -194,11 +216,11 @@ async function followUser() {
 /**
  * unfollow a user.
  */
-async function unfollowUser() {
+async function unfollowUser(followeeId) {
     console.log(currentUser);
     let followerId = currentUser.userId;
     // followeeId to be replaced according to your frontend elements!!!
-    let followeeId = 1;
+    // let followeeId = 1;
     const response = await fetch(URL + 'user/'+ followerId +'/unfollow/' + followeeId, {
         method: 'DELETE',
         headers: {

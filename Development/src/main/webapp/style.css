@@ -182,4 +182,13 @@ p {
 #getFollowers-list, #getFollowees-list{
     list-style-type: none;
     padding-inline-start: 5px;
+    text-align-last: end;
+}
+
+.list-text{
+    cursor: pointer;
+    float:left;
+}
+.list-follow{
+    cursor: pointer;
 }
