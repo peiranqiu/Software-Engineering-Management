@@ -39,7 +39,6 @@ public abstract class DBUtils {
         Context envCtx = (Context) initCtx.lookup("java:comp/env");
         ds = (DataSource)envCtx.lookup("jdbc/mydb");
         con = ds.getConnection();
-        return con;
       } catch (SQLException e) {
         LOGGER.log(Level.INFO, e.getMessage());
         System.exit(1);
@@ -47,7 +46,6 @@ public abstract class DBUtils {
         LOGGER.log(Level.INFO, e.getMessage());
       }
     }
-
     return con;
   }
 
