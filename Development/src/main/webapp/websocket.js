@@ -34,7 +34,6 @@ async function getAllUsers (){
     console.log(response);
 
     let select = document.getElementById('to');
-    debugger;
     response.forEach((user)=>{
         let option = document.createElement("option");
         option.value = user.name;
@@ -94,7 +93,7 @@ function send() {
 /**
  * a user get list of followers.
  */
-async function userGetFollower() {
+async function userGetFollower(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId +'/getFollower', {
         method: 'GET',
@@ -103,6 +102,20 @@ async function userGetFollower() {
         }
     }).then(response => response.json());
     console.log(response);
+    let list = generateList(response);
+
+    openTab(evt, "Followers", list);
+}
+
+function generateList(response){
+    let list = document.createElement('ul');
+    response.forEach((u)=>{
+        let user = document.createElement('li');
+        user.innerText = u.name;
+        list.appendChild(user);
+    })
+    return list;
+
 }
 
 /**
@@ -370,4 +383,26 @@ async function deleteGroupMember() {
         }
     });
     console.log(response);
+}
+
+function openTab(evt, tabName, content) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    let cur = document.getElementById(tabName);
+
+
+    evt.target.className += " active";
+    if (cur.children.length === 0){
+        console.log('empty');
+        cur.appendChild(content);
+
+    }
+    cur.style.display = "block";
 }

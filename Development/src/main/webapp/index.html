@@ -2,6 +2,8 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <title>Chat</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 </head>
 <body onload="getAllUsers()">
 
@@ -20,7 +22,35 @@
     </tr>
     <tr>
         <td>
-            <textarea readonly="true" rows="10" cols="80" id="log"></textarea>
+            <textarea readonly="true" rows="10" cols="60" id="log"></textarea>
+        </td>
+        <td id="tab-container">
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'Groups')">
+                    Groups</button>
+                <button class="tablinks"
+                        onclick="openTab(event, 'Followees')">Followees
+                </button>
+                <button class="tablinks"
+                        onclick
+                                ='userGetFollower(event)'>
+                    Followers
+                </button>
+            </div>
+
+            <div id="Groups" class="tabcontent">
+                <h3>London</h3>
+                <p>London is the capital city of England.</p>
+            </div>
+
+            <div id="Followees" class="tabcontent">
+                <h3>Paris</h3>
+                <p>Paris is the capital of France.</p>
+            </div>
+
+            <div id="Followers" class="tabcontent">
+
+            </div>
         </td>
     </tr>
     <tr>
@@ -54,5 +84,6 @@
 </table>
 </body>
 <script src="websocket.js"></script>
+
 
 </html>
