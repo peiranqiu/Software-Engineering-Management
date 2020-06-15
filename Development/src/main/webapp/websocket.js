@@ -1,5 +1,9 @@
+
+const URL = 'http://localhost:8080/java-websocket/rest/';
+
 let ws;
 let currentUser;
+
 
 /**
  * Create a new user
@@ -7,7 +11,7 @@ let currentUser;
 async function createUser (){
     let markers = {'name': document.getElementById('newName').value,
         'password': document.getElementById('newPsw').value};
-    const response = await fetch('http://localhost:8080/java-websocket/rest/user/create', {
+    const response = await fetch(URL + 'user/create', {
         method: 'POST',
         body: JSON.stringify(markers),
         headers: {
@@ -21,7 +25,7 @@ async function createUser (){
  * get list of all users.
  */
 async function getAllUsers (){
-    const response = await fetch('http://localhost:8080/java-websocket/rest/user/getAllUser', {
+    const response = await fetch(URL + 'user/getAllUser', {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
@@ -38,7 +42,7 @@ async function connect() {
     let password = document.getElementById("password").value;
     let markers = {'name': username, 'password': password};
 
-    const response = await fetch('http://localhost:8080/java-websocket/rest/user/login', {
+    const response = await fetch(URL + 'user/login', {
         method: 'POST',
         body: JSON.stringify(markers),
         headers: {
@@ -83,7 +87,7 @@ function send() {
  */
 async function userGetFollower() {
     console.log(currentUser);
-    const response = await fetch('http://localhost:8080/java-websocket/rest/user/' + currentUser.userId +'/getFollower', {
+    const response = await fetch(URL + 'user/' + currentUser.userId +'/getFollower', {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
@@ -97,7 +101,7 @@ async function userGetFollower() {
  */
 async function userGetFollowee() {
     console.log(currentUser);
-    const response = await fetch('http://localhost:8080/java-websocket/rest/user/' + currentUser.userId + '/getFollowee', {
+    const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee', {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
@@ -111,7 +115,7 @@ async function userGetFollowee() {
  */
 async function getHasGroup() {
     console.log(currentUser);
-    const response = await fetch('http://localhost:8080/java-websocket/rest/user/' + currentUser.userId + '/getHasGroup', {
+    const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup', {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
@@ -125,7 +129,7 @@ async function getHasGroup() {
  */
 async function getFollowedGroup() {
     console.log(currentUser);
-    const response = await fetch('http://localhost:8080/java-websocket/restuser/' + currentUser.userId + '/getFollowedGroup', {
+    const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowedGroup', {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
@@ -145,7 +149,7 @@ async function followUser() {
     // followeeId to be replaced according to your frontend elements!!!
     let followeeId = 1;
 
-    const response = await fetch('http://localhost:8080/java-websocket/rest/user/'+ followerId +'/follow/' + followeeId, {
+    const response = await fetch(URL + 'user/'+ followerId +'/follow/' + followeeId, {
         method: 'POST',
         headers: {
             'content-type': 'application/json'
@@ -162,7 +166,7 @@ async function unfollowUser() {
     let followerId = currentUser.userId;
     // followeeId to be replaced according to your frontend elements!!!
     let followeeId = 1;
-    const response = await fetch('http://localhost:8080/java-websocket/rest/user/'+ followerId +'/unfollow/' + followeeId, {
+    const response = await fetch(URL + 'user/'+ followerId +'/unfollow/' + followeeId, {
         method: 'DELETE',
         headers: {
             'content-type': 'application/json'
@@ -179,7 +183,7 @@ async function followGroup() {
     let userId = currentUser.userId;
     // groupId to be replaced according to your frontend elements!!!
     let groupId = null;
-    const response = await fetch('http://localhost:8080/java-websocket/rest/group/'+ userId +'/follow/' + groupId, {
+    const response = await fetch(URL + 'group/'+ userId +'/follow/' + groupId, {
         method: 'POST',
         headers: {
             'content-type': 'application/json'
@@ -196,7 +200,7 @@ async function unfollowGroup() {
     let userId = currentUser.userId;
     // groupId to be replaced according to your frontend elements!!!
     let groupId = null;
-    const response = await fetch('http://localhost:8080/java-websocket/rest/group/'+ userId +'/unfollow/' + groupId, {
+    const response = await fetch(URL + 'group/'+ userId +'/unfollow/' + groupId, {
         method: 'DELETE',
         headers: {
             'content-type': 'application/json'
@@ -217,7 +221,7 @@ async function createAddInvitation() {
         'invitee': null,
         'isInvite': true
     };
-    const response = await fetch('http://localhost:8080/java-websocket/rest/invitation/create', {
+    const response = await fetch(URL + 'invitation/create', {
         method: 'POST',
         body: JSON.stringify(invitation),
         headers: {
@@ -239,7 +243,7 @@ async function createDeleteInvitation() {
         'invitee': null,
         'isInvite': false
     };
-    const response = await fetch('http://localhost:8080/java-websocket/rest/invitation/delete', {
+    const response = await fetch(URL + 'invitation/delete', {
         method: 'DELETE',
         body: JSON.stringify(invitation),
         headers: {
@@ -262,7 +266,7 @@ async function approveInvitation() {
         'invitee': null,
         'isInvite': false
     };
-    const response = await fetch('http://localhost:8080/java-websocket/rest/invitation/approve', {
+    const response = await fetch(URL + 'invitation/approve', {
         method: 'POST',
         body: JSON.stringify(invitation),
         headers: {
@@ -283,7 +287,7 @@ async function addGroupModerator() {
         'moderator': currentUser,
         'user': null,
     };
-    const response = await fetch('http://localhost:8080/java-websocket/rest/group/moderator/add', {
+    const response = await fetch(URL + 'group/moderator/add', {
         method: 'POST',
         body: JSON.stringify(markers),
         headers: {
@@ -305,7 +309,7 @@ async function deleteGroupModerator() {
         'moderator': currentUser,
         'user': null,
     };
-    const response = await fetch('http://localhost:8080/java-websocket/rest/group/moderator/delete', {
+    const response = await fetch(URL + 'group/moderator/delete', {
         method: 'DELETE',
         body: JSON.stringify(markers),
         headers: {
@@ -328,7 +332,7 @@ async function addGroupMember() {
         'moderator': currentUser,
         'user': null,
     };
-    const response = await fetch('http://localhost:8080/java-websocket/rest/group/member/add', {
+    const response = await fetch(URL + 'group/member/add', {
         method: 'POST',
         body: JSON.stringify(markers),
         headers: {
@@ -349,7 +353,7 @@ async function deleteGroupMember() {
         'moderator': currentUser,
         'user': null,
     };
-    const response = await fetch('http://localhost:8080/java-websocket/rest/group/member/delete', {
+    const response = await fetch(URL + 'group/member/delete', {
         method: 'DELETE',
         body: JSON.stringify(markers),
         headers: {
