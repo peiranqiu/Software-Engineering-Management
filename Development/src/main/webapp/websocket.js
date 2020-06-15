@@ -1,5 +1,5 @@
 let ws;
-
+let currentUser;
 
 /**
  * Create a new user
@@ -21,7 +21,7 @@ async function createUser (){
  * get list of all users.
  */
 async function getAllUsers (){
-    const response = await fetch('http://localhost:8080/java-websocket/rest/user/getAll', {
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/getAllUser', {
         method: 'GET',
         headers: {
             'content-type': 'application/json'
@@ -48,6 +48,7 @@ async function connect() {
     console.log(response);
 
     if(response !== null) {
+        currentUser = response;
         let host = document.location.host;
         let pathname = document.location.pathname;
 
@@ -65,25 +66,308 @@ async function connect() {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
 /**
  * Send message.
  */
 function send() {
-    var content = document.getElementById("msg").value;
-    var json = JSON.stringify({
+    let content = document.getElementById("msg").value;
+    let json = JSON.stringify({
                                   "content":content,
                                   "to":document.getElementById('to').value
                               });
     ws.send(json);
+}
+
+/**
+ * a user get list of followers.
+ */
+async function userGetFollower() {
+    console.log(currentUser);
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/getFollower', {
+        method: 'GET',
+        body: JSON.stringify(currentUser),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(response => response.json());
+    console.log(response);
+}
+
+/**
+ * a user get list of followees.
+ */
+async function userGetFollowee() {
+    console.log(currentUser);
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/getFollowee', {
+        method: 'GET',
+        body: JSON.stringify(currentUser),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(response => response.json());
+    console.log(response);
+}
+
+/**
+ * get list of groups the user is in.
+ */
+async function getHasGroup() {
+    console.log(currentUser);
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/getHasGroup', {
+        method: 'GET',
+        body: JSON.stringify(currentUser),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(response => response.json());
+    console.log(response);
+}
+
+/**
+ * get list of groups the user is following.
+ */
+async function getFollowedGroup() {
+    console.log(currentUser);
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/getFollowedGroup', {
+        method: 'GET',
+        body: JSON.stringify(currentUser),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(response => response.json());
+    console.log(response);
+}
+
+/**
+ * create add member invitation.
+ */
+async function createAddInvitation() {
+    console.log(currentUser);
+    // group, invitee to be completed according to your frontend elements!!!
+    let invitation= {
+        'group': null,
+        'inviter': currentUser,
+        'invitee': null,
+        'isInvite': true
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/invitation/create', {
+        method: 'POST',
+        body: JSON.stringify(invitation),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+    console.log(response);
+}
+
+/**
+ * create delete member request.
+ */
+async function createDeleteInvitation() {
+    console.log(currentUser);
+    // group, invitee to be completed according to your frontend elements!!!
+    let invitation= {
+        'group': null,
+        'inviter': currentUser,
+        'invitee': null,
+        'isInvite': false
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/invitation/delete', {
+        method: 'DELETE',
+        body: JSON.stringify(invitation),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+    console.log(response);
+}
+
+
+/**
+ * approve an invitation.
+ */
+async function approveInvitation() {
+    console.log(currentUser);
+    // group, invitee, isInvite to be completed according to your frontend elements!!!
+    let invitation= {
+        'group': null,
+        'inviter': currentUser,
+        'invitee': null,
+        'isInvite': false
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/invitation/approve', {
+        method: 'POST',
+        body: JSON.stringify(invitation),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+    console.log(response);
+}
+
+/**
+ * follow a user.
+ */
+async function followUser() {
+    console.log(currentUser);
+    // followee to be completed according to your frontend elements!!!
+    let follow= {
+        'follower': currentUser,
+        'followee': null
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/follow', {
+        method: 'POST',
+        body: JSON.stringify(follow),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+    console.log(response);
+}
+
+/**
+ * unfollow a user.
+ */
+async function unfollowUser() {
+    console.log(currentUser);
+    // followee to be completed according to your frontend elements!!!
+    let follow= {
+        'follower': currentUser,
+        'followee': null
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/user/unfollow', {
+        method: 'DELETE',
+        body: JSON.stringify(follow),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+    console.log(response);
+}
+
+/**
+ * follow a group.
+ */
+async function followGroup() {
+    console.log(currentUser);
+    // group to be completed according to your frontend elements!!!
+    let follow= {
+        'user': currentUser,
+        'group': null
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/group/follow', {
+        method: 'POST',
+        body: JSON.stringify(follow),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+    console.log(response);
+}
+
+/**
+ * unfollow a group.
+ */
+async function unfollowGroup() {
+    console.log(currentUser);
+    // group to be completed according to your frontend elements!!!
+    let follow= {
+        'user': currentUser,
+        'group': null
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/group/unfollow', {
+        method: 'DELETE',
+        body: JSON.stringify(follow),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+    console.log(response);
+}
+
+/**
+ * add a group moderator.
+ */
+async function addGroupModerator() {
+    console.log(currentUser);
+    // group, user to be completed according to your frontend elements!!!
+    let markers = {
+        'group': null,
+        'moderator': currentUser,
+        'user': null,
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/group/moderator/add', {
+        method: 'POST',
+        body: JSON.stringify(markers),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(response => response.json());
+    console.log(response);
+}
+
+
+/**
+ * delete a group moderator.
+ */
+async function deleteGroupModerator() {
+    console.log(currentUser);
+    // group, user to be completed according to your frontend elements!!!
+    let markers = {
+        'group': null,
+        'moderator': currentUser,
+        'user': null,
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/group/moderator/delete', {
+        method: 'DELETE',
+        body: JSON.stringify(markers),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+    console.log(response);
+}
+
+
+
+/**
+ * add a group member.
+ */
+async function addGroupMember() {
+    console.log(currentUser);
+    // group, user to be completed according to your frontend elements!!!
+    let markers = {
+        'group': null,
+        'moderator': currentUser,
+        'user': null,
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/group/member/add', {
+        method: 'POST',
+        body: JSON.stringify(markers),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(response => response.json());
+    console.log(response);
+}
+
+/**
+ * add a group member.
+ */
+async function deleteGroupMember() {
+    console.log(currentUser);
+    // group, user to be completed according to your frontend elements!!!
+    let markers = {
+        'group': null,
+        'moderator': currentUser,
+        'user': null,
+    };
+    const response = await fetch('http://localhost:8080/java-websocket/rest/group/member/delete', {
+        method: 'DELETE',
+        body: JSON.stringify(markers),
+        headers: {
+            'content-type': 'application/json'
+        }
+    });
+    console.log(response);
 }

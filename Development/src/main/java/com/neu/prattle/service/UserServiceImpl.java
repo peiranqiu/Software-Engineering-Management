@@ -57,6 +57,17 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public User findUserById(int id) {
+    User user = new User();
+    try {
+      user = api.getUserById(id);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return user;
+  }
+
+  @Override
   public List<User> getAllUsers() {
     List<User> allUsers = new ArrayList<>();
     try{

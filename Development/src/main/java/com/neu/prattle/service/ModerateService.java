@@ -255,6 +255,7 @@ public class ModerateService {
     return b;
   }
 
+
   /**
    * Group moderator does not approve the invitation and deletes it.
    * @param group the group
@@ -275,6 +276,7 @@ public class ModerateService {
     }
     return b;
   }
+
 
   /**
    * Group moderator approves invitation and adds the invitee into group.

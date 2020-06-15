@@ -126,7 +126,9 @@
 		<sonar.language>java</sonar.language>
 		<sonar.exclusions>
 			**/PrattleApplication.java,
-			**/websocket.js
+			**/websocket.js,
+			**/websocket.js,
+			**/groupWebsocket.js
 		</sonar.exclusions>
 	</properties>
 	<profiles>

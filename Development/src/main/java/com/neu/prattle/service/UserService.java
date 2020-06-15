@@ -24,6 +24,14 @@ public interface UserService {
   Optional<User> findUserByName(String name);
 
   /***
+   * Returns the user associated with the user id.
+   *
+   * @param id The id of the user
+   * @return the user if found.
+   */
+  User findUserById(int id);
+
+  /***
    * Update user profile.
    *
    * @param user The user to update
