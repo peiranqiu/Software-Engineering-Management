@@ -17,7 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class MessageTest {
+public class MessageMockitoTest {
   /***
    * Message created by Message class
    */

@@ -1,4 +1,4 @@
-package com.neu.prattle.service;
+package com.neu.prattle.service.api;
 
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;

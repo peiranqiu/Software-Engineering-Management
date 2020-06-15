@@ -1,6 +1,7 @@
 package com.neu.prattle.service;
 
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.UserAPI;
 
 import java.util.List;
 import java.util.Optional;
@@ -61,4 +62,10 @@ public interface UserService {
    * @return all users
    */
   List<User> getAllUsers();
+
+  /**
+   * Set the user api used by this service
+   * @param api
+   */
+  void setAPI(UserAPI api);
 }

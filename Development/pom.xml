@@ -26,9 +26,9 @@
 					<url>http://localhost:8080/manager/text</url>
 					<server>TomcatServer</server>
 					<path>/prattle</path>
-					<!--<username>admin</username>-->
-					<!--<password>admin</password>-->
-					<!--<path>/${project.artifactId}</path>-->
+					<username>admin</username>
+					<password>admin</password>
+					<path>/${project.artifactId}</path>
 					<update>true</update>
 				</configuration>
 			</plugin>
@@ -127,6 +127,7 @@
 		<sonar.coverage.exclusions>
 			src/main/java/com/neu/prattle/controller/**,
 			src/main/java/com/neu/prattle/exceptions/**,
+			src/main/java/com/neu/prattle/service/api/**,
 			src/main/java/com/neu/prattle/main/**,
 			src/main/webapp/**,
 		</sonar.coverage.exclusions>

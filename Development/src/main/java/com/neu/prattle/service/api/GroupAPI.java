@@ -1,4 +1,4 @@
-package com.neu.prattle.service;
+package com.neu.prattle.service.api;
 
 import com.neu.prattle.model.Group;
 
@@ -31,12 +31,13 @@ public class GroupAPI extends DBUtils {
    *
    * @param group adding group object.
    */
-  public void addGroup(Group group) {
+  public boolean addGroup(Group group) {
     try {
       super.insertTerm("mydb.Group", "name", group.getName());
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
+    return true;
   }
 
   /**
@@ -126,7 +127,7 @@ public class GroupAPI extends DBUtils {
   /**
    * method to add subgroup into a group
    */
-  public void addSubgroupIntoGroup(int groupId, int subGroupId) throws SQLException {
+  public boolean addSubgroupIntoGroup(int groupId, int subGroupId) throws SQLException {
     try {
       Connection con = getConnection();
       String sql = "INSERT INTO Group_has_Group (super_Group_id, sub_Group_id) VALUES (?, ?)";
@@ -140,6 +141,7 @@ public class GroupAPI extends DBUtils {
     } finally {
       stmt.close();
     }
+    return true;
   }
 
   /**
@@ -167,7 +169,7 @@ public class GroupAPI extends DBUtils {
    * @param groupId  groupId
    * @param password password
    */
-  public void setPasswordforGroup(int groupId, String password) throws SQLException {
+  public boolean setPasswordforGroup(int groupId, String password) throws SQLException {
     try {
       Connection con = getConnection();
       String sql = "UPDATE mydb.Group SET password = ? WHERE Group_id =?";
@@ -181,7 +183,7 @@ public class GroupAPI extends DBUtils {
     } finally {
       stmt.close();
     }
-
+    return true;
   }
 
 

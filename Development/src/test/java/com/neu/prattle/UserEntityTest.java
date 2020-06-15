@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * A junit test class for user service.
  */
-public class UserTest {
+public class UserEntityTest {
 
   private User user = new User("CS5500Team2");
   private User user1 = new User("CS5500Team3");

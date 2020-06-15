@@ -5,6 +5,7 @@ import com.neu.prattle.exceptions.FollowNotFoundException;
 import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.FollowAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,22 +17,48 @@ import java.util.Optional;
  */
 public class FollowService {
 
-  private static UserService userService;
-  private static GroupService groupService;
+  private UserService userService;
+  private GroupService groupService;
   private static FollowService followService;
   private FollowAPI api;
 
   static {
     followService = new FollowService();
-    userService = UserServiceImpl.getInstance();
-    groupService = GroupServiceImpl.getInstance();
   }
 
   /**
    * FollowService is a Singleton class.
    */
   private FollowService() {
+
     api = new FollowAPI();
+
+    userService = UserServiceImpl.getInstance();
+    groupService = GroupServiceImpl.getInstance();
+  }
+
+  /**
+   * Set follow api to be used by this service.
+   * @param followAPI
+   */
+  public void setAPI(FollowAPI followAPI) {
+    api = followAPI;
+  }
+
+  /**
+   * Set userService to be used by this service.
+   * @param service
+   */
+  public void setUserService(UserService service) {
+    userService = service;
+  }
+
+  /**
+   * Set groupService to be used by this service.
+   * @param service
+   */
+  public void setGroupService(GroupService service) {
+    groupService = service;
   }
 
   /**

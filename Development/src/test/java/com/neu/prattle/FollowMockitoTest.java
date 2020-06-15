@@ -4,6 +4,7 @@ import com.neu.prattle.exceptions.AlreadyFollowException;
 import com.neu.prattle.exceptions.FollowNotFoundException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.FollowAPI;
 import com.neu.prattle.service.FollowService;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
@@ -20,10 +21,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,11 +36,12 @@ import static org.mockito.Mockito.when;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @RunWith(MockitoJUnitRunner.class)
-public class FollowMockTest {
+public class FollowMockitoTest {
 
   private User user1 = new User("testFollowUser" + getRandom(), "Password1");
   private User user2 = new User("testFollowUser" + getRandom(),"Password2");
   private Group group1 = new Group("testFollowGroup" + getRandom());
+  private FollowService followService;
 
   @Mock
   private UserService userService;
@@ -45,7 +50,7 @@ public class FollowMockTest {
   private GroupService groupService;
 
   @Mock
-  private FollowService followService;
+  private FollowAPI api;
 
   @Before
   public void setup() {
@@ -54,7 +59,7 @@ public class FollowMockTest {
     groupService = GroupServiceImpl.getInstance();
     groupService = mock(GroupService.class);
     followService = FollowService.getInstance();
-    followService = mock(FollowService.class);
+    api = mock(FollowAPI.class);
   }
 
   /**
@@ -64,21 +69,30 @@ public class FollowMockTest {
   public void testUserFollowUser() {
     when(userService.addUser(any(User.class))).thenReturn(true);
     assertTrue(userService.addUser(user1));
-    when(userService.addUser(any(User.class))).thenReturn(true);
     assertTrue(userService.addUser(user2));
-
-    when(followService.followUser(any(User.class), any(User.class))).thenReturn(true);
-    assertTrue(followService.followUser(user1, user2));
 
     List<User> list = new ArrayList<>();
     list.add(user2);
-    when(followService.getFollowingUsers(any(User.class))).thenReturn(list);
+
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
+    followService.setUserService(userService);
+
+    when(api.getFollowingUsers(anyInt())).thenReturn(list);
+    when(api.userFollowUser(anyInt(), anyInt())).thenReturn(true);
+    when(api.userUnfollowUser(anyInt(), anyInt())).thenReturn(true);
+    followService.setAPI(api);
+
+    assertTrue(followService.followUser(user1, user2));
     assertEquals(followService.getFollowingUsers(user1).get(0).getName(), user2.getName());
 
-    when(followService.unfollowUser(any(User.class), any(User.class))).thenReturn(true);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user2));
+    followService.setUserService(userService);
+    when(api.getFollowingUsers(anyInt())).thenReturn(list);
+    followService.setAPI(api);
     assertTrue(followService.unfollowUser(user1, user2));
 
-    when(followService.getFollowingUsers(any(User.class))).thenReturn(new ArrayList<>());
+    when(api.getFollowingUsers(anyInt())).thenReturn(new ArrayList<>());
+    followService.setAPI(api);
     assertTrue(followService.getFollowingUsers(user1).isEmpty());
   }
 
@@ -88,12 +102,17 @@ public class FollowMockTest {
   @Test(expected = AlreadyFollowException.class)
   public void testFollowUserFail() {
     when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user2);
-    when(followService.followUser(any(User.class), any(User.class))).thenReturn(true);
-    followService.followUser(user1, user2);
-    when(followService.followUser(any(User.class), any(User.class))).thenThrow(AlreadyFollowException.class);
+    assertTrue(userService.addUser(user1));
+    assertTrue(userService.addUser(user2));
+
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user2));
+    followService.setUserService(userService);
+    when(api.userFollowUser(anyInt(), anyInt())).thenReturn(true);
+    followService.setAPI(api);
+    assertTrue(followService.followUser(user1, user2));
+
+    when(api.userFollowUser(anyInt(), anyInt())).thenThrow(AlreadyFollowException.class);
+    followService.setAPI(api);
     followService.followUser(user1, user2);
   }
 
@@ -104,9 +123,10 @@ public class FollowMockTest {
   public void testUnfollowUserFail() {
     when(userService.addUser(any(User.class))).thenReturn(true);
     userService.addUser(user1);
-    when(userService.addUser(any(User.class))).thenReturn(true);
     userService.addUser(user2);
-    when(followService.unfollowUser(any(User.class), any(User.class))).thenThrow(FollowNotFoundException.class);
+    followService.setAPI(api);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user2));
+    followService.setUserService(userService);
     followService.unfollowUser(user1, user2);
   }
 
@@ -117,17 +137,20 @@ public class FollowMockTest {
   public void testUserGetFollowers() {
     when(userService.addUser(any(User.class))).thenReturn(true);
     userService.addUser(user1);
-    when(userService.addUser(any(User.class))).thenReturn(true);
     userService.addUser(user2);
-    when(followService.userGetFollowers(any(User.class))).thenReturn(new ArrayList<>());
+
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user2));
+    followService.setUserService(userService);
+    when(api.userGetFollowers(anyInt())).thenReturn(new ArrayList<>());
+    followService.setAPI(api);
     assertTrue(followService.userGetFollowers(user2).isEmpty());
 
-    when(followService.followUser(any(User.class), any(User.class))).thenReturn(true);
-    assertTrue(followService.followUser(user1, user2));
-
+    when(api.userFollowUser(anyInt(), anyInt())).thenReturn(true);
     List<User> list = new ArrayList<>();
     list.add(user1);
-    when(followService.userGetFollowers(any(User.class))).thenReturn(list);
+    when(api.userGetFollowers(anyInt())).thenReturn(list);
+    followService.setAPI(api);
+    assertTrue(followService.followUser(user1, user2));
     assertEquals(followService.userGetFollowers(user2).get(0).getName(), user1.getName());
   }
 
@@ -138,18 +161,19 @@ public class FollowMockTest {
   public void testGetFollowingUsers() {
     when(userService.addUser(any(User.class))).thenReturn(true);
     userService.addUser(user1);
-    when(userService.addUser(any(User.class))).thenReturn(true);
     userService.addUser(user2);
 
-    when(followService.getFollowingUsers(any(User.class))).thenReturn(new ArrayList<>());
+    followService.setAPI(api);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
+    followService.setUserService(userService);
     assertTrue(followService.getFollowingUsers(user1).isEmpty());
-
-    when(followService.followUser(any(User.class), any(User.class))).thenReturn(true);
-    followService.followUser(user1, user2);
 
     List<User> list = new ArrayList<>();
     list.add(user2);
-    when(followService.getFollowingUsers(any(User.class))).thenReturn(list);
+    when(api.userFollowUser(anyInt(), anyInt())).thenReturn(true);
+    when(api.getFollowingUsers(anyInt())).thenReturn(list);
+    followService.setAPI(api);
+    assertTrue(followService.followUser(user1, user2));
     assertEquals(followService.getFollowingUsers(user1).get(0).getName(), user2.getName());
   }
 
@@ -163,18 +187,25 @@ public class FollowMockTest {
     when(groupService.addGroup(any(Group.class))).thenReturn(true);
     groupService.addGroup(group1);
 
-    when(followService.followGroup(any(User.class), any(Group.class))).thenReturn(true);
-    followService.followGroup(user1, group1);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
+    when(api.userFollowGroup(anyInt(), anyInt())).thenReturn(true);
+    when(api.getFollowingGroups(anyInt())).thenReturn(new ArrayList<>());
+    followService.setAPI(api);
+    followService.setUserService(userService);
+    followService.setGroupService(groupService);
+    assertTrue(followService.followGroup(user1, group1));
 
     List<Group> list = new ArrayList<>();
     list.add(group1);
-    when(followService.getFollowingGroups(any(User.class))).thenReturn(list);
+    when(api.getFollowingGroups(anyInt())).thenReturn(list);
+    when(api.userUnfollowGroup(anyInt(), anyInt())).thenReturn(true);
+    followService.setAPI(api);
     assertEquals(followService.getFollowingGroups(user1).get(0).getName(), group1.getName());
-
-    when(followService.unfollowGroup(any(User.class), any(Group.class))).thenReturn(true);
     assertTrue(followService.unfollowGroup(user1, group1));
 
-    when(followService.getFollowingGroups(any(User.class))).thenReturn(new ArrayList<>());
+    when(api.getFollowingGroups(anyInt())).thenReturn(new ArrayList<>());
+    followService.setAPI(api);
     assertTrue(followService.getFollowingGroups(user1).isEmpty());
   }
 
@@ -187,10 +218,15 @@ public class FollowMockTest {
     userService.addUser(user1);
     when(groupService.addGroup(any(Group.class))).thenReturn(true);
     groupService.addGroup(group1);
-    when(followService.followGroup(any(User.class), any(Group.class))).thenReturn(true);
-    followService.followGroup(user1, group1);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
+    when(api.userFollowGroup(anyInt(), anyInt())).thenReturn(true);
+    followService.setAPI(api);
+    followService.setUserService(userService);
+    followService.setGroupService(groupService);
+    assertTrue(followService.followGroup(user1, group1));
 
-    when(followService.followGroup(any(User.class), any(Group.class))).thenThrow(AlreadyFollowException.class);
+    when(api.userFollowGroup(anyInt(), anyInt())).thenThrow(AlreadyFollowException.class);
     followService.followGroup(user1, group1);
   }
 
@@ -204,7 +240,11 @@ public class FollowMockTest {
     when(groupService.addGroup(any(Group.class))).thenReturn(true);
     groupService.addGroup(group1);
 
-    when(followService.unfollowGroup(any(User.class), any(Group.class))).thenThrow(FollowNotFoundException.class);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
+    followService.setAPI(api);
+    followService.setUserService(userService);
+    followService.setGroupService(groupService);
     followService.unfollowGroup(user1, group1);
   }
 
@@ -215,21 +255,24 @@ public class FollowMockTest {
   public void testGroupGetFollowers() {
     when(userService.addUser(any(User.class))).thenReturn(true);
     userService.addUser(user1);
-    when(userService.addUser(any(User.class))).thenReturn(true);
     userService.addUser(user2);
     when(groupService.addGroup(any(Group.class))).thenReturn(true);
     groupService.addGroup(group1);
-    when(followService.followGroup(any(User.class), any(Group.class))).thenReturn(true);
-    followService.followGroup(user1, group1);
-    when(followService.followGroup(any(User.class), any(Group.class))).thenReturn(true);
-    followService.followGroup(user2, group1);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
+    when(api.userFollowGroup(anyInt(), anyInt())).thenReturn(true);
+    followService.setAPI(api);
+    followService.setUserService(userService);
+    followService.setGroupService(groupService);
+    assertTrue(followService.followGroup(user1, group1));
+    assertTrue(followService.followGroup(user2, group1));
 
     List<User> list = new ArrayList<>();
     list.add(user1);
     list.add(user2);
-    when(followService.groupGetFollowers(any(Group.class))).thenReturn(list);
+    when(api.groupGetFollowers(anyInt())).thenReturn(list);
+    followService.setAPI(api);
     assertEquals(followService.groupGetFollowers(group1).get(0).getName(), user1.getName());
-    when(followService.groupGetFollowers(any(Group.class))).thenReturn(list);
     assertEquals(followService.groupGetFollowers(group1).get(1).getName(), user2.getName());
   }
 
@@ -243,15 +286,22 @@ public class FollowMockTest {
     when(groupService.addGroup(any(Group.class))).thenReturn(true);
     groupService.addGroup(group1);
 
-    when(followService.getFollowingGroups(any(User.class))).thenReturn(new ArrayList<>());
-    assertTrue(followService.getFollowingGroups(user1).isEmpty());
 
-    when(followService.followGroup(any(User.class), any(Group.class))).thenReturn(true);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
+    when(api.userFollowGroup(anyInt(), anyInt())).thenReturn(true);
+    followService.setGroupService(groupService);
+    when(api.getFollowingGroups(anyInt())).thenReturn(new ArrayList<>());
+    followService.setAPI(api);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
+    followService.setUserService(userService);
+    assertTrue(followService.getFollowingGroups(user1).isEmpty());
     assertTrue(followService.followGroup(user1, group1));
 
     List<Group> list = new ArrayList<>();
     list.add(group1);
-    when(followService.getFollowingGroups(any(User.class))).thenReturn(list);
+    when(api.getFollowingGroups(anyInt())).thenReturn(list);
+    followService.setAPI(api);
     assertEquals(followService.getFollowingGroups(user1).get(0).getName(), group1.getName());
   }
 
