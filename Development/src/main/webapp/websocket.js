@@ -113,7 +113,7 @@ function generateList(response){
         let user = document.createElement('li');
         user.innerText = u.name;
         list.appendChild(user);
-    })
+    });
     return list;
 
 }
@@ -121,7 +121,7 @@ function generateList(response){
 /**
  * a user get list of followees.
  */
-async function userGetFollowee() {
+async function userGetFollowee(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee', {
         method: 'GET',
@@ -130,6 +130,10 @@ async function userGetFollowee() {
         }
     }).then(response => response.json());
     console.log(response);
+
+    let list = generateList(response);
+
+    openTab(evt, "Followees", list);
 }
 
 /**
