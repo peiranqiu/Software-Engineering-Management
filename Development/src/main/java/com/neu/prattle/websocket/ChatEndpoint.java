@@ -160,10 +160,8 @@ public class ChatEndpoint {
 
     try {
       sendPersonalMessage(message);
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (EncodeException e) {
-      e.printStackTrace();
+    } catch (IOException | EncodeException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
     }
 
   }
