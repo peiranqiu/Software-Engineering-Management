@@ -3,6 +3,7 @@ const URL = 'http://localhost:8080/java-websocket/rest/';
 
 let ws;
 let currentUser;
+let currentGroup;
 
 
 /**
@@ -335,16 +336,12 @@ async function approveInvitation() {
  * add a group moderator.
  */
 async function addGroupModerator() {
-    console.log(currentUser);
+    // console.log(currentUser);
+    // console.log(currentGroup);
     // group, user to be completed according to your frontend elements!!!
-    let markers = {
-        'group': null,
-        'moderator': currentUser,
-        'user': null,
-    };
-    const response = await fetch(URL + 'group/moderator/add', {
+
+    const response = await fetch(URL + 'group/'+currentUser.userId+'/moderate/'+currentGroup.groupId, {
         method: 'POST',
-        body: JSON.stringify(markers),
         headers: {
             'content-type': 'application/json'
         }
@@ -380,16 +377,11 @@ async function deleteGroupModerator() {
  * add a group member.
  */
 async function addGroupMember() {
-    console.log(currentUser);
+    // console.log(currentUser);
     // group, user to be completed according to your frontend elements!!!
-    let markers = {
-        'group': null,
-        'moderator': currentUser,
-        'user': null,
-    };
-    const response = await fetch(URL + 'group/member/add', {
+
+    const response = await fetch(URL + 'group/'+currentUser.userId+'/member/'+currentGroup.groupId, {
         method: 'POST',
-        body: JSON.stringify(markers),
         headers: {
             'content-type': 'application/json'
         }
@@ -455,6 +447,35 @@ async function getAllGroups (event){
     let list = generateList(response, 'getAllGroups');
 
     openTab(event, "All Groups", list);
+}
+
+
+/**
+ * Create a new group
+ */
+async function createGroup (){
+    let markers = {'name': document.getElementById('groupName').value};
+    const response = await fetch(URL + 'group/create', {
+        method: 'POST',
+        body: JSON.stringify(markers),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(markers.name);
+
+    const response2 = await fetch(URL + 'group/'+markers.name, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response2)
+
+    if(response2){currentGroup=response2.value;}
+    addGroupMember(response2);
+    addGroupModerator(response2);
+
 }
 
 

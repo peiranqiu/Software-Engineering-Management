@@ -1,7 +1,6 @@
 package com.neu.prattle.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
@@ -10,10 +9,13 @@ import com.neu.prattle.service.FollowService;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.ModerateService;
+import com.neu.prattle.service.UserService;
+import com.neu.prattle.service.UserServiceImpl;
 
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -30,7 +32,7 @@ import javax.ws.rs.core.MediaType;
 @Controller
 @Path(value = "/group")
 public class GroupController {
-
+  private UserService userService = UserServiceImpl.getInstance();
   private GroupService groupService = GroupServiceImpl.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
   private FollowService followService = FollowService.getInstance();
@@ -103,78 +105,39 @@ public class GroupController {
 
   /**
    * add group moderator
-   *
-   * @param obj the json object contains user group and moderator information
+   * @param userId moderator id
+   * @param groupId group id
+   * @return
    */
   @POST
-  @Path("/moderator/add")
+  @Path("/{userId}/moderate/{groupId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String addModerator(JsonObject obj) {
-    User user = (User) ((Object) obj.get(USER));
-    Group group = (Group) ((Object) obj.get(GROUP));
-    User moderator = (User) ((Object) obj.get(MODERATOR));
-    User newModerator = moderateService.addGroupModerator(group, moderator, user);
+  public String addModerator(@PathParam("userId") int userId, @PathParam("groupId") int groupId) {
+
+    User newModerator = moderateService.addGroupModerator(groupId, userId);
     if(newModerator != null) {
-      return new Gson().toJson(newModerator);
+      return new Gson().toJson("Add moderator succeed");
     }
     return new Gson().toJson("Add moderator failed");
   }
 
-
-  /**
-   * remove group moderator
-   *
-   * @param obj the json object contains user group and moderator information
-   */
-  @DELETE
-  @Path("/moderator/delete")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public String deleteModerator(JsonObject obj) {
-    User user = (User) ((Object) obj.get(USER));
-    Group group = (Group) ((Object) obj.get(GROUP));
-    User moderator = (User) ((Object) obj.get(MODERATOR));
-    if (moderateService.deleteGroupModerator(group, moderator, user)) {
-      return new Gson().toJson("Delete moderator successful");
-    }
-    return new Gson().toJson("Delete moderator failed");
-  }
-
-
   /**
    * add group member
-   *
-   * @param obj the json object contains user group and moderator information
+   * @param userId user id
+   * @param groupId group id
+   * @return
    */
   @POST
-  @Path("/member/add")
+  @Path("/{userId}/member/{groupId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String addMember(JsonObject obj) {
-    User user = (User) ((Object) obj.get(USER));
-    Group group = (Group) ((Object) obj.get(GROUP));
-    User moderator = (User) ((Object) obj.get(MODERATOR));
-    if (moderateService.addGroupMember(group, moderator, user)) {
-      return new Gson().toJson("Add member successful");
+  public String addMember(@PathParam("userId") int userId, @PathParam("groupId") int groupId) {
+    if (moderateService.addGroupMember(groupId, userId)) {
+      return new Gson().toJson("Add member succeed");
     }
     return new Gson().toJson("Add member failed");
   }
 
-  /**
-   * delete group member
-   *
-   * @param obj the json object contains user group and moderator information
-   */
-  @DELETE
-  @Path("/member/delete")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public String deleteMember(JsonObject obj) {
-    User user = (User) ((Object) obj.get(USER));
-    Group group = (Group) ((Object) obj.get(GROUP));
-    User moderator = (User) ((Object) obj.get(MODERATOR));
-    if (moderateService.deleteGroupMember(group, moderator, user)) {
-      return new Gson().toJson("Delete member successful");
-    }
-    return new Gson().toJson("Delete member failed");
-  }
+
 
   /**
    * Get all groups in database
@@ -193,7 +156,7 @@ public class GroupController {
    * @return all subgroups in input group
    */
   @GET
-  @Path("{groupId}/getSubGroups")
+  @Path("/{groupId}/getSubGroups")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getSubGroups(@PathParam("groupId") int id){
     List<Group> list = groupService.getSubGroupList(id);
@@ -214,6 +177,19 @@ public class GroupController {
       return new Gson().toJson("Adding subGroup successful");
     }
     return new Gson().toJson("Adding subGroup failed");
+  }
+
+  /**
+   * Get group by name
+   *
+   * @return group that match name
+   */
+  @GET
+  @Path("/{groupName}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupbyName(@PathParam("groupName") String name) {
+    Optional group = groupService.findGroupByName(name);
+    return new Gson().toJson(group);
   }
 
 }
