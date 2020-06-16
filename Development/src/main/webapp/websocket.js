@@ -79,13 +79,26 @@ async function connect() {
 }
 
 /**
- * Send message.
+ * Send point to point message.
  */
 function send() {
     let content = document.getElementById("msg").value;
     let json = JSON.stringify({
                                   "content":content,
                                   "to":document.getElementById('to').value
+                              });
+    ws.send(json);
+}
+
+/**
+ * Send group message
+ */
+function sendGroup(){
+    let content = document.getElementById("groupMsg").value;
+    let json = JSON.stringify({
+                                  "content":content,
+                                  "to":document.getElementById('toGroup').value,
+                                    "sendToGroup": true
                               });
     ws.send(json);
 }
@@ -117,10 +130,6 @@ function generateList(response, operatoin){
         let user = document.createElement("span");
         user.classList.add("list-text");
         user.innerText = u.name;
-        user.addEventListener('click', (event)=>{
-            document.getElementById('to').value = event.target.innerHTML;
-
-        });
         userRow.appendChild(user);
 
         let follow = document.createElement("span");
@@ -130,14 +139,27 @@ function generateList(response, operatoin){
             follow.addEventListener('click', (event) => {
                 followUser(u.userId);
             });
+            user.addEventListener('click', (event)=>{
+                document.getElementById('to').value = event.target.innerHTML;
+
+            });
         }
         else if (operatoin === 'getFollowees'){
             follow.innerText = "-";
             follow.addEventListener('click', (event) => {
                unfollowUser(u.userId);
             });
-        }
+            user.addEventListener('click', (event)=>{
+                document.getElementById('to').value = event.target.innerHTML;
 
+            });
+        }
+        else if (operatoin === 'getGroups'){
+            user.addEventListener('click', (event)=>{
+                document.getElementById('toGroup').value = event.target.innerHTML;
+
+            });
+        }
 
         userRow.appendChild(follow);
 
@@ -168,7 +190,7 @@ async function userGetFollowee(evt) {
 /**
  * get list of groups the user is in.
  */
-async function getHasGroup() {
+async function getHasGroup(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup', {
         method: 'GET',
@@ -177,6 +199,10 @@ async function getHasGroup() {
         }
     }).then(rs => rs.json());
     console.log(response);
+
+    let list = generateList(response, 'getGroups');
+
+    openTab(evt, "Groups", list);
 }
 
 /**
