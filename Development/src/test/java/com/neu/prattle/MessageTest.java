@@ -82,32 +82,6 @@ public class MessageTest {
     assertEquals("From: peiranTo: rouniContent: Good Morning!", message.toString());
   }
 
-//  /***
-//   * Test creating user fails for makeDirectory
-//   */
-//  @Test(expected=IllegalArgumentException.class)
-//  public void testMakeDirectoryException1() {
-//    assertEquals("Creating user fails.", message.makeDirectory(message.getMessagePath(), message.getFromID()));
-//  }
-//
-//  /***
-//   * Test creating sender success and create sender fails for makeDirectory
-//   */
-//  @Test(expected=IllegalArgumentException.class)
-//  public void testMakeDirectoryException2() {
-//    assertEquals("Successfully create sender directory.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageSent", 12345));
-//    assertEquals("Creating sender directory fails.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageSent", 12345));
-//  }
-//
-//  /***
-//   * Test creating receiver success and create receiver fails for makeDirectory
-//   */
-//  @Test(expected=IllegalArgumentException.class)
-//  public void testMakeDirectoryException3() {
-//    assertEquals("Successfully create receiver directory.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
-//    assertEquals("Creating receiver directory fails.", message.makeDirectory(message.getMessagePath() + "/" + 12345 + "/messageReceived", 12345));
-//  }
-
   /***
    * Test on MessageBuilder Class
    */
@@ -122,6 +96,7 @@ public class MessageTest {
     assertEquals(ms1.getTo(), message.getTo());
     assertEquals(ms1.getContent(), message.getContent());
   }
+
 
   /***
    * Test for deleteDir() function
@@ -150,10 +125,10 @@ public class MessageTest {
   /***
    * Test for willDecode() in Message Decoder class
    */
-//  @Test
-//  public void testWillDecode() {
-//    MessageDecoder decode = new MessageDecoder();
-//    assertFalse(decode.willDecode(null));
-//    assertTrue(decode.willDecode("test"));
-//  }
+  @Test
+  public void testWillDecode() {
+    MessageDecoder decode = new MessageDecoder();
+    assertFalse(decode.willDecode(null));
+    assertTrue(decode.willDecode("test"));
+  }
 }

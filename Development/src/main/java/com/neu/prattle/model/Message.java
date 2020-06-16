@@ -268,12 +268,12 @@ public class Message {
   /***
    * Write the current message into a JSON file under the folder of the current sender and receiver
    */
-  private void writeFile() throws IOException, EncodeException {
+  public void writeFile() throws IOException, EncodeException {
     writeSenderReceiverJson(MESSAGESENT, fromID);
     writeSenderReceiverJson(MESSAGERECEIVE, toID);
   }
 
-  private void writeSenderReceiverJson(String folderName, int userID) throws IOException, EncodeException {
+  public void writeSenderReceiverJson(String folderName, int userID) throws IOException, EncodeException {
     String file = messagePath + "/User" + "/" + userID + folderName + "/" + messageID + JSON;
     try(FileWriter myWriter = new FileWriter(file)) {
       MessageEncoder msEncoder = new MessageEncoder();
@@ -300,14 +300,51 @@ public class Message {
 //    return output;
 //  }
 
+  public void saveChatLogPerson() throws IOException {
+    String privateChat = "/privateChatHistory";
+    if (!sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
+      if (!Files.exists(Paths.get(messagePath + privateChat))) {
+        String privateChatDir = messagePath + privateChat;
+        File privateChatDirFile = new File(privateChatDir);
+        privateChatDirFile.mkdir();
+      }
+      String privateChatLogName = messagePath + privateChat + "/" + fromID + "_" + toID + "_" + getCurrDate() + ".txt";
+      File privateChatFile = new File(privateChatLogName);
+      //Check if the private chat log file already exits
+      if (!Files.exists(Paths.get(privateChatLogName))) {
+        FileWriter myWriter = new FileWriter(privateChatFile);
+        logger.info("Chat log file created for " + "sender: " + from + " and receiver: " + to);
+        try{
+          myWriter.write(toString());
+        } catch (IOException e) {
+          logger.log(Level.INFO, e.getMessage());
+        } finally {
+          myWriter.close();
+        }
+      } else {
+        FileWriter myWriter = new FileWriter(privateChatFile, true);
+        BufferedWriter br = new BufferedWriter(myWriter);
+        try {
+          br.newLine();
+          br.write(toString());
+        } catch (IOException e) {
+          logger.log(Level.INFO, e.getMessage());
+        } finally {
+          br.close();
+          myWriter.close();
+        }
+      }
+    }
+  }
+
   public void saveChatLog(Group currentGroupObject, boolean sendToGroup) throws IOException {
-    String group ="/Group";
+    String group = "/Group";
     if (sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
       if (!Files.exists(Paths.get(messagePath + group))) {
         String groupDir = messagePath + group;
         File groupDirFile = new File(groupDir);
         groupDirFile.mkdir();
-        }
+      }
       String groupChatLogName = messagePath + group + "/" + currentGroupObject.getGroupId() + "_" + getCurrDate() + ".txt";
       File groupChatFile = new File(groupChatLogName);
       //check if the chat log file already exists

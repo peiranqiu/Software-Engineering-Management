@@ -212,6 +212,7 @@ public class ChatEndpoint {
       }
     });
     message.storeMessage();
+    message.saveChatLogPerson();
   }
 
   public static void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
