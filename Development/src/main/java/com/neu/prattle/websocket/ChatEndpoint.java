@@ -170,7 +170,11 @@ public class ChatEndpoint {
     message.setFrom(users.get(session.getId()));
 
     try {
-      sendPersonalMessage(message);
+      if (!message.getSendToGroup())
+      {sendPersonalMessage(message);}
+      else {
+        sendGroupMessage(message, message.getTo(), session);
+      }
     } catch (IOException | EncodeException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }

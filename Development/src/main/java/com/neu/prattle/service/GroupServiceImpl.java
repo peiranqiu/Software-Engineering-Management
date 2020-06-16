@@ -173,4 +173,20 @@ public class GroupServiceImpl implements GroupService {
     }
     return group;
   }
+
+  /**
+   * a method to get all groups in the database
+   *
+   * @return a list of groups
+   */
+  @Override
+  public List<Group> getAllGroups() {
+    List<Group> groups = new ArrayList<>();
+    try{
+      groups=api.getAllGroups();
+    } catch (SQLException e) {
+      logger.log(Level.INFO, "failed in getting groups in database");
+    }
+    return groups;
+  }
 }

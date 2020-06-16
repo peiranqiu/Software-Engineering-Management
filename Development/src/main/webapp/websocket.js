@@ -3,6 +3,7 @@ const URL = 'http://localhost:8080/java-websocket/rest/';
 
 let ws;
 let currentUser;
+let currentGroup;
 
 
 /**
@@ -79,13 +80,26 @@ async function connect() {
 }
 
 /**
- * Send message.
+ * Send point to point message.
  */
 function send() {
     let content = document.getElementById("msg").value;
     let json = JSON.stringify({
                                   "content":content,
                                   "to":document.getElementById('to').value
+                              });
+    ws.send(json);
+}
+
+/**
+ * Send group message
+ */
+function sendGroup(){
+    let content = document.getElementById("groupMsg").value;
+    let json = JSON.stringify({
+                                  "content":content,
+                                  "to":document.getElementById('toGroup').value,
+                                    "sendToGroup": true
                               });
     ws.send(json);
 }
@@ -117,10 +131,6 @@ function generateList(response, operatoin){
         let user = document.createElement("span");
         user.classList.add("list-text");
         user.innerText = u.name;
-        user.addEventListener('click', (event)=>{
-            document.getElementById('to').value = event.target.innerHTML;
-
-        });
         userRow.appendChild(user);
 
         let follow = document.createElement("span");
@@ -130,14 +140,27 @@ function generateList(response, operatoin){
             follow.addEventListener('click', (event) => {
                 followUser(u.userId);
             });
+            user.addEventListener('click', (event)=>{
+                document.getElementById('to').value = event.target.innerHTML;
+
+            });
         }
         else if (operatoin === 'getFollowees'){
             follow.innerText = "-";
             follow.addEventListener('click', (event) => {
                unfollowUser(u.userId);
             });
-        }
+            user.addEventListener('click', (event)=>{
+                document.getElementById('to').value = event.target.innerHTML;
 
+            });
+        }
+        else if (operatoin === 'getGroups'){
+            user.addEventListener('click', (event)=>{
+                document.getElementById('toGroup').value = event.target.innerHTML;
+
+            });
+        }
 
         userRow.appendChild(follow);
 
@@ -168,7 +191,7 @@ async function userGetFollowee(evt) {
 /**
  * get list of groups the user is in.
  */
-async function getHasGroup() {
+async function getHasGroup(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup', {
         method: 'GET',
@@ -177,6 +200,10 @@ async function getHasGroup() {
         }
     }).then(rs => rs.json());
     console.log(response);
+
+    let list = generateList(response, 'getGroups');
+
+    openTab(evt, "Groups", list);
 }
 
 /**
@@ -335,16 +362,12 @@ async function approveInvitation() {
  * add a group moderator.
  */
 async function addGroupModerator() {
-    console.log(currentUser);
+    // console.log(currentUser);
+    // console.log(currentGroup);
     // group, user to be completed according to your frontend elements!!!
-    let markers = {
-        'group': null,
-        'moderator': currentUser,
-        'user': null,
-    };
-    const response = await fetch(URL + 'group/moderator/add', {
+
+    const response = await fetch(URL + 'group/'+currentUser.userId+'/moderate/'+currentGroup.groupId, {
         method: 'POST',
-        body: JSON.stringify(markers),
         headers: {
             'content-type': 'application/json'
         }
@@ -380,16 +403,11 @@ async function deleteGroupModerator() {
  * add a group member.
  */
 async function addGroupMember() {
-    console.log(currentUser);
+    // console.log(currentUser);
     // group, user to be completed according to your frontend elements!!!
-    let markers = {
-        'group': null,
-        'moderator': currentUser,
-        'user': null,
-    };
-    const response = await fetch(URL + 'group/member/add', {
+
+    const response = await fetch(URL + 'group/'+currentUser.userId+'/member/'+currentGroup.groupId, {
         method: 'POST',
-        body: JSON.stringify(markers),
         headers: {
             'content-type': 'application/json'
         }
@@ -440,3 +458,50 @@ function openTab(evt, tabName, content) {
     cur.replaceChild(content, cur.childNodes[0]);}
     cur.style.display = "block";
 }
+
+/**
+ * get list of all groups.
+ */
+async function getAllGroups (event){
+    const response = await fetch(URL + 'group/getAllGroups', {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response);
+    let list = generateList(response, 'getAllGroups');
+
+    openTab(event, "All Groups", list);
+}
+
+
+/**
+ * Create a new group
+ */
+async function createGroup (){
+    let markers = {'name': document.getElementById('groupName').value};
+    const response = await fetch(URL + 'group/create', {
+        method: 'POST',
+        body: JSON.stringify(markers),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(markers.name);
+
+    const response2 = await fetch(URL + 'group/'+markers.name, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response2)
+
+    if(response2){currentGroup=response2.value;}
+    addGroupMember(response2);
+    addGroupModerator(response2);
+
+}
+
+

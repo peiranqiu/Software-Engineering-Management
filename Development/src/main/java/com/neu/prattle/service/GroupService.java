@@ -89,4 +89,12 @@ public interface GroupService {
    */
   void setFollowAPI(FollowAPI newFollowAPI);
 
+  /**
+   * a method to get all groups in the database
+   *
+   * @return a list of groups
+   */
+
+  List<Group> getAllGroups();
+
 }
