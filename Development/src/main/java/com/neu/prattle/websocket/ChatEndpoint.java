@@ -67,6 +67,17 @@ public class ChatEndpoint {
   private static ModerateService moderateService = ModerateService.getInstance();
 
   /**
+   * Set services to be used in chatendpoint
+   * @param newAccountService
+   * @param newGroupService
+   * @param newModerateService
+   */
+  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
+    accountService = newAccountService;
+    groupService = newGroupService;
+    moderateService = newModerateService;
+  }
+  /**
    * Broadcast.
    *
    * Send a Message to each session in the pool of sessions. The Message sending action is

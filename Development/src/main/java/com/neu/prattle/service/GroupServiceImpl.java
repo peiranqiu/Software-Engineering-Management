@@ -40,6 +40,11 @@ public class GroupServiceImpl implements GroupService {
   public void setAPI(GroupAPI groupAPI) {
     api = groupAPI;
   }
+
+  @Override
+  public void setFollowAPI(FollowAPI newFollowAPI) {
+    followAPI = newFollowAPI;
+  }
   /**
    * Call this method to return an instance of this service.
    *
@@ -167,5 +172,21 @@ public class GroupServiceImpl implements GroupService {
       logger.log(Level.INFO, "failed in get id for group");
     }
     return group;
+  }
+
+  /**
+   * a method to get all groups in the database
+   *
+   * @return a list of groups
+   */
+  @Override
+  public List<Group> getAllGroups() {
+    List<Group> groups = new ArrayList<>();
+    try{
+      groups=api.getAllGroups();
+    } catch (SQLException e) {
+      logger.log(Level.INFO, "failed in getting groups in database");
+    }
+    return groups;
   }
 }

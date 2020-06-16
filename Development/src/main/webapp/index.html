@@ -36,6 +36,12 @@
                                 ='userGetFollower(event)'>
                     Followers
                 </button>
+
+                <button class="tablinks"
+                        onclick='getAllGroups(event)'>
+                    All Groups
+                </button>
+
             </div>
 
             <div id="Groups" class="tabcontent">
@@ -46,6 +52,11 @@
 
             <div id="Followers" class="tabcontent">
             </div>
+
+            <div id="All Groups" class="tabcontent">
+            </div>
+
+
         </td>
     </tr>
     <tr>
@@ -73,6 +84,15 @@
             <input id="newPsw" type="text" placeholder="Password">
             <button onclick="createUser()"> Create </button>
         </td>
+
+
+    </tr>
+    <tr>
+        <td>
+            <input id ='groupName' type ='text' placeholder="Group Name"/>
+            <button onclick="createGroup()"> Create </button>
+        </td>
+
 
     </tr>
 

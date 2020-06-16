@@ -3,12 +3,12 @@ package com.neu.prattle;
 import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.api.ModerateAPI;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
+import com.neu.prattle.service.api.ModerateAPI;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -45,6 +45,7 @@ public class ModerateMockitoTest {
   private User user3 = new User("testModerator33", "Password3");
   private User user4 = new User("testModerator44", "Password4");
   private Group group1 = new Group("testModerateGroup11");
+  private Group group2 = new Group("testModerateGroup22");
   private ModerateService moderateService;
 
   @Mock
@@ -138,6 +139,7 @@ public class ModerateMockitoTest {
     moderateService.setUserService(userService);
     assertEquals(moderateService.getModerateGroups(user1).get(0).getName(), group1.getName());
     assertEquals(moderateService.getHasGroups(user3).get(0).getName(), group1.getName());
+    assertEquals(moderateService.getHasGroups(user3.getUserId()).get(0).getName(), group1.getName());
   }
 
 
@@ -374,6 +376,28 @@ public class ModerateMockitoTest {
     when(api.getModerators(anyInt())).thenReturn(Arrays.asList(user1));
     moderateService.setAPI(api);
     assertTrue(moderateService.deleteGroupMember(group1, user1, user3));
+  }
+
+  /**
+   * Test delete member from group.
+   */
+  @Test
+  public void test9AddSubGroup() {
+    moderateService = helperService();
+    when(api.getModerators(anyInt())).thenReturn(Arrays.asList(user1));
+    moderateService.setAPI(api);
+    assertTrue(moderateService.addSubgroup(group1, user1, group2));
+  }
+
+  /**
+   * Test delete member from group.
+   */
+  @Test
+  public void test9DeleteSubGroup() {
+    moderateService = helperService();
+    when(api.getModerators(anyInt())).thenReturn(Arrays.asList(user1));
+    moderateService.setAPI(api);
+    assertTrue(moderateService.removeSubgroup(group1, user1, group2));
   }
 
   /**

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class MessageMockitoTest {
+public class MessageEntityTest {
   /***
    * Message created by Message class
    */
@@ -89,6 +89,11 @@ public class MessageMockitoTest {
   @Test
   public void testToString() {
     assertEquals("From: peiranTo: rouniContent: Good Morning!", message.toString());
+  }
+
+  @Test
+  public void testToStringForGroupChatLog() {
+    assertEquals("peiran: Good Morning!", message.toStringForGroupChatLog());
   }
 
   /***

@@ -3,9 +3,10 @@ package com.neu.prattle;
 
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
-import com.neu.prattle.service.api.GroupAPI;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.api.FollowAPI;
+import com.neu.prattle.service.api.GroupAPI;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
@@ -36,6 +38,9 @@ public class GroupMockitoTest {
   @Mock
   private GroupAPI api;
 
+  @Mock
+  private FollowAPI followAPI;
+
   private Group group1;
   private Group group2=new Group("testGroup2");
   private Group group3 = new Group("testGroup3");
@@ -44,6 +49,8 @@ public class GroupMockitoTest {
   public void setUp(){
     groupService = GroupServiceImpl.getInstance();
     api = mock(GroupAPI.class);
+    followAPI = new FollowAPI();
+    followAPI = mock(FollowAPI.class);
   }
 
   @Test
@@ -84,5 +91,29 @@ public class GroupMockitoTest {
     when(api.addSubgroupIntoGroup(anyInt(), anyInt())).thenReturn(true);
     groupService.setAPI(api);
     assertTrue(groupService.addSubgroupIntoGroup(1, 4));
+  }
+
+  @Test
+  public void testFindGroupByName()throws SQLException {
+    when(api.getGroup(anyString())).thenReturn(group2);
+    groupService.setAPI(api);
+    assertEquals(groupService.findGroupByName(group2.getName()).get().getGroupId(), group2.getGroupId());
+  }
+
+
+  @Test
+  public void testFindGroupById()throws SQLException {
+    when(api.getGroupById(anyInt())).thenReturn(group2);
+    groupService.setAPI(api);
+    assertEquals(groupService.getGroupById(group2.getGroupId()).getName(), group2.getName());
+  }
+
+  @Test
+  public void testSetPasswordForGroup()throws SQLException {
+    when(api.setPasswordforGroup(anyInt(), anyString())).thenReturn(true);
+    groupService.setAPI(api);
+    when(followAPI.groupGetFollowers(anyInt())).thenReturn(new ArrayList<>());
+    groupService.setFollowAPI(followAPI);
+    assertTrue(groupService.setPasswordforGroup(group2.getGroupId(), "passWord1"));
   }
 }

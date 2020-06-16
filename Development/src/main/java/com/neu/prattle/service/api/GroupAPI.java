@@ -243,4 +243,38 @@ public class GroupAPI extends DBUtils {
     }
     return b;
   }
+
+
+  /**
+   * a method to get all groups in the database
+   *
+   * @return a list of groups
+   */
+
+  public List<Group> getAllGroups() throws SQLException {
+    List<Group> GroupList = new ArrayList<>();
+    try {
+      Connection con = getConnection();
+      String sql = "SELECT * FROM mydb.Group";
+      stmt1 = con.prepareStatement(sql);
+      rs1= stmt1.executeQuery();
+      while (rs1.next()) {
+        int subGroupId = rs1.getInt("Group_id");
+        GroupList.add(getGroupById(subGroupId));
+      }
+      rs1.close();
+      stmt1.close();
+
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    finally {
+      rs1.close();
+      stmt1.close();
+    }
+
+
+    return GroupList;
+  }
+
 }

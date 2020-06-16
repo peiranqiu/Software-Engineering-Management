@@ -103,6 +103,18 @@ public class ModerateService {
     return result;
   }
 
+  public User addGroupModerator(Integer groupId, Integer userId) {
+    User result = null;
+    User user= userService.findUserById(userId);
+    user.setModerator(true);
+    userService.setModerator(user);
+    if (api.addModerator(groupId, userId)) {
+      result = user;
+    }
+    return result;
+  }
+
+
   /**
    * Downgrade a moderator to member in a group
    * @param group the group
@@ -186,6 +198,11 @@ public class ModerateService {
       b = api.addMember(g.getGroupId(), u.getUserId());
     }
     return b;
+  }
+
+  public boolean addGroupMember(Integer groupId, Integer userId){
+    return api.addMember(groupId,userId);
+
   }
 
   /**
