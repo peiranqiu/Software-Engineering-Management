@@ -200,11 +200,20 @@ public class GroupController {
     return new Gson().toJson(list);
   }
 
-
-
-
-
-
-
+  /**
+   * add subGroup into group
+   * @param groupId super group id
+   * @param subGroupId sub group id
+   * @return
+   */
+  @POST
+  @Path("/{groupId}/add/{subGroupId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String addSubGroup(@PathParam("groupId") int groupId, @PathParam("subGroupId") int subGroupId) {
+    if (groupService.addSubgroupIntoGroup(groupId,subGroupId)) {
+      return new Gson().toJson("Adding subGroup successful");
+    }
+    return new Gson().toJson("Adding subGroup failed");
+  }
 
 }
