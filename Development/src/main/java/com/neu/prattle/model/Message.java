@@ -210,24 +210,33 @@ public class Message {
    * Create the messageSent and messageReceived directories for the current user
    */
   public String makeDirectory(String messagePath, int userID) {
-    String dirName1 = messagePath + "/" + userID;
+    String dirName0 = messagePath + "/User";
+    File userFile = new File(dirName0);
+    if (!userFile.mkdir()) {
+      logger.info("User folder already exists.");
+    }
+    logger.info("Successfully create User folder.");
+
+    String dirName1 = messagePath + "/User" + "/" + userID;
     File fromUserFile = new File(dirName1);
     if (!fromUserFile.mkdir()) {
-      throw new IllegalArgumentException("Creating user fails.");
+      logger.info("This userID folder already exists.");
     }
-    logger.info("Successfully create user directory.");
-    String dirName2 = messagePath + "/" + userID + MESSAGESENT;
+    logger.info("Successfully create userID folder.");
+
+    String dirName2 = messagePath + "/User" + "/" + userID + MESSAGESENT;
     File fileUserSent = new File(dirName2);
     if (!fileUserSent.mkdir()) {
-      throw new IllegalArgumentException("Creating sender directory fails.");
+      logger.info("MessageSent folder for this user already exists.");
     }
-    logger.info("Successfully create sender directory.");
-    String dirName3 = messagePath + "/" + userID + MESSAGERECEIVE;
+    logger.info("Successfully create MessageSent folder for this user");
+
+    String dirName3 = messagePath + "/User" + "/" + userID + MESSAGERECEIVE;
     File fileUserReceived = new File(dirName3);
     if (!fileUserReceived.mkdir()) {
-      throw new IllegalArgumentException("Creating receiver directory fails.");
+      logger.info("MessageReceived folder for this user already exists.");
     }
-    logger.info("Successfully create receiver directory.");
+    logger.info("Successfully create MessageReceived folder for this user.");
     return "Successfully create receiver directory.";
   }
 
@@ -236,21 +245,21 @@ public class Message {
    */
   public boolean storeMessage() throws IOException, EncodeException {
     if (!sendToGroup && fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
-      if (!Files.exists(Paths.get(messagePath + "/" + fromID))) {
+      if (!Files.exists(Paths.get(messagePath + "/User" + "/" + fromID))) {
         makeDirectory(messagePath, fromID);
       }
-      if (!Files.exists(Paths.get(messagePath + "/" + toID))) {
+      if (!Files.exists(Paths.get(messagePath + "/User" + "/" + toID))) {
         makeDirectory(messagePath, toID);
       }
-      String name1 = messagePath + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
-      String name2 = messagePath + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
+      String name1 = messagePath + "/User" + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
+      String name2 = messagePath + "/User" + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
       File file1 = new File(name1);
       File file2 = new File(name2);
       if (file1.createNewFile() && file2.createNewFile()) {
-        writeFile(messagePath);
+        writeFile();
         return true;
       } else {
-        throw new IOException();
+        throw new IOException("File cannot be created.");
       }
     }
     return false;
@@ -259,42 +268,37 @@ public class Message {
   /***
    * Write the current message into a JSON file under the folder of the current sender and receiver
    */
-  private void writeFile(String messagePath) throws IOException, EncodeException {
-    MessageEncoder msEncoder = new MessageEncoder();
-    String file1 = messagePath + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
-    try(FileWriter myWriter = new FileWriter(file1)) {
+  private void writeFile() throws IOException, EncodeException {
+    writeSenderReceiverJson(MESSAGESENT, fromID);
+    writeSenderReceiverJson(MESSAGERECEIVE, toID);
+  }
 
+  private void writeSenderReceiverJson(String folderName, int userID) throws IOException, EncodeException {
+    String file = messagePath + "/User" + "/" + userID + folderName + "/" + messageID + JSON;
+    try(FileWriter myWriter = new FileWriter(file)) {
+      MessageEncoder msEncoder = new MessageEncoder();
       myWriter.write(msEncoder.encode(this));
     } catch(NullPointerException e) {
       logger.info(e.getMessage());
     }
-
-    String file2 = messagePath + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
-
-    try(FileWriter myWriter2 = new FileWriter(file2)) {
-      MessageEncoder msEncoder2 = new MessageEncoder();
-      myWriter2.write(msEncoder2.encode(this));
-    } catch(NullPointerException e) {
-      logger.info(e.getMessage());
-    }
   }
 
-  /***
-   * Remove the current message sent by sender
-   */
-  public String deleteMessage(int userID, String messageID) {
-    String output = "File remove fails.";
-    String s = messagePath + "/" + userID + MESSAGESENT + "/" + messageID + JSON;
-    Path path = Paths.get(s);
-
-    try {
-      Files.delete(path);
-      output =  "File deleted successfully";
-    } catch (IOException e) {
-      logger.info("File not deleted.");
-    }
-    return output;
-  }
+//  /***
+//   * Remove the current message sent by sender
+//   */
+//  public String deleteMessage(int userID, String messageID) {
+//    String output = "File remove fails.";
+//    String s = messagePath + "/" + userID + MESSAGESENT + "/" + messageID + JSON;
+//    Path path = Paths.get(s);
+//
+//    try {
+//      Files.delete(path);
+//      output =  "File deleted successfully";
+//    } catch (IOException e) {
+//      logger.info("File not deleted.");
+//    }
+//    return output;
+//  }
 
   public void saveChatLog(Group currentGroupObject, boolean sendToGroup) throws IOException {
     String group ="/Group";
