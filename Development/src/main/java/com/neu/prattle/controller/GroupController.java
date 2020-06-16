@@ -13,8 +13,11 @@ import com.neu.prattle.service.ModerateService;
 
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -83,7 +86,7 @@ public class GroupController {
   }
 
   /**
-   * unollow a group
+   * unfollow a group
    *
    * @param userId  the user id
    * @param groupId the group id
@@ -172,4 +175,36 @@ public class GroupController {
     }
     return new Gson().toJson("Delete member failed");
   }
+
+  /**
+   * Get all groups in database
+   * @return all groups in database
+   */
+  @GET
+  @Path("/getAllGroups")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getAllGroups(){
+    List<Group> list = groupService.getAllGroups();
+    return new Gson().toJson(list);
+  }
+
+  /**
+   * Get all subgroups in input group
+   * @return all subgroups in input group
+   */
+  @GET
+  @Path("{groupId}/getSubGroups")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getSubGroups(@PathParam("groupId") int id){
+    List<Group> list = groupService.getSubGroupList(id);
+    return new Gson().toJson(list);
+  }
+
+
+
+
+
+
+
+
 }

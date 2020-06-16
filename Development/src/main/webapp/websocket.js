@@ -440,3 +440,19 @@ function openTab(evt, tabName, content) {
     cur.replaceChild(content, cur.childNodes[0]);}
     cur.style.display = "block";
 }
+
+/**
+ * get list of all groups.
+ */
+async function getAllGroups (event){
+    const response = await fetch(URL + 'group/getAllGroups', {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response);
+    let list = generateList(response, 'getAllGroups');
+
+    openTab(event, "All Groups", list);
+}
