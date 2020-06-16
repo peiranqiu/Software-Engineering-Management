@@ -79,6 +79,13 @@ public class Message {
             .toString();
   }
 
+  public String toStringForPrivateChatLog() {
+    return new StringBuilder()
+            .append(from).append(": ")
+            .append(content)
+            .toString();
+  }
+
   public String toStringForGroupChatLog() {
     return new StringBuilder()
             .append(from).append(": ")
@@ -301,7 +308,7 @@ public class Message {
 //  }
 
   public void saveChatLogPerson() throws IOException {
-    String privateChat = "/privateChatHistory";
+    String privateChat = "/PrivateChatHistory";
     if (!sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
       if (!Files.exists(Paths.get(messagePath + privateChat))) {
         String privateChatDir = messagePath + privateChat;
@@ -315,7 +322,7 @@ public class Message {
         FileWriter myWriter = new FileWriter(privateChatFile);
         logger.info("Chat log file created for " + "sender: " + from + " and receiver: " + to);
         try{
-          myWriter.write(toString());
+          myWriter.write(toStringForPrivateChatLog());
         } catch (IOException e) {
           logger.log(Level.INFO, e.getMessage());
         } finally {
@@ -326,7 +333,7 @@ public class Message {
         BufferedWriter br = new BufferedWriter(myWriter);
         try {
           br.newLine();
-          br.write(toString());
+          br.write(toStringForPrivateChatLog());
         } catch (IOException e) {
           logger.log(Level.INFO, e.getMessage());
         } finally {

@@ -119,36 +119,30 @@ public class ChatEndpointTest {
   }
 
   @Test
-  public void testOnOpen() throws IOException, EncodeException {
-    chatEndpoint1.onOpen(session1, testUser1.getName());
+  public void testBroadcastInGroupFails() throws IOException, EncodeException {
+    GroupService groupService = GroupServiceImpl.getInstance();
+    groupService.addGroup(group1);
+    UserService userService = UserServiceImpl.getInstance();
+    ModerateService moderateService = ModerateService.getInstance();
+    userService.addUser(testUser1);
+    userService.addUser(testUser2);
+    User moderator1 = moderateService.addGroupModerator(group1,testUser1,testUser1);
+    moderateService.addGroupMember(group1,testUser1,testUser2);
 
-    // Finding the message with content 'Connected!'
-    Optional<Message> m = valueCapture.getAllValues().stream()
-            .map(val -> (Message) val)
-            .filter(msg -> msg.getContent().equals("Connected!")).findAny();
-
-    if (m.isPresent()) {
-      assertEquals("Connected!", m.get().getContent());
-      assertEquals(testUser1.getName(), m.get().getFrom());
-    } else {
-      fail();
-    }
-  }
-
-  @Test
-  public void testOnOpen1() throws IOException, EncodeException {
-    chatEndpoint1.onOpen(session1, testUser3.getName());
-
-    // Finding the message with content 'Connected!'
-    Optional<Message> m = valueCapture.getAllValues().stream()
-            .map(val -> (Message) val)
-            .filter(msg -> msg.getContent().equals("User testName3 could not be found")).findAny();
-
-    if (m.isPresent()) {
-      assertEquals("User testName3 could not be found", m.get().getContent());
-    } else {
-      fail();
-    }
+    User user1 = userService.findUserByName("testName1").get();
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo("testChatGroup1");
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Welcome to this group again!");
+    message.setMessageID();
+    message.setMessagePath();
+    Group groupEmpty = new Group();
+    chatEndpoint1.broadcastInGroup(message, groupEmpty);
+    assertNotEquals(testUser1, testUser2);
   }
 
   @Test
@@ -196,37 +190,38 @@ public class ChatEndpointTest {
     }
   }
 
-//  @Test
-//  public void testSendPersonalMessage() throws IOException, EncodeException {
-//    UserService userService = UserServiceImpl.getInstance();
-//    User user1 = userService.findUserByName("testName1").get();
-//    User user2 = userService.findUserByName("testName2").get();
-//    chatEndpoint1.onOpen(session1, user1.getName());
-//    chatEndpoint2.onOpen(session2, user2.getName());
-//    message.setFrom(user1.getName());
-//    message.setTo(user2.getName());
-//    message.setFromID(user1.getUserId());
-//    message.setToID(user2.getUserId());
-//    message.setContent("Hey");
-//    message.setMessageID();
-//    message.setMessagePath();
-//
-//    // Sending a message using onMessage method
-//    chatEndpoint1.sendPersonalMessage(message);
-//
-//    // Finding messages with content hey
-//    Optional<Message> m = valueCapture.getAllValues().stream()
-//            .map(val -> (Message) val)
-//            .filter(msg -> msg.getContent().equals("Hey")).findAny();
-//
-//     if (m.isPresent()) {
-//       String messagePath = message.getMessagePath();
-//      assertEquals(true, Files.exists(Paths.get(messagePath + "/User" + "/" + message.getFromID())));
-//       assertEquals(true, Files.exists(Paths.get(messagePath + "/User" + "/" + message.getToID())));
-//    } else {
-//      fail();
-//    }
-//  }
+  @Test
+  public void testOnOpen1() throws IOException, EncodeException {
+    chatEndpoint1.onOpen(session1, testUser1.getName());
+
+    // Finding the message with content 'Connected!'
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Connected!")).findAny();
+
+    if (m.isPresent()) {
+      assertEquals("Connected!", m.get().getContent());
+      assertEquals(testUser1.getName(), m.get().getFrom());
+    } else {
+      fail();
+    }
+  }
+
+  @Test
+  public void testOnOpen2() throws IOException, EncodeException {
+    chatEndpoint1.onOpen(session1, testUser3.getName());
+
+    // Finding the message with content 'Connected!'
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("User testName3 could not be found")).findAny();
+
+    if (m.isPresent()) {
+      assertEquals("User testName3 could not be found", m.get().getContent());
+    } else {
+      fail();
+    }
+  }
 
   @Test
   public void testSendGroupMessage() throws IOException, EncodeException {
@@ -292,6 +287,38 @@ public class ChatEndpointTest {
     }
   }
 
+  @Test
+  public void testSendPersonalMessage() throws IOException, EncodeException {
+    UserService userService = UserServiceImpl.getInstance();
+    User user1 = userService.findUserByName("testName1").get();
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo(user2.getName());
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Hey");
+    message.setMessageID();
+    message.setMessagePath();
+
+    // Sending a message using onMessage method
+    chatEndpoint1.sendPersonalMessage(message);
+
+    // Finding messages with content hey
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Hey")).findAny();
+
+     if (m.isPresent()) {
+       String messagePath = message.getMessagePath();
+       File file = new File(messagePath + "/PrivateChatHistory" + "/" + message.getFromID() + "_" + message.getToID() + "_" + message.getCurrDate() + ".txt");
+       assertEquals(true, checkLogHasMessage("testName1: Hey", file));
+    } else {
+      fail();
+    }
+  }
+
   public boolean checkLogHasMessage(String msgSent, File file) {
     try {
       Scanner scanner = new Scanner(file);
@@ -309,30 +336,4 @@ public class ChatEndpointTest {
     return false;
   }
 
-  @Test
-  public void testBroadcastInGroupFails() throws IOException, EncodeException {
-    GroupService groupService = GroupServiceImpl.getInstance();
-    groupService.addGroup(group1);
-    UserService userService = UserServiceImpl.getInstance();
-    ModerateService moderateService = ModerateService.getInstance();
-    userService.addUser(testUser1);
-    userService.addUser(testUser2);
-    User moderator1 = moderateService.addGroupModerator(group1,testUser1,testUser1);
-    moderateService.addGroupMember(group1,testUser1,testUser2);
-
-    User user1 = userService.findUserByName("testName1").get();
-    User user2 = userService.findUserByName("testName2").get();
-    chatEndpoint1.onOpen(session1, user1.getName());
-    chatEndpoint2.onOpen(session2, user2.getName());
-    message.setFrom(user1.getName());
-    message.setTo("testChatGroup1");
-    message.setFromID(user1.getUserId());
-    message.setToID(user2.getUserId());
-    message.setContent("Welcome to this group again!");
-    message.setMessageID();
-    message.setMessagePath();
-    Group groupEmpty = new Group();
-    chatEndpoint1.broadcastInGroup(message, groupEmpty);
-    assertNotEquals(testUser1, testUser2);
-  }
 }
