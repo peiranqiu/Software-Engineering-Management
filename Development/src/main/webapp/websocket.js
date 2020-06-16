@@ -398,7 +398,7 @@ async function addGroupMember() {
 }
 
 /**
- * add a group member.
+ * delelte a group member.
  */
 async function deleteGroupMember() {
     console.log(currentUser);
