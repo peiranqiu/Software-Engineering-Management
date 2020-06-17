@@ -62,13 +62,7 @@ public class ChatEndpointTest {
   // Mocking basic which is used by session to send message
   @Mock
   private Basic basic;
-
-
   private Group group1;
-
-
-  private Group group2;
-
 
   // To capture messages sent by Websockets
   private ArgumentCaptor<Object> valueCapture;
@@ -113,7 +107,7 @@ public class ChatEndpointTest {
     when(session2.getId()).thenReturn("id2");
 
     group1 = new Group("testChatGroup1");
-    group2 = new Group("testChatGroup2");
+    group1.setGroupId(1);
   }
 
   @Test
@@ -246,7 +240,7 @@ public class ChatEndpointTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + 1 + "_" + message.getCurrDate() + ".txt");
+      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
       assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!   " + message.getTimeStamp(), file));
     } else {
       fail();
@@ -278,7 +272,7 @@ public class ChatEndpointTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + 1 + "_" + message.getCurrDate() + ".txt");
+      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
       assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
     } else {
       fail();
@@ -300,6 +294,7 @@ public class ChatEndpointTest {
     message.setMessageID();
     message.setMessagePath();
     message.setTimeStamp();
+    message.setCurrDate();
     // Sending a message using onMessage method
     chatEndpoint1.sendPersonalMessage(message);
 
@@ -316,6 +311,41 @@ public class ChatEndpointTest {
       fail();
     }
   }
+
+  @Test
+  public void testDeleteGroupMessage() throws IOException, EncodeException {
+    UserService userService = UserServiceImpl.getInstance();
+    User user1 = userService.findUserByName("testName1").get();
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo("testChatGroup1");
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Welcome to this group again!");
+    message.setMessageID();
+    message.setMessagePath();
+    message.setTimeStamp();
+    message.setCurrDate();
+    // Sending a message using onMessage method
+    chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
+
+    // Finding messages with content hey
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Welcome to this group again!")).findAny();
+
+    if (m.isPresent()) {
+      String messagePath = message.getMessagePath();
+      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
+      message.deleteGroupMessage(group1);
+      assertEquals(false, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
+    } else {
+      fail();
+    }
+  }
+
 
   public boolean checkLogHasMessage(String msgSent, File file) {
     try {

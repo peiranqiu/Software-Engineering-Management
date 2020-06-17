@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -314,10 +315,10 @@ public class Message {
   }
 
   /***
-   * Remove the current message sent by sender
+   * Remove the current message sent by sender from a personal dialog
    */
   public String deletePersonalMessage() throws IOException {
-    String output = "File remove fails.";
+    String output = "delete message fails";
     String s1 = messagePath + "/User/" + fromID + MESSAGESENT + "/" + messageID + JSON;
     Path path1 = Paths.get(s1);
     try {
@@ -350,7 +351,35 @@ public class Message {
     FileWriter out = new FileWriter(file);
     tempStream.writeTo(out);
     out.close();
-    output = "Successfully deleted message history!";
+    output = "Successfully deleted this message!";
+    return output;
+  }
+
+  /***
+   * Remove the current message sent by sender from a group dialog
+   */
+  public String deleteGroupMessage(Group currentGroupObject) throws IOException {
+    int groupID = currentGroupObject.getGroupId();
+    String output = "delete message fails.";
+    String s3 = messagePath + "/Group/" + groupID + "_" + currDate + ".txt";
+    File file = new File(s3);
+    FileReader in = new FileReader(file);
+    BufferedReader bufIn = new BufferedReader(in);
+    CharArrayWriter tempStream = new CharArrayWriter();
+    //Substitution
+    String line = null;
+    while ((line = bufIn.readLine()) != null) {
+      line = line.replaceAll(getFrom() + ": " + getContent() + "   " + getTimeStamp(), "");
+      //write this line into storage
+      tempStream.write(line);
+      //Add Line Seperator
+      tempStream.append(System.getProperty("line.separator"));
+    }
+    bufIn.close();
+    FileWriter out = new FileWriter(file);
+    tempStream.writeTo(out);
+    out.close();
+    output = "Successfully deleted this message!";
     return output;
   }
 
@@ -393,7 +422,6 @@ public class Message {
       }
     }
   }
-
 
   /***
    * Save group chat history under the Group folder by group id and group chat date

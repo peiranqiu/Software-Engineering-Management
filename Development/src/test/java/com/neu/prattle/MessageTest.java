@@ -99,7 +99,7 @@ public class MessageTest {
   }
 
   @Test
-  public void testdeletePersonalMessage() throws IOException, EncodeException {
+  public void testDeletePersonalMessage() throws IOException, EncodeException {
     message.storeMessage();
     message.saveChatLogPerson();
     message.deletePersonalMessage();
