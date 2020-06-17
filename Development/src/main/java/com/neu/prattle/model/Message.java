@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -67,6 +66,7 @@ public class Message {
    */
   private boolean sendToGroup = false;
 
+  private String currDate;
   /***
    * Return the completed message with sender and receiver
    */
@@ -183,7 +183,21 @@ public class Message {
   public int getToID() {
     return toID;
   }
+  /***
+   * Retrieve current Date
+   */
+  public String getCurrDate() {
+    DateFormat dateFormat = new SimpleDateFormat("MMddyyyy");
+    Date date = new Date();
+    return dateFormat.format(date);
+  }
 
+  /***
+   * Retrieve current Date
+   */
+  public void setCurrDate() {
+    this.currDate = getCurrDate();
+  }
   /***
    * Return send to group or not
    */
@@ -379,12 +393,6 @@ public class Message {
         }
       }
     }
-  }
-
-  public String getCurrDate() {
-    DateFormat dateFormat = new SimpleDateFormat("MMddyyyy");
-    Date date = new Date();
-    return dateFormat.format(date);
   }
 
   /***

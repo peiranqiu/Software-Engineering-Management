@@ -28,6 +28,7 @@ public class MessageTest {
     message.setToID(456);
     message.setMessageID();
     message.setMessagePath();
+    message.setCurrDate();
   }
 
   /***
