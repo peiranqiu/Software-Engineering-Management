@@ -34,8 +34,6 @@ import org.mockito.Mock;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -237,7 +235,7 @@ public class ChatEndpointTest {
     message.setContent("Welcome to this group!");
     message.setMessageID();
     message.setMessagePath();
-
+    message.setTimeStamp();
     // Sending a message using onMessage method
     chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
 
@@ -249,7 +247,7 @@ public class ChatEndpointTest {
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
       File file = new File(messagePath + "/Group" + "/" + 1 + "_" + message.getCurrDate() + ".txt");
-      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!", file));
+      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!   " + message.getTimeStamp(), file));
     } else {
       fail();
     }
@@ -269,7 +267,7 @@ public class ChatEndpointTest {
     message.setContent("Welcome to this group again!");
     message.setMessageID();
     message.setMessagePath();
-
+    message.setTimeStamp();
     // Sending a message using onMessage method
     chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
 
@@ -281,7 +279,7 @@ public class ChatEndpointTest {
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
       File file = new File(messagePath + "/Group" + "/" + 1 + "_" + message.getCurrDate() + ".txt");
-      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!", file));
+      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
     } else {
       fail();
     }
@@ -301,7 +299,7 @@ public class ChatEndpointTest {
     message.setContent("Hey");
     message.setMessageID();
     message.setMessagePath();
-
+    message.setTimeStamp();
     // Sending a message using onMessage method
     chatEndpoint1.sendPersonalMessage(message);
 
@@ -313,7 +311,7 @@ public class ChatEndpointTest {
      if (m.isPresent()) {
        String messagePath = message.getMessagePath();
        File file = new File(messagePath + "/PrivateChatHistory" + "/" + message.getFromID() + "_" + message.getToID() + "_" + message.getCurrDate() + ".txt");
-       assertEquals(true, checkLogHasMessage("testName1: Hey", file));
+       assertEquals(true, checkLogHasMessage("testName1: Hey   " + message.getTimeStamp(), file));
     } else {
       fail();
     }

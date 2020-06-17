@@ -10,6 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -46,10 +48,6 @@ public class Message {
    */
   private String messageID;
   /***
-   * The date of the message creation
-   */
-  private String messageDate;
-  /***
    * The directory of massage folder
    */
   private String messagePath;
@@ -65,8 +63,15 @@ public class Message {
    * Message to group or not
    */
   private boolean sendToGroup = false;
-
+  /***
+   * Date of the message sent
+   */
   private String currDate;
+  /***
+   * TimeStamp of the message sent
+   */
+  private String timeStamp;
+
   /***
    * Return the completed message with sender and receiver
    */
@@ -82,14 +87,16 @@ public class Message {
   public String toStringForPrivateChatLog() {
     return new StringBuilder()
             .append(from).append(": ")
-            .append(content)
+            .append(content).append("   ")
+            .append(timeStamp)
             .toString();
   }
 
   public String toStringForGroupChatLog() {
     return new StringBuilder()
             .append(from).append(": ")
-            .append(content)
+            .append(content).append("   ")
+            .append(timeStamp)
             .toString();
   }
 
@@ -150,13 +157,6 @@ public class Message {
   }
 
   /***
-   * Retrieve date of message
-   */
-  public String getMessageDate() {
-    return messageDate;
-  }
-
-  /***
    * Set id of message sender
    */
   public void setFromID(int fromID) {
@@ -198,18 +198,18 @@ public class Message {
   public void setCurrDate() {
     this.currDate = getCurrDate();
   }
-  /***
-   * Return send to group or not
-   */
-  public boolean getSendToGroup() {
-    return sendToGroup;
-  }
-  /***
-   * Retrieve sent to group or not
-   */
-  public void setSendToGroup(boolean sendToGroup) {
-    this.sendToGroup = sendToGroup;
-  }
+//  /***
+//   * Return send to group or not
+//   */
+//  public boolean getSendToGroup() {
+//    return sendToGroup;
+//  }
+//  /***
+//   * Retrieve sent to group or not
+//   */
+//  public void setSendToGroup(boolean sendToGroup) {
+//    this.sendToGroup = sendToGroup;
+//  }
 
   /***
    * Get the parent directory of the message folder
@@ -225,6 +225,24 @@ public class Message {
    */
   public void setMessagePath() {
     this.messagePath = getMessagePath();
+  }
+
+  /***
+   * Retrieve the time stamp of the current message
+   */
+  public String getTimeStamp() {
+    DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
+    timeStamp = mdy.format(now);
+    return timeStamp;
+  }
+
+  /***
+   * Get the time stamp of the current message
+   */
+
+  public void setTimeStamp() {
+    this.timeStamp = getTimeStamp();
   }
 
   /***
