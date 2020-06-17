@@ -245,7 +245,7 @@ public class ChatEndpoint {
         }
       }
     });
-    message.saveChatLog(currentGroupObject, true);
+    message.saveChatLogGroup(currentGroupObject, true);
   }
 }
 

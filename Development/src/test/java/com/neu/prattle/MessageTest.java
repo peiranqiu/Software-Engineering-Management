@@ -98,6 +98,12 @@ public class MessageTest {
     assertEquals(ms1.getContent(), message.getContent());
   }
 
+  @Test
+  public void testdeletePersonalMessage() throws IOException, EncodeException {
+    message.storeMessage();
+    message.saveChatLogPerson();
+    message.deletePersonalMessage();
+  }
 
   /***
    * Test for deleteDir() function

@@ -1,12 +1,15 @@
 package com.neu.prattle.model;
 
 import com.neu.prattle.websocket.MessageEncoder;
-
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.CharArrayWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -198,18 +201,6 @@ public class Message {
   public void setCurrDate() {
     this.currDate = getCurrDate();
   }
-//  /***
-//   * Return send to group or not
-//   */
-//  public boolean getSendToGroup() {
-//    return sendToGroup;
-//  }
-//  /***
-//   * Retrieve sent to group or not
-//   */
-//  public void setSendToGroup(boolean sendToGroup) {
-//    this.sendToGroup = sendToGroup;
-//  }
 
   /***
    * Get the parent directory of the message folder
@@ -322,23 +313,50 @@ public class Message {
     }
   }
 
-//  /***
-//   * Remove the current message sent by sender
-//   */
-//  public String deleteMessage(int userID, String messageID) {
-//    String output = "File remove fails.";
-//    String s = messagePath + "/" + userID + MESSAGESENT + "/" + messageID + JSON;
-//    Path path = Paths.get(s);
-//
-//    try {
-//      Files.delete(path);
-//      output =  "File deleted successfully";
-//    } catch (IOException e) {
-//      logger.info("File not deleted.");
-//    }
-//    return output;
-//  }
+  /***
+   * Remove the current message sent by sender
+   */
+  public String deletePersonalMessage() throws IOException {
+    String output = "File remove fails.";
+    String s1 = messagePath + "/User/" + fromID + MESSAGESENT + "/" + messageID + JSON;
+    Path path1 = Paths.get(s1);
+    try {
+      Files.delete(path1);
+    } catch (IOException e) {
+      logger.info("Message Sender File could not be deleted.");
+    }
+    String s2 = messagePath + "/User/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
+    Path path2 = Paths.get(s2);
+    try {
+      Files.delete(path2);
+    } catch (IOException e) {
+      logger.info("Message Receiver File could not be deleted.");
+    }
+    String s3 = messagePath + "/PrivateChatHistory/" + fromID + "_" + toID + "_" + currDate + ".txt";
+    File file = new File(s3);
+    FileReader in = new FileReader(file);
+    BufferedReader bufIn = new BufferedReader(in);
+    CharArrayWriter tempStream = new CharArrayWriter();
+    //Substitution
+    String line = null;
+    while ((line = bufIn.readLine()) != null) {
+      line = line.replaceAll(getFrom() + ": " + getContent() + "   " + getTimeStamp(), "");
+      //write this line into storage
+      tempStream.write(line);
+      //Add Line Seperator
+      tempStream.append(System.getProperty("line.separator"));
+    }
+    bufIn.close();
+    FileWriter out = new FileWriter(file);
+    tempStream.writeTo(out);
+    out.close();
+    output = "Successfully deleted message history!";
+    return output;
+  }
 
+  /***
+   * Save private chat history under the PrivateChatHistory folder by sender's id, receiver's id, and message sent date.
+   */
   public void saveChatLogPerson() throws IOException {
     String privateChat = "/PrivateChatHistory";
     if (!sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
@@ -376,7 +394,11 @@ public class Message {
     }
   }
 
-  public void saveChatLog(Group currentGroupObject, boolean sendToGroup) throws IOException {
+
+  /***
+   * Save group chat history under the Group folder by group id and group chat date
+   */
+  public void saveChatLogGroup(Group currentGroupObject, boolean sendToGroup) throws IOException {
     String group = "/Group";
     if (sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
       if (!Files.exists(Paths.get(messagePath + group))) {
