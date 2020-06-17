@@ -25,16 +25,9 @@
 				<configuration>
 					<url>http://localhost:8080/manager/text</url>
 					<server>TomcatServer</server>
-<<<<<<< HEAD
 					<path>/${project.artifactId}</path>
 					<username>admin</username>
 					<password>admin</password>
-=======
-					<!--<path>/prattle</path>-->
-					<username>admin</username>
-					<password>password</password>
-					<path>/${project.artifactId}</path>
->>>>>>> 198ccf142f4fa15a896a710f011090e095d373ee
 					<update>true</update>
 				</configuration>
 			</plugin>
