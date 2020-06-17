@@ -2,7 +2,6 @@ package com.neu.prattle.model;
 
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,18 +22,6 @@ import java.util.stream.Collectors;
 
 public class removeChatLog {
   private Logger logger = Logger.getLogger(Message.class.getName());
-
-  /***
-   * The directory of massage folder
-   */
-  private String messagePath;
-  /***
-   * Get the parent directory of the message folder
-   */
-
-  /**
-   * The group service.
-   */
   private GroupService groupService = GroupServiceImpl.getInstance();
 
   public String getMessagePath() {
@@ -43,50 +30,48 @@ public class removeChatLog {
     return mainPath + "/src";
   }
 
-  /***
-   * Set the parent directory of the message folder
-   */
-  public void setMessagePath() {
-    this.messagePath = getMessagePath();
-  }
-
-  public void deleteBeforeOneMonth(String groupName) {
+  public void deleteBeforeNumberOfDays(String groupName, int daysBefore) {
     Optional<Group> group = groupService.findGroupByName(groupName);
     int groupId = group.get().getGroupId();
     try {
-      // path of folder to check
-      String extension = "txt";
       String startWith = Integer.toString(groupId);
       Date today = new Date();
       Calendar cal = new GregorianCalendar();
       cal.setTime(today);
-      cal.add(Calendar.DAY_OF_MONTH, -30);
+      cal.add(Calendar.DAY_OF_MONTH, 0 - daysBefore);
       Date lastThirtyDate = cal.getTime();
       LocalDate beforeDate = lastThirtyDate.toInstant()
               .atZone(ZoneId.systemDefault())
               .toLocalDate();
 
-      String path = messagePath + "/Group";
+      String path = getMessagePath() + "/Group";
       List<Path> paths = Files.list(Paths.get(path)).collect(Collectors.toList());
 
       for (Path entry : paths) {
         BasicFileAttributes attributes = Files.readAttributes(entry, BasicFileAttributes.class);
-//        System.out.println("\tCreation Time/UTC Time: " + attributes.creationTime());
         Instant instant = Instant.parse(attributes.lastModifiedTime().toString());
-        LocalDateTime ldt = LocalDateTime.ofInstant(instant, ZoneId.of(ZoneOffset.UTC.getId()));
-//        System.out.println("\tLocal Date: " + ldt.toLocalDate());
-//        System.out.println("\tBefore Date: " + beforeDate);
-        if (entry.getFileName().toString().startsWith(startWith) && entry.getFileName().toString().endsWith(extension) && ldt.toLocalDate().isBefore(beforeDate)) {
-          System.out.println("\tMarked for deletion: Yes");
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        LocalDate localdate = localDateTime.toLocalDate();
+        if (entry.getFileName().toString().startsWith(startWith) && localdate.isBefore(beforeDate)) {
+          deleteGroupLog(groupId, entry, localdate);
         }
         else {
           System.out.println("\tMarked for deletion: No");
         }
-
-        System.out.println("\n");
       }
     } catch (IOException ex) {
-      logger.info("Not able to file before last one month");
+      logger.info("Not able to delete group chat file before this time period");
+    }
+  }
+
+  public void deleteGroupLog(int groupId, Path filePath, LocalDate localdate) {
+    String output = "delete group chat history fails";
+    String s1 = getMessagePath() + "/Group/" + groupId + "_" + localdate + ".txt";
+    Path path1 = Paths.get(s1);
+    try {
+      Files.delete(path1);
+    } catch (IOException e) {
+      logger.info("Message Sender File could not be deleted.");
     }
   }
 }
