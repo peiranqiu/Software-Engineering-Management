@@ -20,9 +20,13 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class removeChatLog {
+
+public class RemoveChatLog {
   private Logger logger = Logger.getLogger(Message.class.getName());
   private GroupService groupService = GroupServiceImpl.getInstance();
+  public void setGroupService(GroupService newgroupService) {
+    groupService = newgroupService;
+  }
 
   public String getMessagePath() {
     String path = Message.class.getResource("").getPath();
