@@ -100,6 +100,23 @@
 			<artifactId>spring-context</artifactId>
 			<version>5.2.0.RELEASE</version>
 		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-bom</artifactId>
+			<version>1.11.327</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.11.327</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.30</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<javax.websocket-api.version>1.1</javax.websocket-api.version>
@@ -115,6 +132,7 @@
 			**/PrattleApplication.java,
 			**/websocket.js
 		</sonar.exclusions>
+		<aws.java.sdk.version>2.13.7</aws.java.sdk.version>
 	</properties>
 	<profiles>
 		<profile>

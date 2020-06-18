@@ -106,14 +106,14 @@ public class ChatEndpointTest {
     when(session1.getId()).thenReturn("id1");
     when(session2.getId()).thenReturn("id2");
 
-    group1 = new Group("testChatGroup1");
-    group1.setGroupId(1);
+//    group1 = new Group("testChatGroup1");
+//    group1.setGroupId(1);
   }
 
   @Test
   public void testBroadcastInGroupFails() throws IOException, EncodeException {
-    GroupService groupService = GroupServiceImpl.getInstance();
-    groupService.addGroup(group1);
+//    GroupService groupService = GroupServiceImpl.getInstance();
+//    groupService.addGroup(group1);
     UserService userService = UserServiceImpl.getInstance();
     ModerateService moderateService = ModerateService.getInstance();
     userService.addUser(testUser1);
