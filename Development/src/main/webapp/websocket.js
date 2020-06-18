@@ -180,7 +180,6 @@ function generateList(response, operatoin){
  * a user get list of followees.
  */
 async function userGetFollowee(evt) {
-    document.getElementsByClassName("subGroupContent").style.display='none';
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee', {
         method: 'GET',
