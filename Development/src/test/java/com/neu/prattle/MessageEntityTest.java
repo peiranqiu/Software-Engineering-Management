@@ -85,7 +85,7 @@ public class MessageEntityTest {
 
   @Test
   public void testToStringForGroupChatLog() {
-    assertEquals("peiran: Good Morning!", message.toStringForGroupChatLog());
+    assertEquals("peiran: Good Morning!   null", message.toStringForGroupChatLog());
   }
 
   /***
