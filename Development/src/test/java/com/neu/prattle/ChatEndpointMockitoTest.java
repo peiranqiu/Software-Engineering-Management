@@ -53,6 +53,7 @@ public class ChatEndpointMockitoTest {
   private static User testUser2 = new User("testName2", "User2Password");
   private static User testUser3 = new User("testName3", "User3Password");
   private Message message;
+  private Group group1 = new Group("testChatGroup1");
   private Group group2 = new Group("testChatGroup2");
 
 
@@ -79,8 +80,6 @@ public class ChatEndpointMockitoTest {
   // ChatEndpoints to test
   private ChatEndpoint chatEndpoint1;
   private ChatEndpoint chatEndpoint2;
-
-  private Group group1;
 
   @Before
   public void setup() throws IOException, EncodeException {
