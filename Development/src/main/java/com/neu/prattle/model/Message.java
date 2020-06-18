@@ -248,6 +248,13 @@ public class Message {
     this.timeStamp = getTimeStamp();
   }
 
+  /**
+   * Set if sent to group
+   */
+  public void setSendToGroup(boolean sendToGroup) {
+    this.sendToGroup = sendToGroup;
+  }
+
   /***
    * Create the messageSent and messageReceived directories for the current user
    */
