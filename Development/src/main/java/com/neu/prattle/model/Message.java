@@ -188,6 +188,12 @@ public class Message {
     return toID;
   }
   /***
+   * Return send to group or not
+   */
+  public boolean getSendToGroup() {
+    return sendToGroup;
+  }
+  /***
    * Retrieve current Date
    */
   public String getCurrDate() {

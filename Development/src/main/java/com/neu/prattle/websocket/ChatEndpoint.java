@@ -68,9 +68,9 @@ public class ChatEndpoint {
 
   /**
    * Set services to be used in chatendpoint
-   * @param newAccountService
-   * @param newGroupService
-   * @param newModerateService
+   * @param newAccountService new user service
+   * @param newGroupService new group service
+   * @param newModerateService new moderate service
    */
   public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
     accountService = newAccountService;
