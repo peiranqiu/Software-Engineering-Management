@@ -67,6 +67,17 @@ public class ChatEndpoint {
   private static ModerateService moderateService = ModerateService.getInstance();
 
   /**
+   * Set services to be used in chatendpoint
+   * @param newAccountService new user service
+   * @param newGroupService new group service
+   * @param newModerateService new moderate service
+   */
+  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
+    accountService = newAccountService;
+    groupService = newGroupService;
+    moderateService = newModerateService;
+  }
+  /**
    * Broadcast.
    *
    * Send a Message to each session in the pool of sessions. The Message sending action is
@@ -157,7 +168,17 @@ public class ChatEndpoint {
   @OnMessage
   public void onMessage(Session session, Message message) {
     message.setFrom(users.get(session.getId()));
-    broadcast(message);
+
+    try {
+      if (!message.getSendToGroup())
+      {sendPersonalMessage(message);}
+      else {
+        sendGroupMessage(message, message.getTo(), session);
+      }
+    } catch (IOException | EncodeException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+
   }
 
   /**
@@ -205,7 +226,6 @@ public class ChatEndpoint {
           try {
             endpoint.session.getBasicRemote()
                     .sendObject(message);
-
           } catch (IOException | EncodeException e) {
             LOGGER.log(Level.INFO, e.getMessage());
           }
@@ -213,6 +233,7 @@ public class ChatEndpoint {
       }
     });
     message.storeMessage();
+    message.saveChatLogPerson();
   }
 
   public static void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
@@ -245,7 +266,7 @@ public class ChatEndpoint {
         }
       }
     });
-    message.saveChatLog(currentGroupObject, true);
+    message.saveChatLogGroup(currentGroupObject, true);
   }
 }
 

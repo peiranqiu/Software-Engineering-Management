@@ -3,6 +3,7 @@ package com.neu.prattle.service;
 import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.ModerateAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +15,46 @@ import java.util.Optional;
  */
 public class ModerateService {
 
-  private static UserService userService;
-  private static GroupService groupService;
+  private UserService userService;
+  private GroupService groupService;
   private static ModerateService moderateService;
   private ModerateAPI api;
 
   static {
     moderateService = new ModerateService();
-    userService = UserServiceImpl.getInstance();
-    groupService = GroupServiceImpl.getInstance();
   }
 
   /**
    * ModerateService is a Singleton class.
    */
   private ModerateService() {
+
     api = new ModerateAPI();
+    userService = UserServiceImpl.getInstance();
+    groupService = GroupServiceImpl.getInstance();
+  }
+
+  /**
+   * Set moderate api to be used by this service.
+   * @param moderateAPI
+   */
+  public void setAPI(ModerateAPI moderateAPI) {
+    api = moderateAPI;
+  }
+  /**
+   * Set userService to be used by this service.
+   * @param service
+   */
+  public void setUserService(UserService service) {
+    userService = service;
+  }
+
+  /**
+   * Set groupService to be used by this service.
+   * @param service
+   */
+  public void setGroupService(GroupService service) {
+    groupService = service;
   }
 
   /**
@@ -77,6 +102,18 @@ public class ModerateService {
     }
     return result;
   }
+
+  public User addGroupModerator(Integer groupId, Integer userId) {
+    User result = null;
+    User user= userService.findUserById(userId);
+    user.setModerator(true);
+    userService.setModerator(user);
+    if (api.addModerator(groupId, userId)) {
+      result = user;
+    }
+    return result;
+  }
+
 
   /**
    * Downgrade a moderator to member in a group
@@ -163,6 +200,11 @@ public class ModerateService {
     return b;
   }
 
+  public boolean addGroupMember(Integer groupId, Integer userId){
+    return api.addMember(groupId,userId);
+
+  }
+
   /**
    * Get moderators for a given group.
    * @param group the group
@@ -223,6 +265,10 @@ public class ModerateService {
     return list;
   }
 
+  public List<Group> getHasGroups(int userId) {
+    return api.getHasGroups(userId);
+  }
+
   /**
    * Member invites/deletes a user to a group by creating an invitation for the group moderator to approve.
    * @param group the group
@@ -255,6 +301,7 @@ public class ModerateService {
     return b;
   }
 
+
   /**
    * Group moderator does not approve the invitation and deletes it.
    * @param group the group
@@ -275,6 +322,7 @@ public class ModerateService {
     }
     return b;
   }
+
 
   /**
    * Group moderator approves invitation and adds the invitee into group.

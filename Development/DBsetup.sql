@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User` (
   `User_id` INT NOT NULL auto_increment,
   `name` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NULL,
+  `avatar` VARCHAR(45) NULL,
   `language` VARCHAR(2) NOT NULL DEFAULT 'en',
   `isModerator` TINYINT NOT NULL DEFAULT 0,
   `logins` VARCHAR(45) NULL,
@@ -48,6 +49,29 @@ CREATE TABLE IF NOT EXISTS `mydb`.`Group` (
   UNIQUE INDEX `name_UNIQUE` (`name` ASC))
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `mydb`.`Invitation`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`Invitation` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`Invitation` (
+  `User_User_id` INT NOT NULL,
+  `Group_Group_id` INT NOT NULL,
+  `isAdd` TINYINT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`User_User_id`, `Group_Group_id`),
+  INDEX `fk_Invitation_Group1_idx` (`Group_Group_id` ASC),
+  INDEX `fk_Invitation_User_idx` (`User_User_id` ASC),
+  CONSTRAINT `fk_Invitation_User`
+    FOREIGN KEY (`User_User_id`)
+    REFERENCES `mydb`.`User` (`User_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Invitation_Group1`
+    FOREIGN KEY (`Group_Group_id`)
+    REFERENCES `mydb`.`Group` (`Group_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 -- Table `mydb`.`User_has_Group`
