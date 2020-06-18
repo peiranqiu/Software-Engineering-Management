@@ -132,6 +132,7 @@ function generateList(response, operatoin){
         user.classList.add("list-text");
         user.innerText = u.name;
         userRow.appendChild(user);
+        console.log(user);
 
         let follow = document.createElement("span");
         follow.classList.add('list-follow');
@@ -160,6 +161,27 @@ function generateList(response, operatoin){
                 document.getElementById('toGroup').value = event.target.innerHTML;
 
             });
+        } else if (operatoin === 'getAllGroups') {
+            user.addEventListener('click', (event) => {
+                console.log(u.groupId);
+                var subList=getSubGroups(u.groupId);
+                console.log(subList);
+                subList.forEach(i=>{
+                        let subGroupRow = document.createElement('div');
+                        let subGroup = document.createElement("p");
+                        subGroupRow.classList.add("panel");
+                        subGroup.innerText=i.name;
+                        subGroupRow.appendChild(subGroup);
+                });
+                // this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                console.log(panel);
+                if (panel.display === "block") {
+                    panel.display = "none";
+                } else {
+                    panel.display = "block";
+                }
+            })
         }
 
         userRow.appendChild(follow);
@@ -503,5 +525,17 @@ async function createGroup (){
     addGroupModerator(response2);
 
 }
+
+async function getSubGroups(groupId){
+    const response = await fetch(URL + 'group/'+groupId+'/getSubGroups', {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response);
+    return response;
+}
+
 
 
