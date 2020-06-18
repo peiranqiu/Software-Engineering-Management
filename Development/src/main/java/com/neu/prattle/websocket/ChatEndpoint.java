@@ -68,9 +68,9 @@ public class ChatEndpoint {
 
   /**
    * Set services to be used in chatendpoint
-   * @param newAccountService
-   * @param newGroupService
-   * @param newModerateService
+   * @param newAccountService new user service
+   * @param newGroupService new group service
+   * @param newModerateService new moderate service
    */
   public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
     accountService = newAccountService;
@@ -226,7 +226,6 @@ public class ChatEndpoint {
           try {
             endpoint.session.getBasicRemote()
                     .sendObject(message);
-
           } catch (IOException | EncodeException e) {
             LOGGER.log(Level.INFO, e.getMessage());
           }
@@ -234,6 +233,7 @@ public class ChatEndpoint {
       }
     });
     message.storeMessage();
+    message.saveChatLogPerson();
   }
 
   public static void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
@@ -266,7 +266,7 @@ public class ChatEndpoint {
         }
       }
     });
-    message.saveChatLog(currentGroupObject, true);
+    message.saveChatLogGroup(currentGroupObject, true);
   }
 }
 
