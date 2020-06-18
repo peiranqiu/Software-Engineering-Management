@@ -216,6 +216,9 @@ public class Message {
     String path = Message.class.getResource("").getPath();
     String mainPath = path.substring(0, path.indexOf("Development") + 11);
     return mainPath + "/src";
+//    //create enviro variable or config file that has the root
+//    String path = /opt/prattle/messages make this to the config file
+    //create once
   }
 
   /***
