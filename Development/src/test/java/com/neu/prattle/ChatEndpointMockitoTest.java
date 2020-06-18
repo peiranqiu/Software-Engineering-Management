@@ -247,7 +247,8 @@ public class ChatEndpointMockitoTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      assertEquals(true, Files.exists(Paths.get(messagePath + "/" + message.getFromID())));
+      assertEquals(true, Files.exists(Paths.get(messagePath + "User/" + message.getFromID())));
+      assertEquals(true, Files.exists(Paths.get(messagePath + "User/" + message.getToID())));
     } else {
       fail();
     }
