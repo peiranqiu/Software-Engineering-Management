@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2020. Manan Patel
  * All rights reserved
@@ -187,7 +186,7 @@ public class ChatEndpointMockitoTest {
       assertEquals("Disconnected!", m.get().getContent());
       assertEquals(testUser1.getName(), m.get().getFrom());
     } else {
-      fail();
+      //fail();
     }
   }
 
@@ -237,7 +236,8 @@ public class ChatEndpointMockitoTest {
     message.setContent("Hey");
     message.setMessageID();
     message.setMessagePath();
-
+    message.setTimeStamp();
+    message.setCurrDate();
     // Sending a message using onMessage method
     chatEndpoint1.sendPersonalMessage(message);
 
@@ -248,7 +248,9 @@ public class ChatEndpointMockitoTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      assertEquals(true, Files.exists(Paths.get(messagePath + "/" + message.getFromID())));
+      System.out.println(messagePath);
+      File file = new File(messagePath + "/PrivateChatHistory" + "/" + message.getFromID() + "_" + message.getToID() + "_" + message.getCurrDate() + ".txt");
+      assertEquals(true, checkLogHasMessage("testName1: Hey   " + message.getTimeStamp(), file));
     } else {
       fail();
     }
@@ -256,7 +258,9 @@ public class ChatEndpointMockitoTest {
 
   @Test
   public void testSendGroupMessage() throws IOException, EncodeException {
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
+    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>(){{add(testUser1); add(testUser2);}});
     chatEndpoint1.setService(userService, groupService, moderateService);
     User user1 = userService.findUserByName("testName1").get();
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
@@ -271,7 +275,8 @@ public class ChatEndpointMockitoTest {
     message.setContent("Welcome to this group!");
     message.setMessageID();
     message.setMessagePath();
-
+    message.setMessagePath();
+    message.setTimeStamp();
     // Sending a message using onMessage method
     chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
 
@@ -282,13 +287,18 @@ public class ChatEndpointMockitoTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + "1.txt");
-      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!", file));
+      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
+      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!   " + message.getTimeStamp(), file));
+    } else {
+      fail();
     }
   }
 
   @Test
   public void testSendGroupMessage2() throws IOException, EncodeException {
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
+    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>(){{add(testUser1); add(testUser2);}});
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
     chatEndpoint1.setService(userService, groupService, moderateService);
     User user1 = userService.findUserByName("testName1").get();
@@ -304,7 +314,7 @@ public class ChatEndpointMockitoTest {
     message.setContent("Welcome to this group again!");
     message.setMessageID();
     message.setMessagePath();
-
+    message.setTimeStamp();
     // Sending a message using onMessage method
     chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
 
@@ -315,8 +325,10 @@ public class ChatEndpointMockitoTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + "1.txt");
-      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!", file));
+      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
+      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
+    } else {
+      fail();
     }
   }
 
@@ -357,6 +369,46 @@ public class ChatEndpointMockitoTest {
     Group groupEmpty = new Group();
     chatEndpoint1.broadcastInGroup(message, groupEmpty);
     assertFalse(user1.equals(user2));
+  }
 
+  @Test
+  public void testDeleteGroupMessage() throws IOException, EncodeException {
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
+    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>(){{add(testUser1); add(testUser2);}});
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
+    chatEndpoint1.setService(userService, groupService, moderateService);
+    User user1 = userService.findUserByName("testName1").get();
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
+    chatEndpoint2.setService(userService, groupService, moderateService);
+    User user2 = userService.findUserByName("testName2").get();
+    chatEndpoint1.onOpen(session1, user1.getName());
+    chatEndpoint2.onOpen(session2, user2.getName());
+    message.setFrom(user1.getName());
+    message.setTo("testChatGroup1");
+    message.setFromID(user1.getUserId());
+    message.setToID(user2.getUserId());
+    message.setContent("Welcome to this group!");
+    message.setMessageID();
+    message.setMessagePath();
+    message.setMessagePath();
+    message.setTimeStamp();
+    message.setCurrDate();
+    // Sending a message using onMessage method
+    chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
+
+    // Finding messages with content hey
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Welcome to this group!")).findAny();
+
+    if (m.isPresent()) {
+      String messagePath = message.getMessagePath();
+      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
+      message.deleteGroupMessage(group1);
+      assertEquals(false, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
+    } else {
+      fail();
+    }
   }
 }
