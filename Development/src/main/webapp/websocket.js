@@ -132,7 +132,6 @@ function generateList(response, operatoin){
         user.classList.add("list-text");
         user.innerText = u.name;
         userRow.appendChild(user);
-        console.log(user);
 
         let follow = document.createElement("span");
         follow.classList.add('list-follow');
@@ -163,24 +162,8 @@ function generateList(response, operatoin){
             });
         } else if (operatoin === 'getAllGroups') {
             user.addEventListener('click', (event) => {
-                console.log(u.groupId);
-                var subList=getSubGroups(u.groupId);
-                console.log(subList);
-                subList.forEach(i=>{
-                        let subGroupRow = document.createElement('div');
-                        let subGroup = document.createElement("p");
-                        subGroupRow.classList.add("panel");
-                        subGroup.innerText=i.name;
-                        subGroupRow.appendChild(subGroup);
-                });
-                // this.classList.toggle("active");
-                var panel = this.nextElementSibling;
-                console.log(panel);
-                if (panel.display === "block") {
-                    panel.display = "none";
-                } else {
-                    panel.display = "block";
-                }
+                getSubGroups(u.groupId);
+
             })
         }
 
@@ -533,9 +516,40 @@ async function getSubGroups(groupId){
             'content-type': 'application/json'
         }
     }).then(rs => rs.json());
-    console.log(response);
-    return response;
+    let list = document.createElement('ul');
+    list.id = 'subGroup-list';
+    console.log(list);
+    let title=document.createElement('h3');
+    title.innerText="Sub-Group List:";
+    list.appendChild(title);
+
+    response.forEach(i => {
+
+        let subGroupRow = document.createElement('div');
+        let subGroup = document.createElement("p");
+        subGroupRow.classList.add("panel");
+        subGroup.innerText = i.name;
+        subGroupRow.appendChild(subGroup);
+        list.appendChild(subGroupRow);
+    });
+    tabcontent = document.getElementsByClassName("subGroupContent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    let cur = document.getElementById("Sub Groups");
+    console.log(cur);
+    if (cur.childNodes.length === 0) {
+        cur.appendChild(list);
+
+    } else {
+        cur.replaceChild(list, cur.childNodes[0]);
+    }
+    cur.style.display = "block";
+    cur.style.backgroundColor="Gainsboro"
 }
+
+
+
 
 
 
