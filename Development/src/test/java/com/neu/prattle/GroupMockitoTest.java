@@ -116,4 +116,15 @@ public class GroupMockitoTest {
     groupService.setFollowAPI(followAPI);
     assertTrue(groupService.setPasswordforGroup(group2.getGroupId(), "passWord1"));
   }
+
+  @Test
+  public void testGetAllGroups()throws SQLException{
+    List<Group> groupList=new ArrayList<>();
+    when(api.getAllGroups()).thenReturn(groupList);
+    groupList = groupService.getAllGroups();
+    groupService.setAPI(api);
+    assertEquals(groupList, groupService.getAllGroups());
+  }
+
+
 }

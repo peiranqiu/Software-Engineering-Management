@@ -254,7 +254,7 @@ public class GroupAPI extends DBUtils {
   public List<Group> getAllGroups() throws SQLException {
     List<Group> GroupList = new ArrayList<>();
     try {
-      Connection con = getConnection();
+      con = getConnection();
       String sql = "SELECT * FROM mydb.Group";
       stmt1 = con.prepareStatement(sql);
       rs1= stmt1.executeQuery();
@@ -272,7 +272,6 @@ public class GroupAPI extends DBUtils {
       rs1.close();
       stmt1.close();
     }
-
 
     return GroupList;
   }
