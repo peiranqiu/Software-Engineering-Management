@@ -1,14 +1,22 @@
 package com.neu.prattle.model;
 
 import com.neu.prattle.websocket.MessageEncoder;
-
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.CharArrayWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,10 +52,6 @@ public class Message {
    */
   private String messageID;
   /***
-   * The date of the message creation
-   */
-  private String messageDate;
-  /***
    * The directory of massage folder
    */
   private String messagePath;
@@ -63,6 +67,14 @@ public class Message {
    * Message to group or not
    */
   private boolean sendToGroup = false;
+  /***
+   * Date of the message sent
+   */
+  private String currDate;
+  /***
+   * TimeStamp of the message sent
+   */
+  private String timeStamp;
 
   /***
    * Return the completed message with sender and receiver
@@ -76,10 +88,19 @@ public class Message {
             .toString();
   }
 
+  public String toStringForPrivateChatLog() {
+    return new StringBuilder()
+            .append(from).append(": ")
+            .append(content).append("   ")
+            .append(timeStamp)
+            .toString();
+  }
+
   public String toStringForGroupChatLog() {
     return new StringBuilder()
             .append(from).append(": ")
-            .append(content)
+            .append(content).append("   ")
+            .append(timeStamp)
             .toString();
   }
 
@@ -140,13 +161,6 @@ public class Message {
   }
 
   /***
-   * Retrieve date of message
-   */
-  public String getMessageDate() {
-    return messageDate;
-  }
-
-  /***
    * Set id of message sender
    */
   public void setFromID(int fromID) {
@@ -173,18 +187,20 @@ public class Message {
   public int getToID() {
     return toID;
   }
+  /***
+   * Retrieve current Date
+   */
+  public String getCurrDate() {
+    DateFormat dateFormat = new SimpleDateFormat("MMddyyyy");
+    Date date = new Date();
+    return dateFormat.format(date);
+  }
 
   /***
-   * Return send to group or not
+   * Retrieve current Date
    */
-  public boolean getSendToGroup() {
-    return sendToGroup;
-  }
-  /***
-   * Retrieve sent to group or not
-   */
-  public void setSendToGroup(boolean sendToGroup) {
-    this.sendToGroup = sendToGroup;
+  public void setCurrDate() {
+    this.currDate = getCurrDate();
   }
 
   /***
@@ -204,27 +220,54 @@ public class Message {
   }
 
   /***
+   * Retrieve the time stamp of the current message
+   */
+  public String getTimeStamp() {
+    DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
+    timeStamp = mdy.format(now);
+    return timeStamp;
+  }
+
+  /***
+   * Get the time stamp of the current message
+   */
+
+  public void setTimeStamp() {
+    this.timeStamp = getTimeStamp();
+  }
+
+  /***
    * Create the messageSent and messageReceived directories for the current user
    */
   public String makeDirectory(String messagePath, int userID) {
-    String dirName1 = messagePath + "/" + userID;
+    String dirName0 = messagePath + "/User";
+    File userFile = new File(dirName0);
+    if (!userFile.mkdir()) {
+      logger.info("User folder already exists.");
+    }
+    logger.info("Successfully create User folder.");
+
+    String dirName1 = messagePath + "/User" + "/" + userID;
     File fromUserFile = new File(dirName1);
     if (!fromUserFile.mkdir()) {
-      throw new IllegalArgumentException("Creating user fails.");
+      logger.info("This userID folder already exists.");
     }
-    logger.info("Successfully create user directory.");
-    String dirName2 = messagePath + "/" + userID + MESSAGESENT;
+    logger.info("Successfully create userID folder.");
+
+    String dirName2 = messagePath + "/User" + "/" + userID + MESSAGESENT;
     File fileUserSent = new File(dirName2);
     if (!fileUserSent.mkdir()) {
-      throw new IllegalArgumentException("Creating sender directory fails.");
+      logger.info("MessageSent folder for this user already exists.");
     }
-    logger.info("Successfully create sender directory.");
-    String dirName3 = messagePath + "/" + userID + MESSAGERECEIVE;
+    logger.info("Successfully create MessageSent folder for this user");
+
+    String dirName3 = messagePath + "/User" + "/" + userID + MESSAGERECEIVE;
     File fileUserReceived = new File(dirName3);
     if (!fileUserReceived.mkdir()) {
-      throw new IllegalArgumentException("Creating receiver directory fails.");
+      logger.info("MessageReceived folder for this user already exists.");
     }
-    logger.info("Successfully create receiver directory.");
+    logger.info("Successfully create MessageReceived folder for this user.");
     return "Successfully create receiver directory.";
   }
 
@@ -233,21 +276,21 @@ public class Message {
    */
   public boolean storeMessage() throws IOException, EncodeException {
     if (!sendToGroup && fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
-      if (!Files.exists(Paths.get(messagePath + "/" + fromID))) {
+      if (!Files.exists(Paths.get(messagePath + "/User" + "/" + fromID))) {
         makeDirectory(messagePath, fromID);
       }
-      if (!Files.exists(Paths.get(messagePath + "/" + toID))) {
+      if (!Files.exists(Paths.get(messagePath + "/User" + "/" + toID))) {
         makeDirectory(messagePath, toID);
       }
-      String name1 = messagePath + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
-      String name2 = messagePath + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
+      String name1 = messagePath + "/User" + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
+      String name2 = messagePath + "/User" + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
       File file1 = new File(name1);
       File file2 = new File(name2);
       if (file1.createNewFile() && file2.createNewFile()) {
-        writeFile(messagePath);
+        writeFile();
         return true;
       } else {
-        throw new IOException();
+        throw new IOException("File cannot be created.");
       }
     }
     return false;
@@ -256,53 +299,142 @@ public class Message {
   /***
    * Write the current message into a JSON file under the folder of the current sender and receiver
    */
-  private void writeFile(String messagePath) throws IOException, EncodeException {
-    MessageEncoder msEncoder = new MessageEncoder();
-    String file1 = messagePath + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
-    try(FileWriter myWriter = new FileWriter(file1)) {
+  public void writeFile() throws IOException, EncodeException {
+    writeSenderReceiverJson(MESSAGESENT, fromID);
+    writeSenderReceiverJson(MESSAGERECEIVE, toID);
+  }
 
+  public void writeSenderReceiverJson(String folderName, int userID) throws IOException, EncodeException {
+    String file = messagePath + "/User" + "/" + userID + folderName + "/" + messageID + JSON;
+    try(FileWriter myWriter = new FileWriter(file)) {
+      MessageEncoder msEncoder = new MessageEncoder();
       myWriter.write(msEncoder.encode(this));
-    } catch(NullPointerException e) {
-      logger.info(e.getMessage());
-    }
-
-    String file2 = messagePath + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
-
-    try(FileWriter myWriter2 = new FileWriter(file2)) {
-      MessageEncoder msEncoder2 = new MessageEncoder();
-      myWriter2.write(msEncoder2.encode(this));
     } catch(NullPointerException e) {
       logger.info(e.getMessage());
     }
   }
 
   /***
-   * Remove the current message sent by sender
+   * Remove the current message sent by sender from a personal dialog
    */
-  public String deleteMessage(int userID, String messageID) {
-    String output = "File remove fails.";
-    String s = messagePath + "/" + userID + MESSAGESENT + "/" + messageID + JSON;
-    Path path = Paths.get(s);
-
+  public String deletePersonalMessage() throws IOException {
+    String output = "delete message fails";
+    String s1 = messagePath + "/User/" + fromID + MESSAGESENT + "/" + messageID + JSON;
+    Path path1 = Paths.get(s1);
     try {
-      Files.delete(path);
-      output =  "File deleted successfully";
+      Files.delete(path1);
     } catch (IOException e) {
-      logger.info("File not deleted.");
+      logger.info("Message Sender File could not be deleted.");
     }
+    String s2 = messagePath + "/User/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
+    Path path2 = Paths.get(s2);
+    try {
+      Files.delete(path2);
+    } catch (IOException e) {
+      logger.info("Message Receiver File could not be deleted.");
+    }
+    String s3 = messagePath + "/PrivateChatHistory/" + fromID + "_" + toID + "_" + currDate + ".txt";
+    File file = new File(s3);
+    FileReader in = new FileReader(file);
+    BufferedReader bufIn = new BufferedReader(in);
+    CharArrayWriter tempStream = new CharArrayWriter();
+    //Substitution
+    String line = null;
+    while ((line = bufIn.readLine()) != null) {
+      line = line.replaceAll(getFrom() + ": " + getContent() + "   " + getTimeStamp(), "");
+      //write this line into storage
+      tempStream.write(line);
+      //Add Line Seperator
+      tempStream.append(System.getProperty("line.separator"));
+    }
+    bufIn.close();
+    FileWriter out = new FileWriter(file);
+    tempStream.writeTo(out);
+    out.close();
+    output = "Successfully deleted this message!";
     return output;
   }
 
-  public void saveChatLog(Group currentGroupObject, boolean sendToGroup) throws IOException {
-    String group ="/Group";
+  /***
+   * Remove the current message sent by sender from a group dialog
+   */
+  public String deleteGroupMessage(Group currentGroupObject) throws IOException {
+    int groupID = currentGroupObject.getGroupId();
+    String output = "delete message fails.";
+    String s3 = messagePath + "/Group/" + groupID + "_" + currDate + ".txt";
+    File file = new File(s3);
+    FileReader in = new FileReader(file);
+    BufferedReader bufIn = new BufferedReader(in);
+    CharArrayWriter tempStream = new CharArrayWriter();
+    //Substitution
+    String line = null;
+    while ((line = bufIn.readLine()) != null) {
+      line = line.replaceAll(getFrom() + ": " + getContent() + "   " + getTimeStamp(), "");
+      //write this line into storage
+      tempStream.write(line);
+      //Add Line Seperator
+      tempStream.append(System.getProperty("line.separator"));
+    }
+    bufIn.close();
+    FileWriter out = new FileWriter(file);
+    tempStream.writeTo(out);
+    out.close();
+    output = "Successfully deleted this message!";
+    return output;
+  }
+
+  /***
+   * Save private chat history under the PrivateChatHistory folder by sender's id, receiver's id, and message sent date.
+   */
+  public void saveChatLogPerson() throws IOException {
+    String privateChat = "/PrivateChatHistory";
+    if (!sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
+      if (!Files.exists(Paths.get(messagePath + privateChat))) {
+        String privateChatDir = messagePath + privateChat;
+        File privateChatDirFile = new File(privateChatDir);
+        privateChatDirFile.mkdir();
+      }
+      String privateChatLogName = messagePath + privateChat + "/" + fromID + "_" + toID + "_" + getCurrDate() + ".txt";
+      File privateChatFile = new File(privateChatLogName);
+      //Check if the private chat log file already exits
+      if (!Files.exists(Paths.get(privateChatLogName))) {
+        FileWriter myWriter = new FileWriter(privateChatFile);
+        logger.info("Chat log file created for " + "sender: " + from + " and receiver: " + to);
+        try{
+          myWriter.write(toStringForPrivateChatLog());
+        } catch (IOException e) {
+          logger.log(Level.INFO, e.getMessage());
+        } finally {
+          myWriter.close();
+        }
+      } else {
+        FileWriter myWriter = new FileWriter(privateChatFile, true);
+        BufferedWriter br = new BufferedWriter(myWriter);
+        try {
+          br.newLine();
+          br.write(toStringForPrivateChatLog());
+        } catch (IOException e) {
+          logger.log(Level.INFO, e.getMessage());
+        } finally {
+          br.close();
+          myWriter.close();
+        }
+      }
+    }
+  }
+
+  /***
+   * Save group chat history under the Group folder by group id and group chat date
+   */
+  public void saveChatLogGroup(Group currentGroupObject, boolean sendToGroup) throws IOException {
+    String group = "/Group";
     if (sendToGroup && fromID != -1 && !content.isEmpty() && !from.isEmpty()) {
       if (!Files.exists(Paths.get(messagePath + group))) {
         String groupDir = messagePath + group;
         File groupDirFile = new File(groupDir);
         groupDirFile.mkdir();
-        }
-      String groupChatLogName =
-              messagePath + group + "/" + currentGroupObject.getGroupId() + ".txt";
+      }
+      String groupChatLogName = messagePath + group + "/" + currentGroupObject.getGroupId() + "_" + getCurrDate() + ".txt";
       File groupChatFile = new File(groupChatLogName);
       //check if the chat log file already exists
       if (!Files.exists(Paths.get(groupChatLogName))) {

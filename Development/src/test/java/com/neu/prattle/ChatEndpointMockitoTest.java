@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2020. Manan Patel
  * All rights reserved
@@ -304,7 +303,8 @@ public class ChatEndpointMockitoTest {
     message.setContent("Welcome to this group again!");
     message.setMessageID();
     message.setMessagePath();
-
+    message.setTimeStamp();
+    message.setCurrDate();
     // Sending a message using onMessage method
     chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
 
@@ -315,8 +315,11 @@ public class ChatEndpointMockitoTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + "1.txt");
-      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!", file));
+      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
+      message.deleteGroupMessage(group1);
+      assertEquals(false, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
+    } else {
+      fail();
     }
   }
 
