@@ -9,8 +9,6 @@ import com.neu.prattle.service.FollowService;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.ModerateService;
-import com.neu.prattle.service.UserService;
-import com.neu.prattle.service.UserServiceImpl;
 
 import org.springframework.stereotype.Controller;
 

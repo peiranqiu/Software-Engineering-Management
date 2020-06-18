@@ -1,11 +1,11 @@
 package com.neu.prattle.model;
 
 import com.neu.prattle.websocket.MessageEncoder;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -35,6 +35,8 @@ public class Message {
   private static final String MESSAGESENT = "/messageSent";
   private static final String MESSAGERECEIVE = "/messageReceived";
   private static final String JSON = ".json";
+  private static final String USER = "/User";
+
   /***
    * The name of the user who sent this message.
    */
@@ -213,11 +215,6 @@ public class Message {
    * Get the parent directory of the message folder
    */
   public String getMessagePath() {
-//    String path = "/opt/prattle/messages";
-//    return "/opt/prattle/messages";
-//    //create enviro variable or config file that has the root
-//    String path = /opt/prattle/messages make this to the config file
-    //create once
     String path = Message.class.getResource("").getPath();
     String mainPath = path.substring(0, path.indexOf("Development") + 11);
     return mainPath + "/src";
@@ -252,28 +249,28 @@ public class Message {
    * Create the messageSent and messageReceived directories for the current user
    */
   public String makeDirectory(String messagePath, int userID) {
-    String dirName0 = messagePath + "/User";
+    String dirName0 = messagePath + USER;
     File userFile = new File(dirName0);
     if (!userFile.mkdir()) {
       logger.info("User folder already exists.");
     }
     logger.info("Successfully create User folder.");
 
-    String dirName1 = messagePath + "/User" + "/" + userID;
+    String dirName1 = messagePath + USER + "/" + userID;
     File fromUserFile = new File(dirName1);
     if (!fromUserFile.mkdir()) {
       logger.info("This userID folder already exists.");
     }
     logger.info("Successfully create userID folder.");
 
-    String dirName2 = messagePath + "/User" + "/" + userID + MESSAGESENT;
+    String dirName2 = messagePath + USER + "/" + userID + MESSAGESENT;
     File fileUserSent = new File(dirName2);
     if (!fileUserSent.mkdir()) {
       logger.info("MessageSent folder for this user already exists.");
     }
     logger.info("Successfully create MessageSent folder for this user");
 
-    String dirName3 = messagePath + "/User" + "/" + userID + MESSAGERECEIVE;
+    String dirName3 = messagePath + USER + "/" + userID + MESSAGERECEIVE;
     File fileUserReceived = new File(dirName3);
     if (!fileUserReceived.mkdir()) {
       logger.info("MessageReceived folder for this user already exists.");
@@ -288,14 +285,14 @@ public class Message {
   public boolean storeMessage() throws IOException, EncodeException {
     if (!sendToGroup && fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
 
-      if (!Files.exists(Paths.get(messagePath + "/User" + "/" + fromID))) {
+      if (!Files.exists(Paths.get(messagePath + USER + "/" + fromID))) {
         makeDirectory(messagePath, fromID);
       }
-      if (!Files.exists(Paths.get(messagePath + "/User" + "/" + toID))) {
+      if (!Files.exists(Paths.get(messagePath + USER + "/" + toID))) {
         makeDirectory(messagePath, toID);
       }
-      String name1 = messagePath + "/User" + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
-      String name2 = messagePath + "/User" + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
+      String name1 = messagePath + USER + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
+      String name2 = messagePath + USER + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
       File file1 = new File(name1);
       File file2 = new File(name2);
       if (file1.createNewFile() && file2.createNewFile()) {
@@ -317,7 +314,7 @@ public class Message {
   }
 
   public void writeSenderReceiverJson(String folderName, int userID) throws IOException, EncodeException {
-    String file = messagePath + "/User" + "/" + userID + folderName + "/" + messageID + JSON;
+    String file = messagePath + USER + "/" + userID + folderName + "/" + messageID + JSON;
     try(FileWriter myWriter = new FileWriter(file)) {
       MessageEncoder msEncoder = new MessageEncoder();
       myWriter.write(msEncoder.encode(this));
@@ -330,15 +327,14 @@ public class Message {
    * Remove the current message sent by sender from a personal dialog
    */
   public String deletePersonalMessage() throws IOException {
-    String output = "delete message fails";
-    String s1 = messagePath + "/User/" + fromID + MESSAGESENT + "/" + messageID + JSON;
+    String s1 = messagePath + USER + fromID + MESSAGESENT + "/" + messageID + JSON;
     Path path1 = Paths.get(s1);
     try {
       Files.delete(path1);
     } catch (IOException e) {
       logger.info("Message Sender File could not be deleted.");
     }
-    String s2 = messagePath + "/User/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
+    String s2 = messagePath + USER + toID + MESSAGERECEIVE + "/" + messageID + JSON;
     Path path2 = Paths.get(s2);
     try {
       Files.delete(path2);
@@ -363,8 +359,7 @@ public class Message {
     FileWriter out = new FileWriter(file);
     tempStream.writeTo(out);
     out.close();
-    output = "Successfully deleted this message!";
-    return output;
+    return "Successfully deleted this message!";
   }
 
   /***
@@ -372,7 +367,6 @@ public class Message {
    */
   public String deleteGroupMessage(Group currentGroupObject) throws IOException {
     int groupID = currentGroupObject.getGroupId();
-    String output = "delete message fails.";
     String s3 = messagePath + "/Group/" + groupID + "_" + currDate + ".txt";
     File file = new File(s3);
     FileReader in = new FileReader(file);
@@ -391,8 +385,7 @@ public class Message {
     FileWriter out = new FileWriter(file);
     tempStream.writeTo(out);
     out.close();
-    output = "Successfully deleted this message!";
-    return output;
+    return "Successfully deleted this message!";
   }
 
   /***
@@ -411,7 +404,7 @@ public class Message {
       //Check if the private chat log file already exits
       if (!Files.exists(Paths.get(privateChatLogName))) {
         FileWriter myWriter = new FileWriter(privateChatFile);
-        logger.info("Chat log file created for " + "sender: " + from + " and receiver: " + to);
+        logger.info(String.format("Chat log file created for sender: ", from, " and receiver: ", to));
         try{
           myWriter.write(toStringForPrivateChatLog());
         } catch (IOException e) {
