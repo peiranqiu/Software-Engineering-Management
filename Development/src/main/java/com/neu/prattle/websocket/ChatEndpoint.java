@@ -54,7 +54,7 @@ public class ChatEndpoint {
   /**
    * The account service.
    */
-  private static UserService accountService = UserServiceImpl.getInstance();
+  private UserService accountService = UserServiceImpl.getInstance();
   /**
    * The session.
    */
@@ -62,9 +62,9 @@ public class ChatEndpoint {
   /**
    * The group service.
    */
-  private static GroupService groupService = GroupServiceImpl.getInstance();
+  private GroupService groupService = GroupServiceImpl.getInstance();
 
-  private static ModerateService moderateService = ModerateService.getInstance();
+  private ModerateService moderateService = ModerateService.getInstance();
 
   /**
    * Set services to be used in chatendpoint
@@ -218,7 +218,7 @@ public class ChatEndpoint {
    *
    * @param message the message to be sent
    */
-  public static void sendPersonalMessage(Message message) throws IOException, EncodeException {
+  public void sendPersonalMessage(Message message) throws IOException, EncodeException {
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
       if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
@@ -237,7 +237,7 @@ public class ChatEndpoint {
     message.saveChatLogPerson();
   }
 
-  public static void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
+  public void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
     Optional<Group> group = groupService.findGroupByName(groupName);
     if (!group.isPresent()) {
       Message error = Message.messageBuilder()
@@ -251,7 +251,7 @@ public class ChatEndpoint {
     broadcastInGroup(message, currentGroupObject);
   }
 
-  public static void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
+  public void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
     List<User> members = moderateService.getMembers(currentGroupObject);
     if (members.isEmpty()) return;
     chatEndpoints.forEach(endpoint0 -> {

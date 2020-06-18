@@ -32,15 +32,10 @@ import javax.ws.rs.core.MediaType;
 @Controller
 @Path(value = "/group")
 public class GroupController {
-  private UserService userService = UserServiceImpl.getInstance();
   private GroupService groupService = GroupServiceImpl.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
   private FollowService followService = FollowService.getInstance();
   private static final GroupController groupController = new GroupController();
-
-  private static final String GROUP = "group";
-  private static final String MODERATOR = "moderator";
-  private static final String USER = "user";
 
   /**
    * Singleton instance for group controller
@@ -188,7 +183,7 @@ public class GroupController {
   @Path("/{groupName}")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getGroupbyName(@PathParam("groupName") String name) {
-    Optional group = groupService.findGroupByName(name);
+    Optional<Group> group = groupService.findGroupByName(name);
     return new Gson().toJson(group);
   }
 
