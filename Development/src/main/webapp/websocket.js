@@ -122,6 +122,7 @@ async function userGetFollower(evt) {
 }
 
 function generateList(response, operatoin){
+    clearList("subGroupContent");
     let list = document.createElement('ul');
    // list.style.listStyleType = 'none';
     list.id = operatoin + '-list';
@@ -179,6 +180,7 @@ function generateList(response, operatoin){
  * a user get list of followees.
  */
 async function userGetFollowee(evt) {
+    document.getElementsByClassName("subGroupContent").style.display='none';
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee', {
         method: 'GET',
@@ -532,10 +534,7 @@ async function getSubGroups(groupId){
         subGroupRow.appendChild(subGroup);
         list.appendChild(subGroupRow);
     });
-    tabcontent = document.getElementsByClassName("subGroupContent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
+   clearList("subGroupContent");
     let cur = document.getElementById("Sub Groups");
     console.log(cur);
     if (cur.childNodes.length === 0) {
@@ -546,6 +545,13 @@ async function getSubGroups(groupId){
     }
     cur.style.display = "block";
     cur.style.backgroundColor="Gainsboro"
+}
+
+async function clearList(className){
+    tabcontent = document.getElementsByClassName(className);
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
 }
 
 
