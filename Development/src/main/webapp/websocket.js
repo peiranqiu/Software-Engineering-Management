@@ -122,6 +122,7 @@ async function userGetFollower(evt) {
 }
 
 function generateList(response, operatoin){
+    clearList("subGroupContent");
     let list = document.createElement('ul');
    // list.style.listStyleType = 'none';
     list.id = operatoin + '-list';
@@ -160,6 +161,11 @@ function generateList(response, operatoin){
                 document.getElementById('toGroup').value = event.target.innerHTML;
 
             });
+        } else if (operatoin === 'getAllGroups') {
+            user.addEventListener('click', (event) => {
+                getSubGroups(u.groupId);
+
+            })
         }
 
         userRow.appendChild(follow);
@@ -503,5 +509,50 @@ async function createGroup (){
     addGroupModerator(response2);
 
 }
+
+async function getSubGroups(groupId){
+    const response = await fetch(URL + 'group/'+groupId+'/getSubGroups', {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    let list = document.createElement('ul');
+    list.id = 'subGroup-list';
+    let title=document.createElement('h3');
+    title.innerText="Sub-Group List:";
+    list.appendChild(title);
+
+    response.forEach(i => {
+
+        let subGroupRow = document.createElement('div');
+        let subGroup = document.createElement("p");
+        subGroupRow.classList.add("panel");
+        subGroup.innerText = i.name;
+        subGroupRow.appendChild(subGroup);
+        list.appendChild(subGroupRow);
+    });
+   clearList("subGroupContent");
+    let cur = document.getElementById("Sub Groups");
+    if (cur.childNodes.length === 0) {
+        cur.appendChild(list);
+
+    } else {
+        cur.replaceChild(list, cur.childNodes[0]);
+    }
+    cur.style.display = "block";
+    cur.style.backgroundColor="Gainsboro"
+}
+
+async function clearList(className){
+    tabcontent = document.getElementsByClassName(className);
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+}
+
+
+
+
 
 
