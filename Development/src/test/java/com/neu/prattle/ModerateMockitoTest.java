@@ -389,16 +389,6 @@ public class ModerateMockitoTest {
     assertTrue(moderateService.addSubgroup(group1, user1, group2));
   }
 
-  /**
-   * Test delete member from group.
-   */
-  @Test
-  public void test9DeleteSubGroup() {
-    moderateService = helperService();
-    when(api.getModerators(anyInt())).thenReturn(Arrays.asList(user1));
-    moderateService.setAPI(api);
-    assertTrue(moderateService.removeSubgroup(group1, user1, group2));
-  }
 
   /**
    * Helper method to generate random number range from 1 to 10000.

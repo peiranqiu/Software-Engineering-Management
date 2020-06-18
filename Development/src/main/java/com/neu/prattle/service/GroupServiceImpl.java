@@ -131,16 +131,6 @@ public class GroupServiceImpl implements GroupService {
     return true;
   }
 
-  @Override
-  public boolean removeSubgroupFromGroup(int groupId, int subgroupId) {
-    try {
-      api.deleteSubgroupfromGroup(groupId, subgroupId);
-    } catch (SQLException e) {
-      logger.log(Level.INFO, "failed in remove subgroup from group");
-    }
-    return true;
-  }
-
   /**
    * a method to get sub groups of one group by group id
    *
