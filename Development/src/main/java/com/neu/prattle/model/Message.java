@@ -213,12 +213,14 @@ public class Message {
    * Get the parent directory of the message folder
    */
   public String getMessagePath() {
-    String path = Message.class.getResource("").getPath();
-    String mainPath = path.substring(0, path.indexOf("Development") + 11);
-    return mainPath + "/src";
+//    String path = "/opt/prattle/messages";
+//    return "/opt/prattle/messages";
 //    //create enviro variable or config file that has the root
 //    String path = /opt/prattle/messages make this to the config file
     //create once
+    String path = Message.class.getResource("").getPath();
+    String mainPath = path.substring(0, path.indexOf("Development") + 11);
+    return mainPath + "/src";
   }
 
   /***
@@ -285,6 +287,7 @@ public class Message {
    */
   public boolean storeMessage() throws IOException, EncodeException {
     if (!sendToGroup && fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
+
       if (!Files.exists(Paths.get(messagePath + "/User" + "/" + fromID))) {
         makeDirectory(messagePath, fromID);
       }

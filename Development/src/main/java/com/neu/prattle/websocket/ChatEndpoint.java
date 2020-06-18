@@ -232,6 +232,7 @@ public class ChatEndpoint {
         }
       }
     });
+    System.out.println(message.getMessagePath());
     message.storeMessage();
     message.saveChatLogPerson();
   }

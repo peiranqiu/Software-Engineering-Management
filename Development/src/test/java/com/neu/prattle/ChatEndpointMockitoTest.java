@@ -248,6 +248,7 @@ public class ChatEndpointMockitoTest {
 
     if (m.isPresent()) {
       String messagePath = message.getMessagePath();
+      System.out.println(messagePath);
       File file = new File(messagePath + "/PrivateChatHistory" + "/" + message.getFromID() + "_" + message.getToID() + "_" + message.getCurrDate() + ".txt");
       assertEquals(true, checkLogHasMessage("testName1: Hey   " + message.getTimeStamp(), file));
     } else {
@@ -257,7 +258,9 @@ public class ChatEndpointMockitoTest {
 
   @Test
   public void testSendGroupMessage() throws IOException, EncodeException {
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
+    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>(){{add(testUser1); add(testUser2);}});
     chatEndpoint1.setService(userService, groupService, moderateService);
     User user1 = userService.findUserByName("testName1").get();
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
@@ -287,12 +290,15 @@ public class ChatEndpointMockitoTest {
       File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
       assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!   " + message.getTimeStamp(), file));
     } else {
-      //fail();
+      fail();
     }
   }
 
   @Test
   public void testSendGroupMessage2() throws IOException, EncodeException {
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
+    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>(){{add(testUser1); add(testUser2);}});
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
     chatEndpoint1.setService(userService, groupService, moderateService);
     User user1 = userService.findUserByName("testName1").get();
@@ -322,7 +328,7 @@ public class ChatEndpointMockitoTest {
       File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
       assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
     } else {
-      //fail();
+      fail();
     }
   }
 
@@ -367,6 +373,9 @@ public class ChatEndpointMockitoTest {
 
   @Test
   public void testDeleteGroupMessage() throws IOException, EncodeException {
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
+    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>(){{add(testUser1); add(testUser2);}});
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
     chatEndpoint1.setService(userService, groupService, moderateService);
     User user1 = userService.findUserByName("testName1").get();
@@ -384,6 +393,7 @@ public class ChatEndpointMockitoTest {
     message.setMessagePath();
     message.setMessagePath();
     message.setTimeStamp();
+    message.setCurrDate();
     // Sending a message using onMessage method
     chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
 
@@ -398,7 +408,7 @@ public class ChatEndpointMockitoTest {
       message.deleteGroupMessage(group1);
       assertEquals(false, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
     } else {
-      //fail();
+      fail();
     }
   }
 }
