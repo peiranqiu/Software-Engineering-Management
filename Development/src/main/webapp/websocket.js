@@ -180,7 +180,6 @@ function generateList(response, operatoin){
  * a user get list of followees.
  */
 async function userGetFollowee(evt) {
-    document.getElementsByClassName("subGroupContent").style.display='none';
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee', {
         method: 'GET',
@@ -520,7 +519,6 @@ async function getSubGroups(groupId){
     }).then(rs => rs.json());
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
-    console.log(list);
     let title=document.createElement('h3');
     title.innerText="Sub-Group List:";
     list.appendChild(title);
@@ -536,7 +534,6 @@ async function getSubGroups(groupId){
     });
    clearList("subGroupContent");
     let cur = document.getElementById("Sub Groups");
-    console.log(cur);
     if (cur.childNodes.length === 0) {
         cur.appendChild(list);
 
