@@ -363,7 +363,6 @@ public class ChatEndpointMockitoTest {
     Group groupEmpty = new Group();
     chatEndpoint1.broadcastInGroup(message, groupEmpty);
     assertFalse(user1.equals(user2));
-
   }
 
   @Test
