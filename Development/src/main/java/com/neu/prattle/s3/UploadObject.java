@@ -16,7 +16,7 @@ public class UploadObject {
 
   public static void main(String[] args) throws IOException {
     Regions clientRegion = Regions.US_EAST_1;
-    String bucketName = "cs5500";
+    String bucketName = "5500team4";
     String stringObjKeyName = "test a string";
     String fileObjKeyName = "a test file";
     String fileName = "/Users/daniehao/Desktop/CS_5500/summer1_cs5500/team-4-su20/Development/src/Group/1_06172020.txt";
