@@ -164,6 +164,6 @@ public class MessageEntityTest {
 
   @Test
   public void testWriteJson() {
-    
+
   }
 }

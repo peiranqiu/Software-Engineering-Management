@@ -82,13 +82,13 @@ public class ModerateService {
       if(!moderators.isEmpty()) {
         checkModerator(group, moderator);
       }
-      if(moderators.contains(user)) {
-        throw new IllegalStateException("The user to be added is already the group moderator.");
-      }
+//      if(moderators.contains(user)) {
+//        throw new IllegalStateException("The user to be added is already the group moderator.");
+//      }
       List<User> members = getMembers(group);
-      if(Boolean.FALSE.equals(members.isEmpty()) && !members.contains(user)) {
-        throw new IllegalStateException("The user is not a member of the group yet.");
-      }
+//      if(Boolean.FALSE.equals(members.isEmpty()) && !members.contains(user)) {
+//        throw new IllegalStateException("The user is not a member of the group yet.");
+//      }
 
       Group g = optionalGroup.get();
       User u = optionalUser.get();
