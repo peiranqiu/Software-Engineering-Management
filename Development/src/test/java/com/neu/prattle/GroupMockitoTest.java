@@ -154,7 +154,7 @@ public class GroupMockitoTest {
     when(api.getAllGroups()).thenThrow(SQLException.class);
     groupService.setAPI(api);
     groupService.findGroupByName("1");
-    groupService.setPasswordforGroup(1, "password");
+    assertFalse(groupService.setPasswordforGroup(1, "password"));
     groupService.addSubgroupIntoGroup(1, 1);
     groupService.getSubGroupList(1);
     groupService.getGroupById(1);
