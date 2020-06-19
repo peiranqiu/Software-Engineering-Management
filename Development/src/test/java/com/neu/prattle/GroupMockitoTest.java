@@ -139,7 +139,6 @@ public class GroupMockitoTest {
     groupService.setAPI(api);
 
     when(followAPI.groupGetFollowers(anyInt())).thenReturn(followers);
-    when(followAPI.userFollowGroup(anyInt(), anyInt())).thenReturn(true);
     groupService.setFollowAPI(followAPI);
 
     assertTrue(groupService.setPasswordforGroup(1, "ABCabc1234"));
