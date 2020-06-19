@@ -202,19 +202,6 @@ public class ChatEndpoint {
   /**
    * On error.
    *
-   * Handles situations when an error occurs.  Not implemented.
-   *
-   * @param session   the session with the problem
-   * @param throwable the action to be taken.
-   */
-  @OnError
-  public void onError(Session session, Throwable throwable) {
-    // Do error handling here
-  }
-
-  /**
-   * On error.
-   *
    * Send a message to the specific user and guarantee that both of the users could see the posted message
    *
    * @param message the message to be sent
