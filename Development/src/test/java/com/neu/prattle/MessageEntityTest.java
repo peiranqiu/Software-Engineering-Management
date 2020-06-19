@@ -161,13 +161,4 @@ public class MessageEntityTest {
     assertFalse(decode.willDecode(null));
     assertTrue(decode.willDecode("test"));
   }
-
-  /**
-   * Test make directory.
-   */
-  @Test
-  public void testMakeDirectory() {
-    assertEquals("Successfully create receiver directory.", message.makeDirectory("path", 1));
-  }
-
 }
