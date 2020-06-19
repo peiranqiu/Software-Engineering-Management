@@ -123,6 +123,7 @@ async function userGetFollower(evt) {
 
 function generateList(response, operatoin){
     clearList("subGroupContent");
+    clearList("groupFollowers");
     let list = document.createElement('ul');
    // list.style.listStyleType = 'none';
     list.id = operatoin + '-list';
