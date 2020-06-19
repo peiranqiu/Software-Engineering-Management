@@ -439,7 +439,7 @@ public class ChatEndpointMockitoTest {
       String messagePath = message.getMessagePath();
       File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
       message.deleteGroupMessage(group1);
-      assertEquals(false, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
+      assertFalse(checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
     } else {
       fail();
     }
