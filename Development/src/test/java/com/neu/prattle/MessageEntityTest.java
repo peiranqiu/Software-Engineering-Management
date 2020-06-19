@@ -164,6 +164,6 @@ public class MessageEntityTest {
 
   @Test
   public void testMakeDir() {
-    message.makeDirectory("/Users", 1);
+    assertEquals("Successfully create receiver directory.", message.makeDirectory("/Users", 1));
   }
 }
