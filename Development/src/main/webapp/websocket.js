@@ -164,6 +164,7 @@ function generateList(response, operatoin){
         } else if (operatoin === 'getAllGroups') {
             user.addEventListener('click', (event) => {
                 getSubGroups(u.groupId);
+                getGroupFollowers(u.groupId);
 
             })
         }
@@ -581,6 +582,45 @@ async function setGroupPassword(){
         }
     }).then(rs => rs.json());
     console.log(response);
+}
+
+/**
+ * Get sub group list based on groupId.
+ *
+ */
+
+async function getGroupFollowers(groupId){
+    const response = await fetch(URL + 'group/'+groupId+'/followers', {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    let list = document.createElement('ul');
+    list.id = 'subGroup-list';
+    let title=document.createElement('h3');
+    title.innerText="Group Followers List:";
+    list.appendChild(title);
+
+    response.forEach(i => {
+
+        let subGroupRow = document.createElement('div');
+        let subGroup = document.createElement("p");
+        subGroupRow.classList.add("panel");
+        subGroup.innerText = i.name;
+        subGroupRow.appendChild(subGroup);
+        list.appendChild(subGroupRow);
+    });
+    clearList("groupFollowers");
+    let cur = document.getElementById("Group Followers");
+    if (cur.childNodes.length === 0) {
+        cur.appendChild(list);
+
+    } else {
+        cur.replaceChild(list, cur.childNodes[0]);
+    }
+    cur.style.display = "block";
+    cur.style.backgroundColor="Gainsboro"
 }
 
 
