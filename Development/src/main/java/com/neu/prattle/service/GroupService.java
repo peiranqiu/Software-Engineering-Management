@@ -47,7 +47,8 @@ public interface GroupService {
 
   /**
    * method to add subgroup into a group
-   * @param groupId group id
+   *
+   * @param groupId    group id
    * @param subGroupId subgroup id
    * @throws SQLException if groupId or subgroupId not exist.
    */
@@ -56,9 +57,8 @@ public interface GroupService {
 
   /**
    * a method to get sub groups of one group by group id
-   * @param groupId
+   *
    * @return a list of groups
-   * @throws SQLException
    */
 
   List<Group> getSubGroupList(int groupId);
@@ -73,13 +73,11 @@ public interface GroupService {
 
   /**
    * Set the user api used by this service
-   * @param api
    */
   void setAPI(GroupAPI api);
 
   /**
    * Set follow api to be used by this service
-   * @param newFollowAPI
    */
   void setFollowAPI(FollowAPI newFollowAPI);
 

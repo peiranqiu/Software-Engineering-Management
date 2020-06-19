@@ -31,12 +31,11 @@ import javax.websocket.EncodeException;
  */
 public class Message {
 
-  private Logger logger = Logger.getLogger(Message.class.getName());
   private static final String MESSAGESENT = "/messageSent";
   private static final String MESSAGERECEIVE = "/messageReceived";
   private static final String JSON = ".json";
   private static final String USER = "/User";
-
+  private Logger logger = Logger.getLogger(Message.class.getName());
   /***
    * The name of the user who sent this message.
    */
@@ -77,6 +76,13 @@ public class Message {
    * TimeStamp of the message sent
    */
   private String timeStamp;
+
+  /***
+   * Create an object of MessageBuilder class
+   */
+  public static MessageBuilder messageBuilder() {
+    return new MessageBuilder();
+  }
 
   /***
    * Return the completed message with sender and receiver
@@ -163,6 +169,13 @@ public class Message {
   }
 
   /***
+   * Retrieve id of message sender
+   */
+  public int getFromID() {
+    return fromID;
+  }
+
+  /***
    * Set id of message sender
    */
   public void setFromID(int fromID) {
@@ -170,10 +183,10 @@ public class Message {
   }
 
   /***
-   * Retrieve id of message sender
+   * Retrieve id of message receiver
    */
-  public int getFromID() {
-    return fromID;
+  public int getToID() {
+    return toID;
   }
 
   /***
@@ -184,17 +197,19 @@ public class Message {
   }
 
   /***
-   * Retrieve id of message receiver
-   */
-  public int getToID() {
-    return toID;
-  }
-  /***
    * Return send to group or not
    */
   public boolean getSendToGroup() {
     return sendToGroup;
   }
+
+  /**
+   * Set if sent to group
+   */
+  public void setSendToGroup(boolean sendToGroup) {
+    this.sendToGroup = sendToGroup;
+  }
+
   /***
    * Retrieve current Date
    */
@@ -243,13 +258,6 @@ public class Message {
 
   public void setTimeStamp() {
     this.timeStamp = getTimeStamp();
-  }
-
-  /**
-   * Set if sent to group
-   */
-  public void setSendToGroup(boolean sendToGroup) {
-    this.sendToGroup = sendToGroup;
   }
 
   /***
@@ -322,10 +330,10 @@ public class Message {
 
   public void writeSenderReceiverJson(String folderName, int userID) throws IOException, EncodeException {
     String file = messagePath + USER + "/" + userID + folderName + "/" + messageID + JSON;
-    try(FileWriter myWriter = new FileWriter(file)) {
+    try (FileWriter myWriter = new FileWriter(file)) {
       MessageEncoder msEncoder = new MessageEncoder();
       myWriter.write(msEncoder.encode(this));
-    } catch(NullPointerException e) {
+    } catch (NullPointerException e) {
       logger.info(e.getMessage());
     }
   }
@@ -367,12 +375,10 @@ public class Message {
 
   /**
    * helper method to delete message
-   * @param file
-   * @throws IOException
    */
   public void helperDelete(File file) throws IOException {
     FileReader in = new FileReader(file);
-    try(BufferedReader bufIn = new BufferedReader(in)) {
+    try (BufferedReader bufIn = new BufferedReader(in)) {
       CharArrayWriter tempStream = new CharArrayWriter();
       //Substitution
       String line = null;
@@ -388,6 +394,7 @@ public class Message {
       out.close();
     }
   }
+
   /***
    * Save private chat history under the PrivateChatHistory folder by sender's id, receiver's id, and message sent date.
    */
@@ -406,7 +413,7 @@ public class Message {
         FileWriter myWriter = new FileWriter(privateChatFile);
         String log = "Chat log file created for sender: " + from + " and receiver: " + to;
         logger.log(Level.INFO, log);
-        try{
+        try {
           myWriter.write(toStringForPrivateChatLog());
         } catch (IOException e) {
           logger.log(Level.INFO, e.getMessage());
@@ -446,7 +453,7 @@ public class Message {
       if (!Files.exists(Paths.get(groupChatLogName))) {
         FileWriter myWriter = new FileWriter(groupChatFile);
         logger.info("Chat log file created for " + currentGroupObject.getName());
-        try{
+        try {
           myWriter.write(toStringForGroupChatLog());
         } catch (IOException e) {
           logger.log(Level.INFO, e.getMessage());
@@ -467,13 +474,6 @@ public class Message {
         }
       }
     }
-  }
-
-  /***
-   * Create an object of MessageBuilder class
-   */
-  public static MessageBuilder messageBuilder() {
-    return new MessageBuilder();
   }
 
   /***

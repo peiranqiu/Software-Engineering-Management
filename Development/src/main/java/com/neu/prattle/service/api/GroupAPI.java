@@ -19,8 +19,8 @@ public class GroupAPI extends DBUtils {
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   private PreparedStatement stmt = null;
   private ResultSet rs = null;
-  private ResultSet rs1=null;
-  private PreparedStatement stmt1=null;
+  private ResultSet rs1 = null;
+  private PreparedStatement stmt1 = null;
 
   public GroupAPI() {
     super();
@@ -103,7 +103,7 @@ public class GroupAPI extends DBUtils {
       String sql = "SELECT * FROM Group_has_Group WHERE super_Group_id =?";
       stmt1 = con.prepareStatement(sql);
       stmt1.setInt(1, groupId);
-      rs1= stmt1.executeQuery();
+      rs1 = stmt1.executeQuery();
       while (rs1.next()) {
         int subGroupId = rs1.getInt("sub_Group_id");
         subGroupList.add(getGroupById(subGroupId));
@@ -113,8 +113,7 @@ public class GroupAPI extends DBUtils {
 
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
-    }
-    finally {
+    } finally {
       rs1.close();
       stmt1.close();
     }
@@ -257,7 +256,7 @@ public class GroupAPI extends DBUtils {
       Connection con = getConnection();
       String sql = "SELECT * FROM mydb.Group";
       stmt1 = con.prepareStatement(sql);
-      rs1= stmt1.executeQuery();
+      rs1 = stmt1.executeQuery();
       while (rs1.next()) {
         int subGroupId = rs1.getInt("Group_id");
         groupList.add(getGroupById(subGroupId));
@@ -267,8 +266,7 @@ public class GroupAPI extends DBUtils {
 
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
-    }
-    finally {
+    } finally {
       rs1.close();
       stmt1.close();
     }

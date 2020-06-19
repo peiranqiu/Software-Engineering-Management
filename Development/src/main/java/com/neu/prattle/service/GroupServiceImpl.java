@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 public class GroupServiceImpl implements GroupService {
   private static GroupService groupService;
+
   static {
     groupService = new GroupServiceImpl();
   }
@@ -32,7 +33,18 @@ public class GroupServiceImpl implements GroupService {
   }
 
   /**
+   * Call this method to return an instance of this service.
+   *
+   * @return this
+   */
+
+  public static GroupService getInstance() {
+    return groupService;
+  }
+
+  /**
    * Set the api useed by group Service.
+   *
    * @param groupAPI group api
    */
   @Override
@@ -44,16 +56,6 @@ public class GroupServiceImpl implements GroupService {
   public void setFollowAPI(FollowAPI newFollowAPI) {
     followAPI = newFollowAPI;
   }
-  /**
-   * Call this method to return an instance of this service.
-   *
-   * @return this
-   */
-
-  public static GroupService getInstance() {
-    return groupService;
-  }
-
 
   /***
    * Returns an optional object which might be empty or wraps an object
@@ -67,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
   public Optional<Group> findGroupByName(String name) {
     Optional<Group> optional = Optional.empty();
     try {
-      if(api.getGroup(name) != null) {
+      if (api.getGroup(name) != null) {
         optional = Optional.of(api.getGroup(name));
       }
     } catch (SQLException e) {
@@ -134,8 +136,8 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public List<Group> getSubGroupList(int groupId) {
     List<Group> groups = new ArrayList<>();
-    try{
-      groups=api.getSubGroupList(groupId);
+    try {
+      groups = api.getSubGroupList(groupId);
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in get subgroup for group");
     }
@@ -150,10 +152,10 @@ public class GroupServiceImpl implements GroupService {
    */
   @Override
   public Group getGroupById(int id) {
-    Group group=null;
-    try{
-      group=api.getGroupById(id);
-    }catch (SQLException e){
+    Group group = null;
+    try {
+      group = api.getGroupById(id);
+    } catch (SQLException e) {
       logger.log(Level.INFO, "failed in get id for group");
     }
     return group;
@@ -167,8 +169,8 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public List<Group> getAllGroups() {
     List<Group> groups = new ArrayList<>();
-    try{
-      groups=api.getAllGroups();
+    try {
+      groups = api.getAllGroups();
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in getting groups in database");
     }

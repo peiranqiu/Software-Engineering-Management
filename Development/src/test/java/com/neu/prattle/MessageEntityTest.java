@@ -3,39 +3,33 @@ package com.neu.prattle;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.websocket.MessageDecoder;
 import com.neu.prattle.websocket.MessageEncoder;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
-import javax.websocket.Decoder;
 import javax.websocket.EncodeException;
-import javax.websocket.Encoder;
-import javax.websocket.EndpointConfig;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class MessageEntityTest {
+  @Mock
+  ObjectMapper objectMapper;
   /***
    * Message created by Message class
    */
   private Message message;
   private MessageEncoder messageEncoder;
   private MessageDecoder messageDecoder;
-
-  @Mock
-  ObjectMapper objectMapper;
 
   @Before
   public void setup() {

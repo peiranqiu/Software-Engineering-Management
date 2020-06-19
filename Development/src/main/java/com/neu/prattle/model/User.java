@@ -1,4 +1,3 @@
-
 package com.neu.prattle.model;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -235,6 +234,7 @@ public class User {
 
   /**
    * Get the user's role if it's moderator.
+   *
    * @return the user's role
    */
   public Boolean getModerator() {
@@ -243,6 +243,7 @@ public class User {
 
   /**
    * Set the user's role.
+   *
    * @param moderator whether the user is moderator
    */
   public void setModerator(Boolean moderator) {

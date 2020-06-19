@@ -29,16 +29,17 @@ import javax.ws.rs.core.MediaType;
 @Path(value = "/user")
 public final class UserController {
 
+  private static final UserController userController = new UserController();
   private UserService userService = UserServiceImpl.getInstance();
   private FollowService followService = FollowService.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
-  private static final UserController userController = new UserController();
 
   /**
    * Singleton instance for user controller
+   *
    * @return a singleton instance
    */
-  public static UserController getInstance(){
+  public static UserController getInstance() {
     return userController;
   }
 
@@ -53,7 +54,7 @@ public final class UserController {
   @Consumes(MediaType.APPLICATION_JSON)
   public String createUserAccount(User user) {
     try {
-      if(userService.addUser(user)) {
+      if (userService.addUser(user)) {
         return new Gson().toJson(user);
       }
     } catch (UserAlreadyPresentException e) {
@@ -64,18 +65,20 @@ public final class UserController {
 
   /**
    * Get all users
+   *
    * @return all users
    */
   @GET
   @Path("/getAllUser")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getAllUsers(){
+  public String getAllUsers() {
     List<User> list = userService.getAllUsers();
     return new Gson().toJson(list);
   }
 
   /**
    * user login
+   *
    * @param user the user
    * @return login-ed user
    */
@@ -84,9 +87,9 @@ public final class UserController {
   @Consumes(MediaType.APPLICATION_JSON)
   public String login(User user) {
     Optional<User> optional = userService.findUserByName(user.getName());
-    if(optional.isPresent()) {
+    if (optional.isPresent()) {
       User u = optional.get();
-      if(u.getPassword().equals(user.getPassword())) {
+      if (u.getPassword().equals(user.getPassword())) {
         return new Gson().toJson(u);
       }
     }
@@ -95,66 +98,71 @@ public final class UserController {
 
   /**
    * Get followers of a user
+   *
    * @param id the user id
    * @return followers.
    */
   @GET
   @Path("/{userId}/getFollower")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getFollower(@PathParam("userId") int id){
+  public String getFollower(@PathParam("userId") int id) {
     List<User> list = followService.userGetFollowers(id);
     return new Gson().toJson(list);
   }
 
   /**
    * Get followees of a user
+   *
    * @param id the user id
    * @return followees.
    */
   @GET
   @Path("/{userId}/getFollowee")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getFollowedUser(@PathParam("userId") int id){
+  public String getFollowedUser(@PathParam("userId") int id) {
     List<User> list = followService.getFollowingUsers(id);
     return new Gson().toJson(list);
   }
 
   /**
    * Get list of groups the user has
+   *
    * @param id the user id
    * @return groups
    */
   @GET
   @Path("/{userId}/getHasGroup")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getHasGroup(@PathParam("userId") int id){
+  public String getHasGroup(@PathParam("userId") int id) {
     List<Group> list = moderateService.getHasGroups(id);
     return new Gson().toJson(list);
   }
 
   /**
    * Get list of groups the user is following
+   *
    * @param id the user id
    * @return groups
    */
   @GET
   @Path("/{userId}/getFollowedGroup")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getFollowedGroup(@PathParam("userId") int id){
+  public String getFollowedGroup(@PathParam("userId") int id) {
     List<Group> list = followService.getFollowingGroups(id);
     return new Gson().toJson(list);
   }
 
   /**
    * follow a user
+   *
    * @param followerId the follower id
    * @param followeeId the followee id
    */
   @POST
   @Path("/{followerId}/follow/{followeeId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String followUser(@PathParam("followerId") int followerId, @PathParam("followeeId") int followeeId){
-    if(followService.followUser(followerId, followeeId)) {
+  public String followUser(@PathParam("followerId") int followerId, @PathParam("followeeId") int followeeId) {
+    if (followService.followUser(followerId, followeeId)) {
       return new Gson().toJson("Follow successful");
     }
     return new Gson().toJson("Follow failed");
@@ -162,14 +170,15 @@ public final class UserController {
 
   /**
    * unollow a user
+   *
    * @param followerId the follower id
    * @param followeeId the followee id
    */
   @DELETE
   @Path("/{followerId}/unfollow/{followeeId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String unfollowUser(@PathParam("followerId") int followerId, @PathParam("followeeId") int followeeId){
-    if(followService.unfollowUser(followerId, followeeId)) {
+  public String unfollowUser(@PathParam("followerId") int followerId, @PathParam("followeeId") int followeeId) {
+    if (followService.unfollowUser(followerId, followeeId)) {
       return new Gson().toJson("Unfollow successful");
     }
     return new Gson().toJson("Unfollow failed");

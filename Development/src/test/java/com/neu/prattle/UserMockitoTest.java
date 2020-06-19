@@ -193,7 +193,7 @@ public class UserMockitoTest {
    * Test get current information for the user.
    */
   @Test
-  public void testRetrieveInformationForCurrentUser(){
+  public void testRetrieveInformationForCurrentUser() {
     when(api.addUser(any(User.class))).thenReturn(true);
     userService.setAPI(api);
     assertTrue(userService.addUser(user3));
@@ -205,7 +205,7 @@ public class UserMockitoTest {
    * Test user password update.
    */
   @Test
-  public void testUpdatePassword() throws SQLException{
+  public void testUpdatePassword() throws SQLException {
     User newUser = new User("Hhhhhhh123", "Hhhhhhh123");
     when(api.addUser(any(User.class))).thenReturn(true);
     when(api.getUserByName(anyString())).thenReturn(newUser);
@@ -221,7 +221,7 @@ public class UserMockitoTest {
    * Test user avatar update.
    */
   @Test
-  public void testUpdateAvatar() throws SQLException{
+  public void testUpdateAvatar() throws SQLException {
     User newUser = new User("Hhhhhhh323", "Hhhhhhh123");
     when(api.addUser(any(User.class))).thenReturn(true);
     when(api.getUserByName(anyString())).thenReturn(newUser);
@@ -244,15 +244,17 @@ public class UserMockitoTest {
   }
 
   @Test
-  public void setModerator() throws SQLException{
+  public void setModerator() throws SQLException {
     User u = new User("newUser123", "ererererf5F");
     u.setModerator(true);
     when(api.setModerator(any(User.class))).thenReturn(u);
     userService.setAPI(api);
     assertTrue(userService.setModerator(u).getModerator());
   }
+
   /**
    * Generate random number range from 1 to 10000.
+   *
    * @return the generated number
    */
   public int getRandom() {

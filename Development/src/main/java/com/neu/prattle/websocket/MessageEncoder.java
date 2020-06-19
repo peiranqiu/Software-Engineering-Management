@@ -37,6 +37,7 @@ public class MessageEncoder implements Encoder.Text<Message> {
   public void setObjectMapper(ObjectMapper objectMapper0) {
     objectMapper = objectMapper0;
   }
+
   /**
    * Encode.
    *

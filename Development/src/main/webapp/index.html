@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <title>Chat</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="style.css" rel="stylesheet">
 </head>
 
 <body onload="getAllUsers()">
@@ -15,19 +15,20 @@
     </tr>
     <tr>
         <td colspan="2">
-            <input type="text" id="username" placeholder="Username"/>
-            <input type="text" id="password" placeholder="Password"/>
-            <button type="button" onclick="connect();" >Connect</button>
+            <input id="username" placeholder="Username" type="text"/>
+            <input id="password" placeholder="Password" type="text"/>
+            <button onclick="connect();" type="button">Connect</button>
         </td>
     </tr>
     <tr>
         <td>
-            <textarea readonly="true" rows="10" cols="60" id="log"></textarea>
+            <textarea cols="60" id="log" readonly="true" rows="10"></textarea>
         </td>
         <td id="tab-container">
             <div class="tab">
                 <button class="tablinks" onclick="getHasGroup(event)">
-                    Groups</button>
+                    Groups
+                </button>
                 <button class="tablinks"
                         onclick='userGetFollowee(event)'>Following
                 </button>
@@ -50,30 +51,29 @@
 
             </div>
 
-            <div id="Groups" class="tabcontent">
+            <div class="tabcontent" id="Groups">
             </div>
 
-            <div id="Followees" class="tabcontent">
+            <div class="tabcontent" id="Followees">
             </div>
 
-            <div id="Followers" class="tabcontent">
+            <div class="tabcontent" id="Followers">
             </div>
 
-            <div id="All Groups" class="tabcontent">
+            <div class="tabcontent" id="All Groups">
             </div>
-            <div id="FollowingGroups" class="tabcontent">
+            <div class="tabcontent" id="FollowingGroups">
             </div>
-            <div id="Sub Groups" class="subGroupContent">
-            </div>
-
-            <div id="Group Followers" class="groupFollowers">
+            <div class="subGroupContent" id="Sub Groups">
             </div>
 
-            <div id="Group Moderators" class="groupModerators">
-            </div>
-            <div id="Group Members" class="groupMembers">
+            <div class="groupFollowers" id="Group Followers">
             </div>
 
+            <div class="groupModerators" id="Group Moderators">
+            </div>
+            <div class="groupMembers" id="Group Members">
+            </div>
 
 
         </td>
@@ -81,35 +81,35 @@
     <tr>
         <td>
             <select id="to">
-                <option value ="" disabled selected hidden>To</option>
+                <option disabled hidden selected value="">To</option>
             </select>
 
-            <input type="text" size="51" id="msg" placeholder="Message"/>
-            <button type="button" onclick="send();" >Send</button>
+            <input id="msg" placeholder="Message" size="51" type="text"/>
+            <button onclick="send();" type="button">Send</button>
 
         </td>
     </tr>
     <tr>
-    <td>
-        <input id="toGroup" size="15" placeholder="To Group" />
-        <input type="text" size="51" id="groupMsg" placeholder="Message"/>
-        <button type="button" onclick="sendGroup();" >Send</button>
+        <td>
+            <input id="toGroup" placeholder="To Group" size="15"/>
+            <input id="groupMsg" placeholder="Message" size="51" type="text"/>
+            <button onclick="sendGroup();" type="button">Send</button>
 
-    </td>
-</tr>
+        </td>
+    </tr>
     <tr>
         <td>
-            <input id ='newName' type ='text' placeholder="User Name"/>
-            <input id="newPsw" type="text" placeholder="Password">
-            <button onclick="createUser()"> Create </button>
+            <input id='newName' placeholder="User Name" type='text'/>
+            <input id="newPsw" placeholder="Password" type="text">
+            <button onclick="createUser()"> Create</button>
         </td>
 
 
     </tr>
     <tr>
         <td>
-            <input id ='groupName' type ='text' placeholder="Group Name"/>
-            <button onclick="createGroup()"> Create </button>
+            <input id='groupName' placeholder="Group Name" type='text'/>
+            <button onclick="createGroup()"> Create</button>
         </td>
 
 
@@ -117,16 +117,16 @@
 
     <tr>
         <td>
-            <input id ='groupName2' type ='text' placeholder="Group Name"/>
-            <input id="groupPass" type="text" placeholder="Password">
-            <button onclick="setGroupPassword()"> Set Password </button>
+            <input id='groupName2' placeholder="Group Name" type='text'/>
+            <input id="groupPass" placeholder="Password" type="text">
+            <button onclick="setGroupPassword()"> Set Password</button>
         </td>
     </tr>
 
     <tr>
         <td>
-            <input id ='SuperGroupName' type ='text' placeholder="Super Group Name"/>
-            <input id="SubGroupName" type="text" placeholder="Sub Group Name">
+            <input id='SuperGroupName' placeholder="Super Group Name" type='text'/>
+            <input id="SubGroupName" placeholder="Sub Group Name" type="text">
             <button onclick="addSubGroup()"> Add Sub Group</button>
         </td>
 

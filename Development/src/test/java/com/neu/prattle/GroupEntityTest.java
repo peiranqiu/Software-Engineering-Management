@@ -1,4 +1,3 @@
-
 package com.neu.prattle;
 
 import com.neu.prattle.model.Group;
@@ -47,6 +46,7 @@ public class GroupEntityTest {
     assertFalse(group2.getMembers().contains(member));
 
   }
+
   @Test
   public void test3() {
     Group group1 = new Group("group1");
@@ -64,10 +64,10 @@ public class GroupEntityTest {
     Group group4 = new Group("group4");
     Group group5 = new Group("group4");
     Group group6 = new Group("group6");
-    assertEquals(group4,group5);
+    assertEquals(group4, group5);
     assertFalse(group4.equals(group6));
     TestCase.assertFalse(group4.equals(1));
-    assertTrue(group4.hashCode()==group5.hashCode());
+    assertTrue(group4.hashCode() == group5.hashCode());
 
   }
 

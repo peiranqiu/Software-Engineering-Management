@@ -59,13 +59,13 @@ public interface UserService {
 
   /**
    * Get all users in the database.
+   *
    * @return all users
    */
   List<User> getAllUsers();
 
   /**
    * Set the user api used by this service
-   * @param api
    */
   void setAPI(UserAPI api);
 }

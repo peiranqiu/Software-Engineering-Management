@@ -36,7 +36,6 @@ import javax.websocket.Session;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -149,7 +148,7 @@ public class ChatEndpointMockitoTest {
   }
 
   @Test
-  public void testOnOpen2() throws IOException, EncodeException  {
+  public void testOnOpen2() throws IOException, EncodeException {
     when(userService.findUserByName(anyString())).thenReturn(Optional.empty());
     chatEndpoint1.setService(userService, groupService, moderateService);
     assertFalse(chatEndpoint1.onOpen(session1, "name"));
@@ -169,7 +168,7 @@ public class ChatEndpointMockitoTest {
     when(moderateService.getModerators(any(Group.class))).thenReturn(new ArrayList<>());
     chatEndpoint1.setService(userService, groupService, moderateService);
     chatEndpoint2.setService(userService, groupService, moderateService);
-    moderateService.addGroupModerator(group1,testUser1,testUser1);
+    moderateService.addGroupModerator(group1, testUser1, testUser1);
 
     when(moderateService.getModerators(any(Group.class))).thenReturn(Arrays.asList(testUser1));
     when(moderateService.getMembers(any(Group.class))).thenReturn(new ArrayList<>());
@@ -233,7 +232,7 @@ public class ChatEndpointMockitoTest {
     chatEndpoint1.onOpen(session1, testUser1.getName());
 
     when(moderateService.addGroupModerator(any(Group.class), any(User.class), any(User.class))).thenReturn(testUser1);
-    moderateService.addGroupModerator(group1,testUser1,testUser1);
+    moderateService.addGroupModerator(group1, testUser1, testUser1);
 
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
     chatEndpoint2.setService(userService, groupService, moderateService);
@@ -300,7 +299,10 @@ public class ChatEndpointMockitoTest {
   public void testSendGroupMessage() throws IOException, EncodeException {
     when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>(){{add(testUser1); add(testUser2);}});
+    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>() {{
+      add(testUser1);
+      add(testUser2);
+    }});
     chatEndpoint1.setService(userService, groupService, moderateService);
     User user1 = userService.findUserByName("testName1").get();
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
@@ -338,7 +340,10 @@ public class ChatEndpointMockitoTest {
   public void testSendGroupMessage2() throws IOException, EncodeException {
     when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>(){{add(testUser1); add(testUser2);}});
+    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>() {{
+      add(testUser1);
+      add(testUser2);
+    }});
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
     chatEndpoint1.setService(userService, groupService, moderateService);
     User user1 = userService.findUserByName("testName1").get();
@@ -379,11 +384,11 @@ public class ChatEndpointMockitoTest {
       while (scanner.hasNextLine()) {
         String line = scanner.nextLine();
         lineNum++;
-        if(line.equals(msgSent)) {
+        if (line.equals(msgSent)) {
           return true;
         }
       }
-    } catch(FileNotFoundException e) {
+    } catch (FileNotFoundException e) {
       return false;
     }
     return false;
@@ -415,7 +420,10 @@ public class ChatEndpointMockitoTest {
   public void testDeleteGroupMessage() throws IOException, EncodeException {
     when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>(){{add(testUser1); add(testUser2);}});
+    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>() {{
+      add(testUser1);
+      add(testUser2);
+    }});
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
     chatEndpoint1.setService(userService, groupService, moderateService);
     User user1 = userService.findUserByName("testName1").get();

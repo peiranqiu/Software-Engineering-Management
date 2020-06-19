@@ -36,21 +36,22 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * Set the api useed by user Service.
-   * @param userAPI user api
-   */
-  @Override
-  public void setAPI(UserAPI userAPI) {
-    api = userAPI;
-  }
-
-  /**
    * Call this method to return an instance of this service.
    *
    * @return this
    */
   public static UserService getInstance() {
     return userService;
+  }
+
+  /**
+   * Set the api useed by user Service.
+   *
+   * @param userAPI user api
+   */
+  @Override
+  public void setAPI(UserAPI userAPI) {
+    api = userAPI;
   }
 
   @Override
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public List<User> getAllUsers() {
     List<User> allUsers = new ArrayList<>();
-    try{
+    try {
       allUsers = api.getAllUsers();
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -117,11 +118,10 @@ public class UserServiceImpl implements UserService {
         throw new UserNotFoundException(String.format("User %s not found.", user.getName()));
       }
       newUser.setPassword(user.getPassword());
-      if(field.equals("password")) {
+      if (field.equals("password")) {
         String value = user.getPassword();
         u = api.updateUser(newUser, field, value);
-      }
-      else if(field.equals("avatar")) {
+      } else if (field.equals("avatar")) {
         String value = user.getAvatar();
         u = api.updateUser(newUser, field, value);
       }

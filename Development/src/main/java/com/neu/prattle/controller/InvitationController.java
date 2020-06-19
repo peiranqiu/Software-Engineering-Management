@@ -22,17 +22,18 @@ import javax.ws.rs.core.MediaType;
 @Path(value = "/invitation")
 public class InvitationController {
 
-  private ModerateService moderateService = ModerateService.getInstance();
   private static final InvitationController invitationController = new InvitationController();
-
   private static final String GROUP = "group";
   private static final String INVITER = "inviter";
   private static final String INVITEE = "invitee";
+  private ModerateService moderateService = ModerateService.getInstance();
+
   /**
    * Singleton instance for invitation controller
+   *
    * @return a singleton instance
    */
-  public static InvitationController getInstance(){
+  public static InvitationController getInstance() {
     return invitationController;
   }
 
@@ -50,7 +51,7 @@ public class InvitationController {
     User inviter = (User) ((Object) invitation.get(INVITER));
     User invitee = (User) ((Object) invitation.get(INVITEE));
     Boolean isInvite = (Boolean) ((Object) invitation.get("isInvite"));
-    if(moderateService.createInvitation(group, inviter, invitee, isInvite)) {
+    if (moderateService.createInvitation(group, inviter, invitee, isInvite)) {
       return new Gson().toJson("Invitation created successfully");
     }
     return new Gson().toJson("Creating invitation failed");
@@ -68,7 +69,7 @@ public class InvitationController {
     Group group = (Group) ((Object) invitation.get(GROUP));
     User inviter = (User) ((Object) invitation.get(INVITER));
     User invitee = (User) ((Object) invitation.get(INVITEE));
-    if(moderateService.deleteInvitation(group, inviter, invitee)) {
+    if (moderateService.deleteInvitation(group, inviter, invitee)) {
       return new Gson().toJson("Invitation deleted successfully");
     }
     return new Gson().toJson("Deleting invitation failed");
@@ -87,7 +88,7 @@ public class InvitationController {
     User inviter = (User) ((Object) invitation.get(INVITER));
     User invitee = (User) ((Object) invitation.get(INVITEE));
     Boolean isInvite = (Boolean) ((Object) invitation.get("isInvite"));
-    if(moderateService.approveInvitation(group, inviter, invitee, isInvite)) {
+    if (moderateService.approveInvitation(group, inviter, invitee, isInvite)) {
       return new Gson().toJson("Invitation approved");
     }
     return new Gson().toJson("Invitation not approved. Please try again.");

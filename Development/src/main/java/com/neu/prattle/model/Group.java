@@ -37,8 +37,8 @@ public class Group {
    * a private group should have password.
    */
   @Column(name = "password")
-  private String password=null;
-    /**
+  private String password = null;
+  /**
    * moderator list of this group. One group should have at least one moderator.
    */
 
