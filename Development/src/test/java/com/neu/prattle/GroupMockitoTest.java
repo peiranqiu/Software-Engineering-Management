@@ -3,6 +3,7 @@ package com.neu.prattle;
 
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
+import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.api.FollowAPI;
@@ -123,6 +124,25 @@ public class GroupMockitoTest {
     when(api.getAllGroups()).thenReturn(groupList);
     groupService.setAPI(api);
     assertEquals(groupList, groupService.getAllGroups());
+  }
+
+
+  @Test
+  public void testSetPsw() throws SQLException {
+    List<User>followers = new ArrayList<>();
+    User f1 = new User("follow1");
+    User f2 = new User("follow2");
+    followers.add(f1);
+    followers.add(f2);
+
+    when(api.setPasswordforGroup(anyInt(), anyString())).thenReturn(true);
+    groupService.setAPI(api);
+
+    when(followAPI.groupGetFollowers(anyInt())).thenReturn(followers);
+    when(followAPI.userFollowGroup(anyInt(), anyInt())).thenReturn(true);
+    groupService.setFollowAPI(followAPI);
+
+    assertTrue(groupService.setPasswordforGroup(1, "ABCabc1234"));
   }
 
 
