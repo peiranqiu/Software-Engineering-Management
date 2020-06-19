@@ -9,7 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({GroupEntityTest.class, MessageEntityTest.class, GroupMockitoTest.class,
-        UserEntityTest.class, UserMockitoTest.class, FollowMockitoTest.class, ChatEndpointMockitoTest.class})
+        UserEntityTest.class, UserMockitoTest.class, FollowMockitoTest.class, ChatEndpointMockitoTest.class,ModerateMockitoTest.class})
 public class AllTests {
   //All tests
 }
