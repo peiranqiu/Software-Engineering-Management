@@ -23,7 +23,7 @@ public class MessageEncoder implements Encoder.Text<Message> {
   /**
    * @see org.codehaus.jackson.map.ObjectMapper
    */
-  private static ObjectMapper objectMapper = new ObjectMapper();
+  private ObjectMapper objectMapper = new ObjectMapper();
 
   /**
    * The logger.

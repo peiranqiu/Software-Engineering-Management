@@ -3,20 +3,37 @@ package com.neu.prattle;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.websocket.MessageDecoder;
 import com.neu.prattle.websocket.MessageEncoder;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import javax.websocket.Decoder;
 import javax.websocket.EncodeException;
+import javax.websocket.Encoder;
+import javax.websocket.EndpointConfig;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MessageEntityTest {
   /***
    * Message created by Message class
    */
   private Message message;
+  private MessageEncoder messageEncoder;
+
+  @Mock
+  ObjectMapper objectMapper;
 
   @Before
   public void setup() {
@@ -29,6 +46,10 @@ public class MessageEntityTest {
     message.setMessageID();
     message.setMessagePath();
     message.setCurrDate();
+    messageEncoder = new MessageEncoder();
+
+    objectMapper = new ObjectMapper();
+    objectMapper = mock(ObjectMapper.class);
   }
 
   /***
@@ -105,34 +126,10 @@ public class MessageEntityTest {
 
   @Test
   public void testDeletePersonalMessage() throws IOException, EncodeException {
-    message.storeMessage();
+    assertTrue(message.storeMessage());
     message.saveChatLogPerson();
     message.deletePersonalMessage();
   }
-
-  /***
-   * Test for deleteDir() function
-   */
-//  @Test
-//  public void testMakeDirectory() {
-//    deleteDir(new File(message.getMessagePath() + "/" + message.getFromID()));
-//    assertEquals("Successfully create receiver directory.", message.makeDirectory(message.getMessagePath(), message.getFromID()));
-//  }
-
-  /***
-   * Used for removing an existing directory
-   */
-//  public void deleteDir(File dir) {
-//    if (dir.exists()){
-//      File[] files = dir.listFiles();
-//      if(files != null) {
-//        for (final File file : files) {
-//          deleteDir(file);
-//        }
-//      }
-//      dir.delete();
-//    }
-//  }
 
   /***
    * Test for willDecode() in Message Decoder class
