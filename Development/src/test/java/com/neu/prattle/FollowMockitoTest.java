@@ -120,6 +120,24 @@ public class FollowMockitoTest {
     followService.followUser(user1, user2);
   }
 
+  @Test(expected = AlreadyFollowException.class)
+  public void testFollowUserFail1() {
+    when(userService.addUser(any(User.class))).thenReturn(true);
+    assertTrue(userService.addUser(user1));
+    assertTrue(userService.addUser(user2));
+
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user2));
+    followService.setUserService(userService);
+    when(api.userFollowUser(anyInt(), anyInt())).thenReturn(true);
+    followService.setAPI(api);
+    assertTrue(followService.followUser(user1, user2));
+
+    List<User> followings = new ArrayList<>();
+    followings.add(user2);
+    when(followService.getFollowingUsers(anyInt())).thenReturn(followings);
+    followService.followUser(user1, user2);
+  }
+
   /**
    * Test user unfollow failure because of a non existing follow.
    */
