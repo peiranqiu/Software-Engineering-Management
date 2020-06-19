@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
-import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -197,19 +196,6 @@ public class ChatEndpoint {
     message.setFrom(users.get(session.getId()));
     message.setContent("Disconnected!");
     broadcast(message);
-  }
-
-  /**
-   * On error.
-   *
-   * Handles situations when an error occurs.  Not implemented.
-   *
-   * @param session   the session with the problem
-   * @param throwable the action to be taken.
-   */
-  @OnError
-  public void onError(Session session, Throwable throwable) {
-    // Do error handling here
   }
 
   /**
