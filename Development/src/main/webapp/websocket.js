@@ -754,10 +754,47 @@ async function getGroupMembers(groupId) {
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
 }
+
 async function translateMessage() {
-    console.log("test");
-    // const messageToTranslate = document.getElementById('messageToTranslate').value;
-    // document.getElementById('translated').value = "Hello World";
+    let parseXml;
+// create xml parsing functions
+// the next if/else block is from the following thread
+// https://stackoverflow.com/questions/649614/xml-parsing-of-a-variable-string-in-javascript
+    if (typeof window.DOMParser != "undefined") {
+        parseXml = function(content) {
+            return ( new window.DOMParser() ).parseFromString(content, "text/xml");
+        };
+    } else if (typeof window.ActiveXObject != "undefined" &&
+               new window.ActiveXObject("Microsoft.XMLDOM")) {
+        parseXml = function(content) {
+            let xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = "false";
+            xmlDoc.loadXML(content);
+            return xmlDoc;
+        };
+    } else {
+        throw new Error("No XML parser found");
+    }
+    const data = encodeURI(document.getElementById('messageToTranslate').value);
+    fetch(
+        "https://microsoft-azure-translation-v1.p.rapidapi.com/translate?from=en&to=es&text="+data,
+        {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-host": "microsoft-azure-translation-v1.p.rapidapi.com",
+                "x-rapidapi-key": "b496f70aa3mshd47b6501eee64dep117676jsn1e1d922eb551",
+            }
+        })
+        .then(response => response.text())
+        .then(text => {
+            let document = parseXml(text);
+            let stringElementArray = document.getElementsByTagName('string');
+            console.log(stringElementArray[0].innerHTML);
+            console.log(document.getElementById("translated"));
+        })
+        .catch(err => {
+            console.log(err);
+        });
 }
 
 
