@@ -790,14 +790,16 @@ async function translateMessage() {
             let document = parseXml(text);
             let stringElementArray = document.getElementsByTagName('string');
             console.log(stringElementArray[0].innerHTML);
-            console.log(document.getElementById("translated"));
+            updateTranslationOutput(stringElementArray[0].innerHTML)
         })
         .catch(err => {
             console.log(err);
         });
 }
 
-
+function updateTranslationOutput(translatedMessage) {
+    document.getElementById("translated").value = translatedMessage;
+}
 
 
 
