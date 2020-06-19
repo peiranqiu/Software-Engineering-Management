@@ -252,7 +252,7 @@ public class GroupAPI extends DBUtils {
    */
 
   public List<Group> getAllGroups() throws SQLException {
-    List<Group> GroupList = new ArrayList<>();
+    List<Group> groupList = new ArrayList<>();
     try {
       Connection con = getConnection();
       String sql = "SELECT * FROM mydb.Group";
@@ -260,7 +260,7 @@ public class GroupAPI extends DBUtils {
       rs1= stmt1.executeQuery();
       while (rs1.next()) {
         int subGroupId = rs1.getInt("Group_id");
-        GroupList.add(getGroupById(subGroupId));
+        groupList.add(getGroupById(subGroupId));
       }
       rs1.close();
       stmt1.close();
@@ -272,9 +272,7 @@ public class GroupAPI extends DBUtils {
       rs1.close();
       stmt1.close();
     }
-
-
-    return GroupList;
+    return groupList;
   }
 
 }
