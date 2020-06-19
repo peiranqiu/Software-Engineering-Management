@@ -256,6 +256,23 @@ public class FollowMockitoTest {
   }
 
   /**
+   * Test get following group list for a given user, no followings
+   */
+  @Test
+  public void testGetFollowingGroups1() {
+    when(userService.addUser(any(User.class))).thenReturn(true);
+    userService.addUser(user1);
+    userService.addUser(user2);
+
+    followService.setAPI(api);
+    when(userService.findUserByName(anyString())).thenReturn(Optional.empty());
+    followService.setUserService(userService);
+    assertTrue(followService.getFollowingGroups(user1).isEmpty());
+    assertTrue(followService.getFollowingGroups(user1.getUserId()).isEmpty());
+  }
+
+
+  /**
    * Test group follow failure because of an already followed group.
    */
   @Test(expected = AlreadyFollowException.class)
@@ -339,6 +356,21 @@ public class FollowMockitoTest {
     followService.setAPI(api);
     assertEquals(followService.groupGetFollowers(group1).get(0).getName(), user1.getName());
     assertEquals(followService.groupGetFollowers(group1).get(1).getName(), user2.getName());
+  }
+
+  /**
+   * Test get following group list for a given user, no followings
+   */
+  @Test
+  public void testGroupGetFolowers1() {
+    when(userService.addUser(any(User.class))).thenReturn(true);
+    userService.addUser(user1);
+    userService.addUser(user2);
+
+    followService.setAPI(api);
+    when(groupService.findGroupByName(anyString())).thenReturn(Optional.empty());
+    followService.setGroupService(groupService);
+    assertTrue(followService.groupGetFollowers(group1).isEmpty());
   }
 
   /**
