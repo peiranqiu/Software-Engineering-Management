@@ -1,9 +1,10 @@
 package com.neu.prattle.service;
 
 
-import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.FollowAPI;
+import com.neu.prattle.service.api.GroupAPI;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.logging.Logger;
 
 public class GroupServiceImpl implements GroupService {
   private static GroupService groupService;
+
   static {
     groupService = new GroupServiceImpl();
   }
@@ -40,6 +42,20 @@ public class GroupServiceImpl implements GroupService {
     return groupService;
   }
 
+  /**
+   * Set the api useed by group Service.
+   *
+   * @param groupAPI group api
+   */
+  @Override
+  public void setAPI(GroupAPI groupAPI) {
+    api = groupAPI;
+  }
+
+  @Override
+  public void setFollowAPI(FollowAPI newFollowAPI) {
+    followAPI = newFollowAPI;
+  }
 
   /***
    * Returns an optional object which might be empty or wraps an object
@@ -53,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
   public Optional<Group> findGroupByName(String name) {
     Optional<Group> optional = Optional.empty();
     try {
-      if(api.getGroup(name) != null) {
+      if (api.getGroup(name) != null) {
         optional = Optional.of(api.getGroup(name));
       }
     } catch (SQLException e) {
@@ -71,12 +87,7 @@ public class GroupServiceImpl implements GroupService {
    */
   @Override
   public boolean addGroup(Group group) {
-    try {
-      api.addGroup(group);
-      return true;
-    } catch (IllegalStateException e) {
-      throw new GroupAlreadyPresentException(String.format("Group already present with name: %s", group.getName()));
-    }
+    return api.addGroup(group);
   }
 
   /***
@@ -91,6 +102,7 @@ public class GroupServiceImpl implements GroupService {
 
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in set psw for group");
+      return false;
     }
     List<User> followers = followAPI.groupGetFollowers(groupId);
     for (User u : followers) {
@@ -116,16 +128,6 @@ public class GroupServiceImpl implements GroupService {
     return true;
   }
 
-  @Override
-  public boolean removeSubgroupFromGroup(int groupId, int subgroupId) {
-    try {
-      api.deleteSubgroupfromGroup(groupId, subgroupId);
-    } catch (SQLException e) {
-      logger.log(Level.INFO, "failed in remove subgroup from group");
-    }
-    return true;
-  }
-
   /**
    * a method to get sub groups of one group by group id
    *
@@ -134,8 +136,8 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public List<Group> getSubGroupList(int groupId) {
     List<Group> groups = new ArrayList<>();
-    try{
-      groups=api.getSubGroupList(groupId);
+    try {
+      groups = api.getSubGroupList(groupId);
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in get subgroup for group");
     }
@@ -150,12 +152,28 @@ public class GroupServiceImpl implements GroupService {
    */
   @Override
   public Group getGroupById(int id) {
-    Group group=null;
-    try{
-      group=api.getGroupById(id);
-    }catch (SQLException e){
+    Group group = null;
+    try {
+      group = api.getGroupById(id);
+    } catch (SQLException e) {
       logger.log(Level.INFO, "failed in get id for group");
     }
     return group;
+  }
+
+  /**
+   * a method to get all groups in the database
+   *
+   * @return a list of groups
+   */
+  @Override
+  public List<Group> getAllGroups() {
+    List<Group> groups = new ArrayList<>();
+    try {
+      groups = api.getAllGroups();
+    } catch (SQLException e) {
+      logger.log(Level.INFO, "failed in getting groups in database");
+    }
+    return groups;
   }
 }

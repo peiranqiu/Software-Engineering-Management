@@ -1,36 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Chat</title>
+    <link href="style.css" rel="stylesheet">
+</head>
 
-        <table>
-            <caption>Table</caption>
-            <tr>
-                <th scope="col"></th>
-                <th scope="col"></th>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <input type="text" id="username" placeholder="Username"/>
-                    <button type="button" onclick="connect();" >Connect</button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <textarea readonly="true" rows="10" cols="80" id="log"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="text" size="51" id="msg" placeholder="Message"/>
-                    <button type="button" onclick="send();" >Send</button>
-                </td>
-            </tr>
-        </table>
-    </body>
+<body onload="getAllUsers()">
 
-    <script src="websocket.js"></script>
+<table>
+    <caption>Table</caption>
+    <tr>
+        <th scope="col"></th>
+        <th scope="col"></th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <input id="username" placeholder="Username" type="text"/>
+            <input id="password" placeholder="Password" type="text"/>
+            <button onclick="connect();" type="button">Connect</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <textarea cols="60" id="log" readonly="true" rows="10"></textarea>
+        </td>
+        <td id="tab-container">
+            <div class="tab">
+                <button class="tablinks" onclick="getHasGroup(event)">
+                    Groups
+                </button>
+                <button class="tablinks"
+                        onclick='userGetFollowee(event)'>Following
+                </button>
+                <button class="tablinks"
+                        onclick
+                                ='userGetFollower(event)'>
+                    Followers
+                </button>
+
+                <button class="tablinks"
+                        onclick='getAllGroups(event)'>
+                    All Groups
+                </button>
+
+                <button class="tablinks"
+                        onclick='getFollowedGroup(event)'>
+                    Following Groups
+                </button>
+
+
+            </div>
+
+            <div class="tabcontent" id="Groups">
+            </div>
+
+            <div class="tabcontent" id="Followees">
+            </div>
+
+            <div class="tabcontent" id="Followers">
+            </div>
+
+            <div class="tabcontent" id="All Groups">
+            </div>
+            <div class="tabcontent" id="FollowingGroups">
+            </div>
+            <div class="subGroupContent" id="Sub Groups">
+            </div>
+
+            <div class="groupFollowers" id="Group Followers">
+            </div>
+
+            <div class="groupModerators" id="Group Moderators">
+            </div>
+            <div class="groupMembers" id="Group Members">
+            </div>
+
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <select id="to">
+                <option disabled hidden selected value="">To</option>
+            </select>
+
+            <input id="msg" placeholder="Message" size="51" type="text"/>
+            <button onclick="send();" type="button">Send</button>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input id="toGroup" placeholder="To Group" size="15"/>
+            <input id="groupMsg" placeholder="Message" size="51" type="text"/>
+            <button onclick="sendGroup();" type="button">Send</button>
+
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input id='newName' placeholder="User Name" type='text'/>
+            <input id="newPsw" placeholder="Password" type="text">
+            <button onclick="createUser()"> Create</button>
+        </td>
+
+
+    </tr>
+    <tr>
+        <td>
+            <input id='groupName' placeholder="Group Name" type='text'/>
+            <button onclick="createGroup()"> Create</button>
+        </td>
+
+
+    </tr>
+
+    <tr>
+        <td>
+            <input id='groupName2' placeholder="Group Name" type='text'/>
+            <input id="groupPass" placeholder="Password" type="text">
+            <button onclick="setGroupPassword()"> Set Password</button>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <input id='SuperGroupName' placeholder="Super Group Name" type='text'/>
+            <input id="SubGroupName" placeholder="Sub Group Name" type="text">
+            <button onclick="addSubGroup()"> Add Sub Group</button>
+        </td>
+
+    </tr>
+
+</table>
+</body>
+<script src="websocket.js"></script>
+
 
 </html>
