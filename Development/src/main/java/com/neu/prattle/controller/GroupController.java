@@ -202,6 +202,21 @@ public class GroupController {
 
 
 
+  /**
+   * Get group followers by group id
+   * @return all followes in input group
+   */
+  @GET
+  @Path("/{groupId}/followers")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupFollowers(@PathParam("groupId") int id){
+    Group group= groupService.getGroupById(id);
+    List<User> list = followService.groupGetFollowers(group);
+    return new Gson().toJson(list);
+  }
+
+
+
 
 
 

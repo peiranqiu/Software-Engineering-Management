@@ -258,4 +258,25 @@ public class UserMockitoTest {
   public int getRandom() {
     return (int) (Math.random() * 10000 + 1);
   }
+
+  @Test
+  public void testSQLExcpetion() throws SQLException {
+    when(api.getUserByName(anyString())).thenThrow(SQLException.class);
+    when(api.getUserById(anyInt())).thenThrow(SQLException.class);
+    when(api.getAllUsers()).thenThrow(SQLException.class);
+    when(api.setModerator(any(User.class))).thenThrow(SQLException.class);
+    userService.setAPI(api);
+    assertFalse(userService.findUserByName("name").isPresent());
+    userService.findUserById(1);
+    userService.getAllUsers();
+    userService.setModerator(new User("NewUser13", "NewPassword1"));
+    userService.updateUser(new User("NewUser11", "NewPassword1"), "avatar");
+  }
+
+  @Test(expected = UserAlreadyPresentException.class)
+  public void testIllegalStateExcpetion() throws SQLException {
+    when(api.addUser(any(User.class))).thenThrow(IllegalStateException.class);
+    userService.setAPI(api);
+    userService.addUser(new User("User1111", "Password1111"));
+  }
 }
