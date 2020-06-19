@@ -264,7 +264,6 @@ public class UserMockitoTest {
     when(api.getUserByName(anyString())).thenThrow(SQLException.class);
     when(api.getUserById(anyInt())).thenThrow(SQLException.class);
     when(api.getAllUsers()).thenThrow(SQLException.class);
-    when(api.updateUser(any(User.class), anyString(), anyString())).thenThrow(SQLException.class);
     when(api.setModerator(any(User.class))).thenThrow(SQLException.class);
     userService.setAPI(api);
     assertFalse(userService.findUserByName("name").isPresent());
