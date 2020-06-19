@@ -216,8 +216,33 @@ public class GroupController {
   }
 
 
+  /**
+   * Get group moderators by group id
+   * @return all moderators in input group
+   */
+  @GET
+  @Path("/{groupId}/moderators")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupModerators(@PathParam("groupId") int id){
+    Group group= groupService.getGroupById(id);
+    List<User> list = moderateService.getModerators(group);
+    return new Gson().toJson(list);
+  }
 
-
-
+  /**
+   * Get group members by group id
+   * @return all members in input group
+   */
+  @GET
+  @Path("/{groupId}/members")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupMembers(@PathParam("groupId") int id){
+    Group group= groupService.getGroupById(id);
+    List<User> list = moderateService.getMembers(group);
+    return new Gson().toJson(list);
+  }
 
 }
+
+
+
