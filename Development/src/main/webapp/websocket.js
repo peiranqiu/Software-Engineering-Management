@@ -499,7 +499,7 @@ async function createGroup (){
             'content-type': 'application/json'
         }
     }).then(rs => rs.json());
-    console.log(response2)
+    console.log(response2);
 
     if(response2){currentGroup=response2.value;}
     addGroupMember();
@@ -633,9 +633,49 @@ async function followGroup(groupId) {
 
 }
 
+/**
+ * add subGroup into superGroup
+ */
+async function addSubGroup() {
+    let SuperGroupName = document.getElementById("SuperGroupName").value;
+    let SubGroupName = document.getElementById("SubGroupName").value;
+    console.log(SubGroupName);
+    console.log(SuperGroupName);
+    const response1 = await fetch(URL + 'group/' +SuperGroupName, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
 
+    const response2 = await fetch(URL + 'group/' +SubGroupName, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
 
+    const response = await fetch(URL + 'group/' + response1.value.groupId + '/add/' + response2.value.groupId , {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response);
+}
 
+/**
+ * find Group by name
+ */
+async function findGroupByName(name) {
+    const response = await fetch(URL + 'group/' +name, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response);
+}
 
 
 
