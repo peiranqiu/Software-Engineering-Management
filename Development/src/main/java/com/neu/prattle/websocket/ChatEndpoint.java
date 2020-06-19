@@ -113,7 +113,7 @@ public class ChatEndpoint {
    * @throws EncodeException the encode exception
    */
   @OnOpen
-  public void onOpen(Session session, @PathParam("username") String username) throws IOException, EncodeException {
+  public boolean onOpen(Session session, @PathParam("username") String username) throws IOException, EncodeException {
 
     Optional<User> user = accountService.findUserByName(username);
     if (!user.isPresent()) {
@@ -122,12 +122,13 @@ public class ChatEndpoint {
               .build();
 
       session.getBasicRemote().sendObject(error);
-      return;
+      return false;
     }
 
     addEndpoint(session, username);
     Message message = createConnectedMessage(username);
     broadcast(message);
+    return true;
   }
 
   /**
