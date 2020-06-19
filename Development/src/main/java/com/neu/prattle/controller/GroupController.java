@@ -185,4 +185,24 @@ public class GroupController {
     return new Gson().toJson(group);
   }
 
+  /**
+   * set Group Password
+   *
+   * @param groupId super group id
+   */
+  @POST
+  @Path("/{groupId}/password")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String setGroupPass(@PathParam("groupId") int groupId, String password) {
+    if (groupService.setPasswordforGroup(groupId, password)) {
+      return new Gson().toJson("set password successful");
+    }
+    return new Gson().toJson("set password failed");
+  }
+
+
+
+
+
+
 }

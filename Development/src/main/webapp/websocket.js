@@ -555,7 +555,35 @@ async function clearList(className){
     for (let i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
     }
+
 }
+
+async function setGroupPassword(){
+    let groupName=document.getElementById('groupName2').value;
+    let password=document.getElementById("groupPass").value;
+
+    const response2 = await fetch(URL + 'group/'+groupName, {
+        method: 'GET',
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response2);
+
+    if(response2){currentGroup=response2.value;}
+
+
+    const response = await fetch(URL + 'group/'+currentGroup.groupId+'/password', {
+        method: 'POST',
+        body: JSON.stringify(password),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response);
+}
+
+
 
 
 
