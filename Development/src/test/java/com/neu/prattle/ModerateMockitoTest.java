@@ -189,7 +189,7 @@ public class ModerateMockitoTest {
   @Test
   public void test2AddModeratorSuccess2() {
     moderateService = helperAddModerator(false);
-    assertEquals(moderateService.addGroupModerator(group1.getGroupId(),user2.getUserId()).getName(), user2.getName());
+    assertEquals(moderateService.addGroupModerator(group1.getGroupId(),user2.getUserId()).getUserId(),user2.getUserId());
   }
 
   /**
@@ -486,6 +486,7 @@ public class ModerateMockitoTest {
     when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     moderateService.setGroupService(groupService);
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
+    when(userService.findUserById(anyInt())).thenReturn(user1);
     moderateService.setUserService(userService);
     return moderateService;
   }
