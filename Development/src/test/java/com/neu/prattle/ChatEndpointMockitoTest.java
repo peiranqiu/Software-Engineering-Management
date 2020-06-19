@@ -218,6 +218,40 @@ public class ChatEndpointMockitoTest {
   }
 
   @Test
+  public void testOnMessageGroup() throws IOException, EncodeException {
+
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
+    chatEndpoint1.setService(userService, groupService, moderateService);
+    chatEndpoint1.onOpen(session1, testUser1.getName());
+
+    when(moderateService.addGroupModerator(any(Group.class), any(User.class), any(User.class))).thenReturn(testUser1);
+    moderateService.addGroupModerator(group1,testUser1,testUser1);
+
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
+    chatEndpoint2.setService(userService, groupService, moderateService);
+    chatEndpoint2.onOpen(session2, testUser2.getName());
+
+
+    message.setTo(group1.getName());
+    message.setSendToGroup(true);
+    message.setContent("HeyGroup");
+
+    // Sending a message using onMessage method
+    chatEndpoint1.onMessage(session1, message);
+
+    // Finding messages with content hey
+    Optional<Message> m = valueCapture.getAllValues().stream()
+            .map(val -> (Message) val)
+            .filter(msg -> msg.getContent().equals("Group testChatGroup1 could not be found")).findAny();
+
+    if (m.isPresent()) {
+      assertEquals("Group testChatGroup1 could not be found", m.get().getContent());
+    } else {
+      fail();
+    }
+  }
+
+  @Test
   public void testSendPersonalMessage() throws IOException, EncodeException {
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
     chatEndpoint1.setService(userService, groupService, moderateService);

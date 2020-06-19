@@ -511,6 +511,11 @@ async function createGroup (){
 
 }
 
+/**
+ * Get sub group list based on groupId.
+ *
+ */
+
 async function getSubGroups(groupId){
     const response = await fetch(URL + 'group/'+groupId+'/getSubGroups', {
         method: 'GET',

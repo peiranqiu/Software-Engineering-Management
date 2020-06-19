@@ -344,30 +344,6 @@ public class ModerateService {
     return b;
   }
 
-  /**
-   * A user deletes a group and its corresponding members, followers, invitations.
-   * @param group the group to delete
-   * @param moderator the current user
-   * @return true if delete successful
-   */
-  public boolean deleteGroup(Group group, User moderator) {
-    checkModerator(group, moderator);
-    api.deleteGroup(group.getGroupId());
-    return true;
-  }
-
-  /**
-   * A user deletes a subgroup from a group.
-   * @param group the group
-   * @param moderator the current user
-   * @param subGroup the subgroup
-   * @return true if remove success
-   */
-  public boolean removeSubgroup(Group group, User moderator, Group subGroup) {
-    checkModerator(group, moderator);
-    groupService.removeSubgroupFromGroup(group.getGroupId(), subGroup.getGroupId());
-    return true;
-  }
 
   /**
    * A user adds a subgroup into a group.

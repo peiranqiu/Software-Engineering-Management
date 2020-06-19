@@ -8,11 +8,13 @@ testName1: Welcome to this group!   06/18/2020 17:38:02
 testName1: Welcome to this group!   06/18/2020 17:58:32
 
 
-
-testName1: Welcome to this group!   06/18/2020 18:48:22
-testName1: Welcome to this group again!   06/18/2020 18:48:22
+testName1: Welcome to this group again!   06/18/2020 19:49:53
 
 
+testName1: Welcome to this group!   06/18/2020 19:50:34
+testName1: Welcome to this group again!   06/18/2020 19:50:34
+
+<<<<<<< HEAD
 testName1: Welcome to this group!   06/18/2020 18:59:09
 testName1: Welcome to this group again!   06/18/2020 18:59:09
 
@@ -43,3 +45,5 @@ testName1: Welcome to this group again!   06/18/2020 19:45:57
 
 testName1: Welcome to this group!   06/18/2020 19:57:51
 testName1: Welcome to this group again!   06/18/2020 19:57:51
+=======
+>>>>>>> b549257e0aaa47e5fb204d73948fdf4781c88632
