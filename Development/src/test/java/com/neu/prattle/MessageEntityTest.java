@@ -161,4 +161,9 @@ public class MessageEntityTest {
     assertFalse(decode.willDecode(null));
     assertTrue(decode.willDecode("test"));
   }
+
+  @Test
+  public void testWriteJson() {
+    
+  }
 }
