@@ -1,6 +1,8 @@
 package com.neu.prattle.service;
 
 import com.neu.prattle.model.Group;
+import com.neu.prattle.service.api.FollowAPI;
+import com.neu.prattle.service.api.GroupAPI;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -51,12 +53,6 @@ public interface GroupService {
    */
   boolean addSubgroupIntoGroup(int groupId, int subGroupId);
 
-  /**
-   * remove a subgroup from group.
-   * @param groupId group id
-   * @param subGroupId subgroup id
-   */
-  boolean removeSubgroupFromGroup(int groupId, int subGroupId);
 
   /**
    * a method to get sub groups of one group by group id
@@ -75,6 +71,24 @@ public interface GroupService {
    */
   Group getGroupById(int id);
 
+  /**
+   * Set the user api used by this service
+   * @param api
+   */
+  void setAPI(GroupAPI api);
 
+  /**
+   * Set follow api to be used by this service
+   * @param newFollowAPI
+   */
+  void setFollowAPI(FollowAPI newFollowAPI);
+
+  /**
+   * a method to get all groups in the database
+   *
+   * @return a list of groups
+   */
+
+  List<Group> getAllGroups();
 
 }

@@ -5,9 +5,12 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.UserAPI;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,8 +32,16 @@ public class UserServiceImpl implements UserService {
    * UserServiceImpl is a Singleton class.
    */
   private UserServiceImpl() {
-
     api = new UserAPI();
+  }
+
+  /**
+   * Set the api useed by user Service.
+   * @param userAPI user api
+   */
+  @Override
+  public void setAPI(UserAPI userAPI) {
+    api = userAPI;
   }
 
   /**
@@ -55,12 +66,27 @@ public class UserServiceImpl implements UserService {
     return optional;
   }
 
-  /**
-   * Add a user
-   *
-   * @param user User object
-   * @return if add successfully
-   */
+  @Override
+  public User findUserById(int id) {
+    User user = new User();
+    try {
+      user = api.getUserById(id);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return user;
+  }
+
+  @Override
+  public List<User> getAllUsers() {
+    List<User> allUsers = new ArrayList<>();
+    try{
+      allUsers = api.getAllUsers();
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return allUsers;
+  }
 
   @Override
   public boolean addUser(User user) {
@@ -82,12 +108,6 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-  /***
-   * Update user password.
-   *
-   * @param user The user to update
-   * @return the updated user
-   */
   @Override
   public User updateUser(User user, String field) {
     User u = null;
@@ -111,9 +131,6 @@ public class UserServiceImpl implements UserService {
     return u;
   }
 
-  /**
-   * Set the user's role as or not as a moderator.
-   */
   @Override
   public User setModerator(User user) {
     try {
