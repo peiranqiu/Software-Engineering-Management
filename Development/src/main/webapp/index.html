@@ -116,9 +116,22 @@
             <input id="groupPass" type="text" placeholder="Password">
             <button onclick="setGroupPassword()"> Set Password </button>
         </td>
+    </tr>
 
+    <tr>
+        <td>
+            <input id ='messageToTranslate' type ='text' placeholder="Message waiting for translation"/>
+            <button onclick="translateMessage()"> Translate </button>
+        </td>
 
     </tr>
+    <tr>
+        <td>
+            <textarea readonly="true" rows="3" cols="60" id="translated"></textarea>
+        </td>
+
+    </tr>
+
 
 </table>
 </body>

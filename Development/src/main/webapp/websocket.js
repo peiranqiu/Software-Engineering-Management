@@ -633,6 +633,13 @@ async function followGroup(groupId) {
 
 }
 
+async function translateMessage() {
+    console.log("test");
+    // const messageToTranslate = document.getElementById('messageToTranslate').value;
+    // document.getElementById('translated').value = "Hello World";
+}
+
+
 
 
 
