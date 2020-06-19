@@ -343,22 +343,7 @@ public class Message {
     }
     String s3 = messagePath + "/PrivateChatHistory/" + fromID + "_" + toID + "_" + currDate + ".txt";
     File file = new File(s3);
-    FileReader in = new FileReader(file);
-    BufferedReader bufIn = new BufferedReader(in);
-    CharArrayWriter tempStream = new CharArrayWriter();
-    //Substitution
-    String line = null;
-    while ((line = bufIn.readLine()) != null) {
-      line = line.replaceAll(getFrom() + ": " + getContent() + "   " + getTimeStamp(), "");
-      //write this line into storage
-      tempStream.write(line);
-      //Add Line Seperator
-      tempStream.append(System.getProperty("line.separator"));
-    }
-    bufIn.close();
-    FileWriter out = new FileWriter(file);
-    tempStream.writeTo(out);
-    out.close();
+    helperDelete(file);
     return "Successfully deleted this message!";
   }
 
@@ -369,25 +354,33 @@ public class Message {
     int groupID = currentGroupObject.getGroupId();
     String s3 = messagePath + "/Group/" + groupID + "_" + currDate + ".txt";
     File file = new File(s3);
-    FileReader in = new FileReader(file);
-    BufferedReader bufIn = new BufferedReader(in);
-    CharArrayWriter tempStream = new CharArrayWriter();
-    //Substitution
-    String line = null;
-    while ((line = bufIn.readLine()) != null) {
-      line = line.replaceAll(getFrom() + ": " + getContent() + "   " + getTimeStamp(), "");
-      //write this line into storage
-      tempStream.write(line);
-      //Add Line Seperator
-      tempStream.append(System.getProperty("line.separator"));
-    }
-    bufIn.close();
-    FileWriter out = new FileWriter(file);
-    tempStream.writeTo(out);
-    out.close();
+    helperDelete(file);
     return "Successfully deleted this message!";
   }
 
+  /**
+   * helper method to delete message
+   * @param file
+   * @throws IOException
+   */
+  public void helperDelete(File file) throws IOException {
+    FileReader in = new FileReader(file);
+    try(BufferedReader bufIn = new BufferedReader(in)) {
+      CharArrayWriter tempStream = new CharArrayWriter();
+      //Substitution
+      String line = null;
+      while ((line = bufIn.readLine()) != null) {
+        line = line.replaceAll(getFrom() + ": " + getContent() + "   " + getTimeStamp(), "");
+        //write this line into storage
+        tempStream.write(line);
+        //Add Line Seperator
+        tempStream.append(System.getProperty("line.separator"));
+      }
+      FileWriter out = new FileWriter(file);
+      tempStream.writeTo(out);
+      out.close();
+    }
+  }
   /***
    * Save private chat history under the PrivateChatHistory folder by sender's id, receiver's id, and message sent date.
    */
@@ -404,7 +397,8 @@ public class Message {
       //Check if the private chat log file already exits
       if (!Files.exists(Paths.get(privateChatLogName))) {
         FileWriter myWriter = new FileWriter(privateChatFile);
-        logger.info(String.format("Chat log file created for sender: ", from, " and receiver: ", to));
+        String log = "Chat log file created for sender: " + from + " and receiver: " + to;
+        logger.log(Level.INFO, log);
         try{
           myWriter.write(toStringForPrivateChatLog());
         } catch (IOException e) {

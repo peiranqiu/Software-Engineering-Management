@@ -494,6 +494,7 @@ async function createGroup (){
             'content-type': 'application/json'
         }
     }).then(rs => rs.json());
+    console.log(response);
     console.log(markers.name);
 
     const response2 = await fetch(URL + 'group/'+markers.name, {
@@ -505,8 +506,8 @@ async function createGroup (){
     console.log(response2)
 
     if(response2){currentGroup=response2.value;}
-    addGroupMember(response2);
-    addGroupModerator(response2);
+    addGroupMember();
+    addGroupModerator();
 
 }
 
@@ -545,8 +546,8 @@ async function getSubGroups(groupId){
 }
 
 async function clearList(className){
-    tabcontent = document.getElementsByClassName(className);
-    for (i = 0; i < tabcontent.length; i++) {
+    let tabcontent = document.getElementsByClassName(className);
+    for (let i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
     }
 }
