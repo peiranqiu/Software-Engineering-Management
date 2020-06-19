@@ -163,7 +163,7 @@ public class MessageEntityTest {
   }
 
   @Test
-  public void testWriteJson() {
-
+  public void testMakeDir() {
+    message.makeDirectory("/Users", 1);
   }
 }
