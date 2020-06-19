@@ -184,6 +184,15 @@ public class ModerateMockitoTest {
   }
 
   /**
+   * Test moderator sets a member as group moderator.
+   */
+  @Test
+  public void test2AddModeratorSuccess2() {
+    moderateService = helperAddModerator(false);
+    assertEquals(moderateService.addGroupModerator(group1.getGroupId(),user2.getUserId()).getName(), user2.getName());
+  }
+
+  /**
    * Test moderator downgrades another moderator as group member.
    */
   @Test
@@ -480,4 +489,6 @@ public class ModerateMockitoTest {
     moderateService.setUserService(userService);
     return moderateService;
   }
+
+
 }

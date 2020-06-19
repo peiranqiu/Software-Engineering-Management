@@ -505,8 +505,8 @@ async function createGroup (){
     console.log(response2)
 
     if(response2){currentGroup=response2.value;}
-    addGroupMember(response2);
-    addGroupModerator(response2);
+    addGroupMember();
+    addGroupModerator();
 
 }
 
