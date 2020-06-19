@@ -1,7 +1,6 @@
 package com.neu.prattle.service;
 
 
-import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.api.FollowAPI;
@@ -85,12 +84,7 @@ public class GroupServiceImpl implements GroupService {
    */
   @Override
   public boolean addGroup(Group group) {
-    try {
-      api.addGroup(group);
-      return true;
-    } catch (IllegalStateException e) {
-      throw new GroupAlreadyPresentException(String.format("Group already present with name: %s", group.getName()));
-    }
+    return api.addGroup(group);
   }
 
   /***
