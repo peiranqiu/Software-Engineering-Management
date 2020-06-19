@@ -100,6 +100,7 @@ public class GroupServiceImpl implements GroupService {
 
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in set psw for group");
+      return false;
     }
     List<User> followers = followAPI.groupGetFollowers(groupId);
     for (User u : followers) {
