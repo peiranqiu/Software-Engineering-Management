@@ -122,6 +122,7 @@ public class ModerateMockitoTest {
     when(api.getModerators(anyInt())).thenReturn(list);
     moderateService.setAPI(api);
     assertTrue(moderateService.addGroupMember(group1, user1, user3));
+    assertTrue(moderateService.addGroupMember(group1.getGroupId(), user1.getUserId()));
   }
 
   /**
