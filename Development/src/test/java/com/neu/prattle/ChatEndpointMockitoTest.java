@@ -149,6 +149,13 @@ public class ChatEndpointMockitoTest {
   }
 
   @Test
+  public void testOnOpen2() throws IOException, EncodeException  {
+    when(userService.findUserByName(anyString())).thenReturn(Optional.empty());
+    chatEndpoint1.setService(userService, groupService, moderateService);
+    assertFalse(chatEndpoint1.onOpen(session1, "name"));
+  }
+
+  @Test
   public void testOnClose() throws IOException, EncodeException {
     when(groupService.addGroup(any(Group.class))).thenReturn(true);
     assertTrue(groupService.addGroup(group1));
