@@ -144,5 +144,23 @@ public class GroupMockitoTest {
     assertTrue(groupService.setPasswordforGroup(1, "ABCabc1234"));
   }
 
+  @Test
+  public void testSQLException() throws SQLException {
+    when(api.getGroup(anyString())).thenThrow(SQLException.class);
+    when(api.setPasswordforGroup(anyInt(), anyString())).thenThrow(SQLException.class);
+    when(api.addSubgroupIntoGroup(anyInt(), anyInt())).thenThrow(SQLException.class);
+    when(api.getSubGroupList(anyInt())).thenThrow(SQLException.class);
+    when(api.getGroupById(anyInt())).thenThrow(SQLException.class);
+    when(api.getAllGroups()).thenThrow(SQLException.class);
+    groupService.setAPI(api);
+    groupService.findGroupByName("1");
+    groupService.setPasswordforGroup(1, "password");
+    groupService.addSubgroupIntoGroup(1, 1);
+    groupService.getSubGroupList(1);
+    groupService.getGroupById(1);
+    groupService.getAllGroups();
+
+  }
+
 
 }
