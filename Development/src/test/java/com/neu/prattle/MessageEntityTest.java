@@ -90,9 +90,30 @@ public class MessageEntityTest {
    * Test if storeMessage() function fails when the user has invalid userID
    */
   @Test
-  public void testStoreMessageFails() throws IOException, EncodeException {
+  public void testStoreMessageFail1() throws IOException, EncodeException {
     Message message1 = new Message();
     message1.setFromID(-1);
+    assertFalse(message1.storeMessage());
+  }
+
+  /***
+   * Test if storeMessage() function fails when the user has invalid userID
+   */
+  @Test
+  public void testStoreMessageFail2() throws IOException, EncodeException {
+    Message message1 = new Message();
+    message1.setToID(-1);
+    assertFalse(message1.storeMessage());
+  }
+
+  /***
+   * Test if storeMessage() function fails when the user has invalid userID
+   */
+  @Test
+  public void testStoreMessageFail3() throws IOException, EncodeException {
+    Message message1 = new Message();
+    message1.setFromID(-1);
+    message1.setToID(-1);
     assertFalse(message1.storeMessage());
   }
 

@@ -71,6 +71,7 @@ public class GroupServiceImpl implements GroupService {
         optional = Optional.of(api.getGroup(name));
       }
     } catch (SQLException e) {
+      // do something
     }
     return optional;
   }
