@@ -1,9 +1,10 @@
 package com.neu.prattle.service;
 
 
-import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.FollowAPI;
+import com.neu.prattle.service.api.GroupAPI;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,6 +31,19 @@ public class GroupServiceImpl implements GroupService {
 
   }
 
+  /**
+   * Set the api useed by group Service.
+   * @param groupAPI group api
+   */
+  @Override
+  public void setAPI(GroupAPI groupAPI) {
+    api = groupAPI;
+  }
+
+  @Override
+  public void setFollowAPI(FollowAPI newFollowAPI) {
+    followAPI = newFollowAPI;
+  }
   /**
    * Call this method to return an instance of this service.
    *
@@ -71,12 +85,7 @@ public class GroupServiceImpl implements GroupService {
    */
   @Override
   public boolean addGroup(Group group) {
-    try {
-      api.addGroup(group);
-      return true;
-    } catch (IllegalStateException e) {
-      throw new GroupAlreadyPresentException(String.format("Group already present with name: %s", group.getName()));
-    }
+    return api.addGroup(group);
   }
 
   /***
@@ -91,6 +100,7 @@ public class GroupServiceImpl implements GroupService {
 
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in set psw for group");
+      return false;
     }
     List<User> followers = followAPI.groupGetFollowers(groupId);
     for (User u : followers) {
@@ -147,5 +157,21 @@ public class GroupServiceImpl implements GroupService {
       logger.log(Level.INFO, "failed in get id for group");
     }
     return group;
+  }
+
+  /**
+   * a method to get all groups in the database
+   *
+   * @return a list of groups
+   */
+  @Override
+  public List<Group> getAllGroups() {
+    List<Group> groups = new ArrayList<>();
+    try{
+      groups=api.getAllGroups();
+    } catch (SQLException e) {
+      logger.log(Level.INFO, "failed in getting groups in database");
+    }
+    return groups;
   }
 }

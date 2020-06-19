@@ -26,12 +26,16 @@ public class MessageDecoder implements Decoder.Text<Message> {
   /**
    * @see org.codehaus.jackson.map.ObjectMapper
    */
-  private static ObjectMapper objectMapper = new ObjectMapper();
+  private ObjectMapper objectMapper;
 
   /**
    * The logger.
    */
   private Logger logger = Logger.getLogger(this.getClass().getName());
+
+  public MessageDecoder() {
+    objectMapper = new ObjectMapper();
+  }
 
   /**
    * Decode.

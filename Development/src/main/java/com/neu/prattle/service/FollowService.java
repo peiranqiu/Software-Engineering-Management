@@ -2,8 +2,10 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.exceptions.AlreadyFollowException;
 import com.neu.prattle.exceptions.FollowNotFoundException;
+import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.api.FollowAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,22 +17,48 @@ import java.util.Optional;
  */
 public class FollowService {
 
-  private static UserService userService;
-  private static GroupService groupService;
+  private UserService userService;
+  private GroupService groupService;
   private static FollowService followService;
   private FollowAPI api;
 
   static {
     followService = new FollowService();
-    userService = UserServiceImpl.getInstance();
-    groupService = GroupServiceImpl.getInstance();
   }
 
   /**
    * FollowService is a Singleton class.
    */
   private FollowService() {
+
     api = new FollowAPI();
+
+    userService = UserServiceImpl.getInstance();
+    groupService = GroupServiceImpl.getInstance();
+  }
+
+  /**
+   * Set follow api to be used by this service.
+   * @param followAPI
+   */
+  public void setAPI(FollowAPI followAPI) {
+    api = followAPI;
+  }
+
+  /**
+   * Set userService to be used by this service.
+   * @param service
+   */
+  public void setUserService(UserService service) {
+    userService = service;
+  }
+
+  /**
+   * Set groupService to be used by this service.
+   * @param service
+   */
+  public void setGroupService(GroupService service) {
+    groupService = service;
   }
 
   /**
@@ -65,6 +93,12 @@ public class FollowService {
     return b;
   }
 
+  public boolean followUser(int user1Id, int user2Id) {
+    User user1 = userService.findUserById(user1Id);
+    User user2 = userService.findUserById(user2Id);
+    return followUser(user1, user2);
+  }
+
   /**
    * User1 unfollows user2. Return true if successfully unfollowed.
    * @param user1 the follower
@@ -88,6 +122,12 @@ public class FollowService {
     return b;
   }
 
+  public boolean unfollowUser(int user1Id, int user2Id) {
+    User user1 = userService.findUserById(user1Id);
+    User user2 = userService.findUserById(user2Id);
+    return unfollowUser(user1, user2);
+  }
+
   /**
    * Get a list of users that the specific user follows.
    * @param user the specific user
@@ -101,6 +141,10 @@ public class FollowService {
       list = api.getFollowingUsers(userId);
     }
     return list;
+  }
+
+  public List<User> getFollowingUsers(int userId) {
+    return api.getFollowingUsers(userId);
   }
 
   /**
@@ -118,6 +162,10 @@ public class FollowService {
     return list;
   }
 
+  public List<User> userGetFollowers(int userId) {
+    return api.userGetFollowers(userId);
+  }
+
   /**
    * User follows group. Return true if successfully followed.
    * @param user the user
@@ -131,6 +179,9 @@ public class FollowService {
     if(optionalGroup.isPresent() && optionalUser.isPresent()) {
       User u = optionalUser.get();
       Group g = optionalGroup.get();
+      if(g.getPassword() != null) {
+        throw new NoPrivilegeException("The group is a private group and can not be followed.");
+      }
       List<Group> list = followService.getFollowingGroups(u);
       if(list.contains(g)) {
         throw new AlreadyFollowException(String.format("User %s already followed group %s.", u.getName(), g.getName()));
@@ -139,6 +190,12 @@ public class FollowService {
       b = true;
     }
     return b;
+  }
+
+  public boolean followGroup(int userId, int groupId) {
+    User user = userService.findUserById(userId);
+    Group group = groupService.getGroupById(groupId);
+    return followGroup(user, group);
   }
 
   /**
@@ -164,6 +221,12 @@ public class FollowService {
     return b;
   }
 
+  public boolean unfollowGroup(int userId, int groupId) {
+    User user = userService.findUserById(userId);
+    Group group = groupService.getGroupById(groupId);
+    return unfollowGroup(user, group);
+  }
+
   /**
    * Get a list of groups that the specific user follows.
    * @param user the specific user
@@ -177,6 +240,10 @@ public class FollowService {
       list = api.getFollowingGroups(userId);
     }
     return list;
+  }
+
+  public List<Group> getFollowingGroups(int userId) {
+    return api.getFollowingGroups(userId);
   }
 
   /**

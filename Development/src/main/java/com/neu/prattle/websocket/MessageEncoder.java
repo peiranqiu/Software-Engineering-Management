@@ -23,13 +23,20 @@ public class MessageEncoder implements Encoder.Text<Message> {
   /**
    * @see org.codehaus.jackson.map.ObjectMapper
    */
-  private static ObjectMapper objectMapper = new ObjectMapper();
+  private ObjectMapper objectMapper;
 
   /**
    * The logger.
    */
   private Logger logger = Logger.getLogger(this.getClass().getName());
 
+  public MessageEncoder() {
+    objectMapper = new ObjectMapper();
+  }
+
+  public void setObjectMapper(ObjectMapper objectMapper0) {
+    objectMapper = objectMapper0;
+  }
   /**
    * Encode.
    *

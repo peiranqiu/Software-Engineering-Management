@@ -27,7 +27,6 @@ import java.util.logging.Logger;
 
 import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
-import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
@@ -54,7 +53,7 @@ public class ChatEndpoint {
   /**
    * The account service.
    */
-  private static UserService accountService = UserServiceImpl.getInstance();
+  private UserService accountService = UserServiceImpl.getInstance();
   /**
    * The session.
    */
@@ -62,10 +61,21 @@ public class ChatEndpoint {
   /**
    * The group service.
    */
-  private static GroupService groupService = GroupServiceImpl.getInstance();
+  private GroupService groupService = GroupServiceImpl.getInstance();
 
-  private static ModerateService moderateService = ModerateService.getInstance();
+  private ModerateService moderateService = ModerateService.getInstance();
 
+  /**
+   * Set services to be used in chatendpoint
+   * @param newAccountService new user service
+   * @param newGroupService new group service
+   * @param newModerateService new moderate service
+   */
+  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
+    accountService = newAccountService;
+    groupService = newGroupService;
+    moderateService = newModerateService;
+  }
   /**
    * Broadcast.
    *
@@ -102,7 +112,7 @@ public class ChatEndpoint {
    * @throws EncodeException the encode exception
    */
   @OnOpen
-  public void onOpen(Session session, @PathParam("username") String username) throws IOException, EncodeException {
+  public boolean onOpen(Session session, @PathParam("username") String username) throws IOException, EncodeException {
 
     Optional<User> user = accountService.findUserByName(username);
     if (!user.isPresent()) {
@@ -111,12 +121,13 @@ public class ChatEndpoint {
               .build();
 
       session.getBasicRemote().sendObject(error);
-      return;
+      return false;
     }
 
     addEndpoint(session, username);
     Message message = createConnectedMessage(username);
     broadcast(message);
+    return true;
   }
 
   /**
@@ -157,7 +168,17 @@ public class ChatEndpoint {
   @OnMessage
   public void onMessage(Session session, Message message) {
     message.setFrom(users.get(session.getId()));
-    broadcast(message);
+
+    try {
+      if (!message.getSendToGroup())
+      {sendPersonalMessage(message);}
+      else {
+        sendGroupMessage(message, message.getTo(), session);
+      }
+    } catch (IOException | EncodeException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+
   }
 
   /**
@@ -180,24 +201,11 @@ public class ChatEndpoint {
   /**
    * On error.
    *
-   * Handles situations when an error occurs.  Not implemented.
-   *
-   * @param session   the session with the problem
-   * @param throwable the action to be taken.
-   */
-  @OnError
-  public void onError(Session session, Throwable throwable) {
-    // Do error handling here
-  }
-
-  /**
-   * On error.
-   *
    * Send a message to the specific user and guarantee that both of the users could see the posted message
    *
    * @param message the message to be sent
    */
-  public static void sendPersonalMessage(Message message) throws IOException, EncodeException {
+  public void sendPersonalMessage(Message message) throws IOException, EncodeException {
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
       if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
@@ -215,7 +223,7 @@ public class ChatEndpoint {
     message.saveChatLogPerson();
   }
 
-  public static void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
+  public void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
     Optional<Group> group = groupService.findGroupByName(groupName);
     if (!group.isPresent()) {
       Message error = Message.messageBuilder()
@@ -229,7 +237,7 @@ public class ChatEndpoint {
     broadcastInGroup(message, currentGroupObject);
   }
 
-  public static void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
+  public void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
     List<User> members = moderateService.getMembers(currentGroupObject);
     if (members.isEmpty()) return;
     chatEndpoints.forEach(endpoint0 -> {
