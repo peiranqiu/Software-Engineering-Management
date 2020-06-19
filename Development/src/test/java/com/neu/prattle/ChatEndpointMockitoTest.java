@@ -36,6 +36,7 @@ import javax.websocket.Session;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
@@ -133,7 +134,7 @@ public class ChatEndpointMockitoTest {
 
   @Test
   public void testOnOpen1() throws IOException, EncodeException {
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser3));
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
     chatEndpoint1.setService(userService, groupService, moderateService);
     chatEndpoint1.onOpen(session1, testUser3.getName());
 

@@ -119,9 +119,8 @@ public class GroupMockitoTest {
 
   @Test
   public void testGetAllGroups()throws SQLException{
-    List<Group> groupList=new ArrayList<>();
+    List<Group> groupList = groupService.getAllGroups();
     when(api.getAllGroups()).thenReturn(groupList);
-    groupList = groupService.getAllGroups();
     groupService.setAPI(api);
     assertEquals(groupList, groupService.getAllGroups());
   }
