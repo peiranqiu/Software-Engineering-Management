@@ -163,11 +163,20 @@ function generateList(response, operatoin){
 
             });
         } else if (operatoin === 'getAllGroups') {
+            follow.innerText = "+";
+            follow.addEventListener('click', (event) => {
+                followGroup(u.groupId);
+            });
             user.addEventListener('click', (event) => {
                 getSubGroups(u.groupId);
                 getGroupFollowers(u.groupId);
 
             })
+        } else if (operatoin === 'getFollowingGroups'){
+            follow.innerText = "-";
+            follow.addEventListener('click', (event) => {
+                unfollowGroup(u.groupId);
+            });
         }
 
         userRow.appendChild(follow);
@@ -217,7 +226,7 @@ async function getHasGroup(evt) {
 /**
  * get list of groups the user is following.
  */
-async function getFollowedGroup() {
+async function getFollowedGroup(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowedGroup', {
         method: 'GET',
@@ -226,6 +235,10 @@ async function getFollowedGroup() {
         }
     }).then(rs => rs.json());
     console.log(response);
+
+    let list = generateList(response, 'getFollowingGroups');
+
+    openTab(evt, "FollowingGroups", list);
 }
 
 
@@ -266,31 +279,13 @@ async function unfollowUser(followeeId) {
 }
 
 /**
- * follow a group.
- */
-async function followGroup() {
-    console.log(currentUser);
-    let userId = currentUser.userId;
-    // groupId to be replaced according to your frontend elements!!!
-    let groupId = null;
-    const response = await fetch(URL + 'group/'+ userId +'/follow/' + groupId, {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        }
-    });
-    console.log(response);
-}
-
-/**
  * unfollow a group.
  */
-async function unfollowGroup() {
+async function unfollowGroup(id) {
     console.log(currentUser);
     let userId = currentUser.userId;
     // groupId to be replaced according to your frontend elements!!!
-    let groupId = null;
-    const response = await fetch(URL + 'group/'+ userId +'/unfollow/' + groupId, {
+    const response = await fetch(URL + 'group/'+ userId +'/unfollow/' + id, {
         method: 'DELETE',
         headers: {
             'content-type': 'application/json'
@@ -479,7 +474,6 @@ async function getAllGroups (event){
     }).then(rs => rs.json());
     console.log(response);
     let list = generateList(response, 'getAllGroups');
-
     openTab(event, "All Groups", list);
 }
 
@@ -623,6 +617,22 @@ async function getGroupFollowers(groupId){
     cur.style.display = "block";
     cur.style.backgroundColor="Gainsboro"
 }
+
+/**
+ *follow a group
+ */
+async function followGroup(groupId) {
+    const response = await fetch(URL + 'group/'+currentUser.userId + '/follow/' + groupId, {
+        method: 'POST',
+        body: JSON.stringify(password),
+        headers: {
+            'content-type': 'application/json'
+        }
+    }).then(rs => rs.json());
+    console.log(response);
+
+}
+
 
 
 

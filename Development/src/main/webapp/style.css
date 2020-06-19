@@ -179,7 +179,7 @@ p {
     vertical-align: top;
 }
 
-#getFollowers-list, #getFollowees-list{
+#getFollowers-list, #getFollowees-list,#getAllGroups-list,#getFollowingGroups-list{
     list-style-type: none;
     padding-inline-start: 5px;
     text-align-last: end;
