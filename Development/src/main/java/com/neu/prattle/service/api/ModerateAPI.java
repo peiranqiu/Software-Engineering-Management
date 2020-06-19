@@ -37,8 +37,9 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Add a moderator to a group.
+   *
    * @param groupId the group id
-   * @param userId the moderator id
+   * @param userId  the moderator id
    * @return true if add successful
    */
   public boolean addModerator(int groupId, int userId) {
@@ -49,8 +50,9 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Set the group moderator to group member.
+   *
    * @param groupId the group id
-   * @param userId the user id
+   * @param userId  the user id
    * @return true if downgrade is successful
    */
   public boolean deleteModerator(int groupId, int userId) {
@@ -61,8 +63,9 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Add a member to a group.
+   *
    * @param groupId the group id
-   * @param userId the member id
+   * @param userId  the member id
    * @return true if add successful
    */
   public boolean addMember(int groupId, int userId) {
@@ -73,8 +76,9 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * delete a group member.
+   *
    * @param groupId the group id
-   * @param userId the user id
+   * @param userId  the user id
    * @return true if delete is successful
    */
   public boolean deleteMember(int groupId, int userId) {
@@ -85,6 +89,7 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Get moderator list of the group.
+   *
    * @param groupId the group id
    * @return the list of moderators
    */
@@ -97,6 +102,7 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Get member list of the group.
+   *
    * @param groupId the group id
    * @return the list of members
    */
@@ -109,6 +115,7 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Get moderated group list of the user.
+   *
    * @param userId the user id
    * @return the group list that user is moderating
    */
@@ -121,6 +128,7 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Get group list that the user is currently in.
+   *
    * @param userId the user id
    * @return the group list that user is in
    */
@@ -134,11 +142,11 @@ public class ModerateAPI extends DBUtils {
   /**
    * Helper method to execute add/delete member/moderator/invitation operation.
    *
-   * @param sql the sql query string
-   * @param id1 the first id to replace in the sql string
-   * @param id2 the second id to replace in the sql string
+   * @param sql       the sql query string
+   * @param id1       the first id to replace in the sql string
+   * @param id2       the second id to replace in the sql string
    * @param operation the add or delete operation
-   * @param role the target object
+   * @param role      the target object
    */
   public void execute(String sql, int id1, int id2, String operation, String role) {
     con = getConnection();
@@ -153,9 +161,10 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Helper method to get corresponding moderator/member list of a group.
-   * @param sql the sql query string
+   *
+   * @param sql  the sql query string
    * @param list the user list
-   * @param id the group id
+   * @param id   the group id
    */
   public void getUserList(String sql, List<User> list, int id) {
     con = getConnection();
@@ -175,9 +184,10 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Helper method to get corresponding group list of a user.
-   * @param sql the sql query string
+   *
+   * @param sql  the sql query string
    * @param list the group list
-   * @param id the user id
+   * @param id   the user id
    */
   public void getGroupList(String sql, List<Group> list, int id) {
     con = getConnection();
@@ -197,16 +207,16 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Create an invitation object.
+   *
    * @param groupId the group id
-   * @param userId the invitee id
+   * @param userId  the invitee id
    * @return true if invitation successfully created
    */
   public boolean createInvitation(int groupId, int userId, boolean isAdd) {
-    if(Boolean.TRUE.equals(isAdd)) {
+    if (Boolean.TRUE.equals(isAdd)) {
       String sql = "INSERT INTO Invitation (User_User_id, Group_Group_id, isAdd) VALUES (?, ?, TRUE)";
       execute(sql, userId, groupId, "Create", "add-member Invitation");
-    }
-    else {
+    } else {
       String sql = "INSERT INTO Invitation (User_User_id, Group_Group_id, isAdd) VALUES (?, ?, FALSE)";
       execute(sql, userId, groupId, "Create", "delete-member Invitation");
     }
@@ -216,8 +226,9 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Delete an invitation object.
+   *
    * @param groupId the group id
-   * @param userId the invitee id
+   * @param userId  the invitee id
    * @return true if invitation successfully deleted
    */
   public boolean deleteInvitation(int groupId, int userId) {
@@ -228,6 +239,7 @@ public class ModerateAPI extends DBUtils {
 
   /**
    * Get invitations corresponding to a group.
+   *
    * @param groupId the group id
    * @return the list of corresponding users in the group's invitations
    */
@@ -256,19 +268,19 @@ public class ModerateAPI extends DBUtils {
    */
   public boolean deleteGroup(int groupId) {
     List<User> moderators = getModerators(groupId);
-    for(User u: moderators) {
+    for (User u : moderators) {
       deleteModerator(groupId, u.getUserId());
     }
     List<User> members = getMembers(groupId);
-    for(User u: members) {
+    for (User u : members) {
       deleteMember(groupId, u.getUserId());
     }
     List<User> followers = followAPI.groupGetFollowers(groupId);
-    for(User u: followers) {
+    for (User u : followers) {
       followAPI.userUnfollowGroup(u.getUserId(), groupId);
     }
     Map<User, Boolean> invitations = getInvitationsOfGroup(groupId);
-    for(User u: invitations.keySet()) {
+    for (User u : invitations.keySet()) {
       deleteInvitation(groupId, u.getUserId());
     }
     try {

@@ -79,7 +79,7 @@ public class UserAPI extends DBUtils {
    * @param name the name of the user
    * @return if the user is in the db
    */
-  public User getUserByName(String name)throws SQLException {
+  public User getUserByName(String name) throws SQLException {
     String sql = "SELECT * FROM User WHERE name =?";
     return getUser(sql, -1, name);
   }
@@ -97,21 +97,20 @@ public class UserAPI extends DBUtils {
 
   /**
    * Helper method to get user with given name or id.
-   * @param sql the sql query string
-   * @param id the user id
+   *
+   * @param sql  the sql query string
+   * @param id   the user id
    * @param name the user name
    * @return the user if exist
-   * @throws SQLException
    */
   public User getUser(String sql, int id, String name) throws SQLException {
     User u = null;
     try {
       con = getConnection();
       stmt = con.prepareStatement(sql);
-      if(name == null) {
+      if (name == null) {
         stmt.setInt(1, id);
-      }
-      else {
+      } else {
         stmt.setString(1, name);
       }
       rs = stmt.executeQuery();
@@ -129,6 +128,7 @@ public class UserAPI extends DBUtils {
 
   /**
    * A helper method to construct a user with returned result set.
+   *
    * @param rs the result set
    * @return the user
    */
@@ -147,11 +147,11 @@ public class UserAPI extends DBUtils {
 
   /**
    * Update user info with given new fields.
-   * @param user the user to update
+   *
+   * @param user  the user to update
    * @param field the field to update
    * @param value the new value of the given field
    * @return the updated user
-   * @throws SQLException
    */
   public User updateUser(User user, String field, String value) throws SQLException {
     String sql = "UPDATE User SET field = ? WHERE name = ?";
@@ -161,9 +161,9 @@ public class UserAPI extends DBUtils {
 
   /**
    * Update user role.
+   *
    * @param user the user to update
    * @return the updated user
-   * @throws SQLException
    */
   public User setModerator(User user) throws SQLException {
     String sql = "UPDATE User SET isModerator = ? WHERE name = ?";
@@ -172,22 +172,21 @@ public class UserAPI extends DBUtils {
 
   /**
    * Helper method to update user information
-   * @param sql the sql query string
-   * @param user the user to be updated
-   * @param value the string value to be update if exist
+   *
+   * @param sql      the sql query string
+   * @param user     the user to be updated
+   * @param value    the string value to be update if exist
    * @param moderate the isModerator boolean value to be update if exist
    * @return the updated user
-   * @throws SQLException
    */
-  public User executeUpdate(String sql, User user, String value, boolean moderate) throws SQLException{
+  public User executeUpdate(String sql, User user, String value, boolean moderate) throws SQLException {
     User u = null;
     try {
       con = getConnection();
       stmt = con.prepareStatement(sql);
-      if(value == null) {
+      if (value == null) {
         stmt.setBoolean(1, moderate);
-      }
-      else {
+      } else {
         stmt.setString(1, value);
       }
       stmt.setString(2, user.getName());

@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 public class FollowMockitoTest {
 
   private User user1 = new User("testFollowUser" + getRandom(), "Password1");
-  private User user2 = new User("testFollowUser" + getRandom(),"Password2");
+  private User user2 = new User("testFollowUser" + getRandom(), "Password2");
   private Group group1 = new Group("testFollowGroup" + getRandom());
   private FollowService followService;
 
@@ -203,6 +203,7 @@ public class FollowMockitoTest {
     assertTrue(followService.followUser(user1, user2));
     assertEquals(followService.getFollowingUsers(user1).get(0).getName(), user2.getName());
   }
+
   /**
    * Test get following user list for a given user, no followings
    */
@@ -420,6 +421,7 @@ public class FollowMockitoTest {
 
   /**
    * Helper method to generate random number range from 1 to 10000.
+   *
    * @return the generated number
    */
   public int getRandom() {

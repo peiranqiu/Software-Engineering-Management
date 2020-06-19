@@ -31,6 +31,7 @@ p {
 .button:hover {
     background-color: #ffb15e;
 }
+
 .button a, a:visited, a:hover, a:active {
     color: #fff;
     text-decoration: none;
@@ -135,7 +136,7 @@ p {
     text-decoration: underline;
 }
 
-#to{
+#to {
     width: max-content;
 }
 
@@ -175,21 +176,22 @@ p {
     border-top: none;
 }
 
-#tab-container{
+#tab-container {
     vertical-align: top;
 }
 
-#getFollowers-list, #getFollowees-list,#getAllGroups-list,#getFollowingGroups-list{
+#getFollowers-list, #getFollowees-list, #getAllGroups-list, #getFollowingGroups-list {
     list-style-type: none;
     padding-inline-start: 5px;
     text-align-last: end;
 }
 
-.list-text{
+.list-text {
     cursor: pointer;
-    float:left;
+    float: left;
 }
-.list-follow{
+
+.list-follow {
     cursor: pointer;
 }
 

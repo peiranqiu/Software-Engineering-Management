@@ -30,10 +30,10 @@ import javax.ws.rs.core.MediaType;
 @Controller
 @Path(value = "/group")
 public class GroupController {
+  private static final GroupController groupController = new GroupController();
   private GroupService groupService = GroupServiceImpl.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
   private FollowService followService = FollowService.getInstance();
-  private static final GroupController groupController = new GroupController();
 
   /**
    * Singleton instance for group controller
@@ -98,9 +98,9 @@ public class GroupController {
 
   /**
    * add group moderator
-   * @param userId moderator id
+   *
+   * @param userId  moderator id
    * @param groupId group id
-   * @return
    */
   @POST
   @Path("/{userId}/moderate/{groupId}")
@@ -108,7 +108,7 @@ public class GroupController {
   public String addModerator(@PathParam("userId") int userId, @PathParam("groupId") int groupId) {
 
     User newModerator = moderateService.addGroupModerator(groupId, userId);
-    if(newModerator != null) {
+    if (newModerator != null) {
       return new Gson().toJson("Add moderator succeed");
     }
     return new Gson().toJson("Add moderator failed");
@@ -116,9 +116,9 @@ public class GroupController {
 
   /**
    * add group member
-   * @param userId user id
+   *
+   * @param userId  user id
    * @param groupId group id
-   * @return
    */
   @POST
   @Path("/{userId}/member/{groupId}")
@@ -131,42 +131,43 @@ public class GroupController {
   }
 
 
-
   /**
    * Get all groups in database
+   *
    * @return all groups in database
    */
   @GET
   @Path("/getAllGroups")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getAllGroups(){
+  public String getAllGroups() {
     List<Group> list = groupService.getAllGroups();
     return new Gson().toJson(list);
   }
 
   /**
    * Get all subgroups in input group
+   *
    * @return all subgroups in input group
    */
   @GET
   @Path("/{groupId}/getSubGroups")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getSubGroups(@PathParam("groupId") int id){
+  public String getSubGroups(@PathParam("groupId") int id) {
     List<Group> list = groupService.getSubGroupList(id);
     return new Gson().toJson(list);
   }
 
   /**
    * add subGroup into group
-   * @param groupId super group id
+   *
+   * @param groupId    super group id
    * @param subGroupId sub group id
-   * @return
    */
   @POST
   @Path("/{groupId}/add/{subGroupId}")
   @Consumes(MediaType.APPLICATION_JSON)
   public String addSubGroup(@PathParam("groupId") int groupId, @PathParam("subGroupId") int subGroupId) {
-    if (groupService.addSubgroupIntoGroup(groupId,subGroupId)) {
+    if (groupService.addSubgroupIntoGroup(groupId, subGroupId)) {
       return new Gson().toJson("Adding subGroup successful");
     }
     return new Gson().toJson("Adding subGroup failed");
@@ -201,23 +202,50 @@ public class GroupController {
   }
 
 
-
   /**
    * Get group followers by group id
+   *
    * @return all followes in input group
    */
   @GET
   @Path("/{groupId}/followers")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String getGroupFollowers(@PathParam("groupId") int id){
-    Group group= groupService.getGroupById(id);
+  public String getGroupFollowers(@PathParam("groupId") int id) {
+    Group group = groupService.getGroupById(id);
     List<User> list = followService.groupGetFollowers(group);
     return new Gson().toJson(list);
   }
 
 
+  /**
+   * Get group moderators by group id
+   *
+   * @return all moderators in input group
+   */
+  @GET
+  @Path("/{groupId}/moderators")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupModerators(@PathParam("groupId") int id) {
+    Group group = groupService.getGroupById(id);
+    List<User> list = moderateService.getModerators(group);
+    return new Gson().toJson(list);
+  }
 
-
-
+  /**
+   * Get group members by group id
+   *
+   * @return all members in input group
+   */
+  @GET
+  @Path("/{groupId}/members")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupMembers(@PathParam("groupId") int id) {
+    Group group = groupService.getGroupById(id);
+    List<User> list = moderateService.getMembers(group);
+    return new Gson().toJson(list);
+  }
 
 }
+
+
+

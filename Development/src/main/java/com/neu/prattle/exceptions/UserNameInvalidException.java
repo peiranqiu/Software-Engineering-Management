@@ -9,7 +9,7 @@ public class UserNameInvalidException extends IllegalArgumentException {
 
   private static final long serialVersionUID = -4845176561270017896L;
 
-  public UserNameInvalidException(String message)  {
+  public UserNameInvalidException(String message) {
     super(message);
   }
 }

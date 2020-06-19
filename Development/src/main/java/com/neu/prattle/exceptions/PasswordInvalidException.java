@@ -9,7 +9,7 @@ public class PasswordInvalidException extends IllegalArgumentException {
 
   private static final long serialVersionUID = -4845176561270017896L;
 
-  public PasswordInvalidException(String message)  {
+  public PasswordInvalidException(String message) {
     super(message);
   }
 }

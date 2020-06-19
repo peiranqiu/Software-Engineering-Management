@@ -1,4 +1,3 @@
-
 package com.neu.prattle;
 
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
@@ -43,11 +42,11 @@ public class GroupMockitoTest {
   private FollowAPI followAPI;
 
   private Group group1;
-  private Group group2=new Group("testGroup2");
+  private Group group2 = new Group("testGroup2");
   private Group group3 = new Group("testGroup3");
 
   @Before
-  public void setUp(){
+  public void setUp() {
     groupService = GroupServiceImpl.getInstance();
     api = mock(GroupAPI.class);
     followAPI = new FollowAPI();
@@ -55,14 +54,14 @@ public class GroupMockitoTest {
   }
 
   @Test
-  public void testAddGroup(){
+  public void testAddGroup() {
     when(api.addGroup(any(Group.class))).thenReturn(true);
     groupService.setAPI(api);
     assertTrue(groupService.addGroup(group2));
   }
 
   @Test(expected = GroupAlreadyPresentException.class)
-  public void testGroupAlreadyExist(){
+  public void testGroupAlreadyExist() {
     when(api.addGroup(any(Group.class))).thenThrow(GroupAlreadyPresentException.class);
     groupService.setAPI(api);
     groupService.addGroup(group2);
@@ -80,7 +79,7 @@ public class GroupMockitoTest {
   }
 
   @Test
-  public void testgetSubGroupList() throws SQLException{
+  public void testgetSubGroupList() throws SQLException {
     List<Group> groupList = groupService.getSubGroupList(4);
     when(api.getSubGroupList(anyInt())).thenReturn(groupList);
     groupService.setAPI(api);
@@ -95,7 +94,7 @@ public class GroupMockitoTest {
   }
 
   @Test
-  public void testFindGroupByName()throws SQLException {
+  public void testFindGroupByName() throws SQLException {
     when(api.getGroup(anyString())).thenReturn(group2);
     groupService.setAPI(api);
     assertEquals(groupService.findGroupByName(group2.getName()).get().getGroupId(), group2.getGroupId());
@@ -103,14 +102,14 @@ public class GroupMockitoTest {
 
 
   @Test
-  public void testFindGroupById()throws SQLException {
+  public void testFindGroupById() throws SQLException {
     when(api.getGroupById(anyInt())).thenReturn(group2);
     groupService.setAPI(api);
     assertEquals(groupService.getGroupById(group2.getGroupId()).getName(), group2.getName());
   }
 
   @Test
-  public void testSetPasswordForGroup()throws SQLException {
+  public void testSetPasswordForGroup() throws SQLException {
     when(api.setPasswordforGroup(anyInt(), anyString())).thenReturn(true);
     groupService.setAPI(api);
     when(followAPI.groupGetFollowers(anyInt())).thenReturn(new ArrayList<>());
@@ -119,7 +118,7 @@ public class GroupMockitoTest {
   }
 
   @Test
-  public void testGetAllGroups()throws SQLException{
+  public void testGetAllGroups() throws SQLException {
     List<Group> groupList = groupService.getAllGroups();
     when(api.getAllGroups()).thenReturn(groupList);
     groupService.setAPI(api);
@@ -129,7 +128,7 @@ public class GroupMockitoTest {
 
   @Test
   public void testSetPsw() throws SQLException {
-    List<User>followers = new ArrayList<>();
+    List<User> followers = new ArrayList<>();
     User f1 = new User("follow1");
     User f2 = new User("follow2");
     followers.add(f1);

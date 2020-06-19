@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 public class ModerateMockitoTest {
 
   private User user1 = new User("testModerator11", "Password1");
-  private User user2 = new User("testModerator" + getRandom(),"Password" + getRandom());
+  private User user2 = new User("testModerator" + getRandom(), "Password" + getRandom());
   private User user3 = new User("testModerator33", "Password3");
   private User user4 = new User("testModerator44", "Password4");
   private Group group1 = new Group("testModerateGroup11");
@@ -145,7 +145,8 @@ public class ModerateMockitoTest {
 
 
   /**
-   * Test a moderator sets a user as moderator failed because the user to add is already the group moderator.
+   * Test a moderator sets a user as moderator failed because the user to add is already the group
+   * moderator.
    */
   @Test(expected = IllegalStateException.class)
   public void test2AddModeratorFail1() {
@@ -165,7 +166,8 @@ public class ModerateMockitoTest {
   }
 
   /**
-   * Test a user sets another user as moderator failed because the current user is not group moderator.
+   * Test a user sets another user as moderator failed because the current user is not group
+   * moderator.
    */
   @Test(expected = IllegalStateException.class)
   public void test2AddModeratorFail3() {
@@ -190,7 +192,7 @@ public class ModerateMockitoTest {
   @Test
   public void test2AddModeratorSuccess2() {
     moderateService = helperAddModerator(false);
-    assertEquals(moderateService.addGroupModerator(group1.getGroupId(),user2.getUserId()).getUserId(),user2.getUserId());
+    assertEquals(moderateService.addGroupModerator(group1.getGroupId(), user2.getUserId()).getUserId(), user2.getUserId());
   }
 
   /**
@@ -208,7 +210,8 @@ public class ModerateMockitoTest {
   }
 
   /**
-   * Test user downgrades another moderator as group member failed because the current user is not group moderator.
+   * Test user downgrades another moderator as group member failed because the current user is not
+   * group moderator.
    */
   @Test(expected = NoPrivilegeException.class)
   public void test3SetModeratorAsMemberFail1() {
@@ -217,7 +220,8 @@ public class ModerateMockitoTest {
   }
 
   /**
-   * Test moderator downgrades another moderator as group member failed because the other user is not group moderator.
+   * Test moderator downgrades another moderator as group member failed because the other user is
+   * not group moderator.
    */
   @Test(expected = IllegalStateException.class)
   public void test3SetModeratorAsMemberFail2() {
@@ -228,7 +232,8 @@ public class ModerateMockitoTest {
   }
 
   /**
-   * Test moderator downgrades a moderator to group member failed because the group has only one moderator.
+   * Test moderator downgrades a moderator to group member failed because the group has only one
+   * moderator.
    */
   @Test(expected = IllegalStateException.class)
   public void test3SetModeratorAsMemberFail3() {
@@ -326,7 +331,8 @@ public class ModerateMockitoTest {
   }
 
   /**
-   * Test create delete member invitation failed because the member to be deleted is not the group member yet.
+   * Test create delete member invitation failed because the member to be deleted is not the group
+   * member yet.
    */
   @Test(expected = IllegalStateException.class)
   public void test6CreateInvitationFail1() {
@@ -402,6 +408,7 @@ public class ModerateMockitoTest {
 
   /**
    * Helper method to generate random number range from 1 to 10000.
+   *
    * @return the generated number
    */
   private int getRandom() {
@@ -410,14 +417,14 @@ public class ModerateMockitoTest {
 
   /**
    * Helper method to configure moderate service for adding moderator.
+   *
    * @return moderate service
    */
   private ModerateService helperAddModerator(boolean exp) {
     moderateService = helperService();
-    if(Boolean.TRUE.equals(exp)) {
+    if (Boolean.TRUE.equals(exp)) {
       when(api.addModerator(anyInt(), anyInt())).thenThrow(IllegalStateException.class);
-    }
-    else {
+    } else {
       when(api.addModerator(anyInt(), anyInt())).thenReturn(true);
     }
     moderateService.setAPI(api);
@@ -426,11 +433,12 @@ public class ModerateMockitoTest {
 
   /**
    * Helper method to configure moderate service for deleting moderator.
+   *
    * @return moderate service
    */
   private ModerateService helperDeleteModerator(boolean exp) {
     moderateService = helperService();
-    if(Boolean.FALSE.equals(exp)) {
+    if (Boolean.FALSE.equals(exp)) {
       when(api.deleteModerator(anyInt(), anyInt())).thenReturn(true);
       moderateService.setAPI(api);
     }
@@ -440,11 +448,12 @@ public class ModerateMockitoTest {
 
   /**
    * Helper method to configure moderate service for adding member.
+   *
    * @return moderate service
    */
   private ModerateService helperAddMember(boolean exp) {
     moderateService = helperService();
-    if(Boolean.FALSE.equals(exp)) {
+    if (Boolean.FALSE.equals(exp)) {
       when(api.addMember(anyInt(), anyInt())).thenReturn(true);
       moderateService.setAPI(api);
     }
@@ -454,11 +463,12 @@ public class ModerateMockitoTest {
 
   /**
    * Helper method to configure moderate service for deleting member.
+   *
    * @return moderate service
    */
   private ModerateService helperDeleteMember(boolean exp) {
     moderateService = helperService();
-    if(Boolean.FALSE.equals(exp)) {
+    if (Boolean.FALSE.equals(exp)) {
       when(api.deleteMember(anyInt(), anyInt())).thenReturn(true);
       moderateService.setAPI(api);
     }
@@ -468,11 +478,12 @@ public class ModerateMockitoTest {
 
   /**
    * Helper method to configure moderate service for creating invitation.
+   *
    * @return moderate service
    */
   private ModerateService helperCreateInvitation(boolean exp) {
     moderateService = helperService();
-    if(Boolean.FALSE.equals(exp)) {
+    if (Boolean.FALSE.equals(exp)) {
       when(api.createInvitation(anyInt(), anyInt(), anyBoolean())).thenReturn(true);
       moderateService.setAPI(api);
     }
@@ -481,6 +492,7 @@ public class ModerateMockitoTest {
 
   /**
    * Helper method to config group and user service for moderate service.
+   *
    * @return moderate service
    */
   private ModerateService helperService() {

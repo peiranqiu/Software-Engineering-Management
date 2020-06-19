@@ -66,17 +66,6 @@ public class ChatEndpoint {
   private ModerateService moderateService = ModerateService.getInstance();
 
   /**
-   * Set services to be used in chatendpoint
-   * @param newAccountService new user service
-   * @param newGroupService new group service
-   * @param newModerateService new moderate service
-   */
-  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
-    accountService = newAccountService;
-    groupService = newGroupService;
-    moderateService = newModerateService;
-  }
-  /**
    * Broadcast.
    *
    * Send a Message to each session in the pool of sessions. The Message sending action is
@@ -95,6 +84,19 @@ public class ChatEndpoint {
         }
       }
     });
+  }
+
+  /**
+   * Set services to be used in chatendpoint
+   *
+   * @param newAccountService  new user service
+   * @param newGroupService    new group service
+   * @param newModerateService new moderate service
+   */
+  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
+    accountService = newAccountService;
+    groupService = newGroupService;
+    moderateService = newModerateService;
   }
 
   /**
@@ -170,9 +172,9 @@ public class ChatEndpoint {
     message.setFrom(users.get(session.getId()));
 
     try {
-      if (!message.getSendToGroup())
-      {sendPersonalMessage(message);}
-      else {
+      if (!message.getSendToGroup()) {
+        sendPersonalMessage(message);
+      } else {
         sendGroupMessage(message, message.getTo(), session);
       }
     } catch (IOException | EncodeException e) {
@@ -201,7 +203,8 @@ public class ChatEndpoint {
   /**
    * On error.
    *
-   * Send a message to the specific user and guarantee that both of the users could see the posted message
+   * Send a message to the specific user and guarantee that both of the users could see the posted
+   * message
    *
    * @param message the message to be sent
    */
