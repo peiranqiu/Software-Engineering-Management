@@ -22,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +32,7 @@ public class MessageEntityTest {
    */
   private Message message;
   private MessageEncoder messageEncoder;
+  private MessageDecoder messageDecoder;
 
   @Mock
   ObjectMapper objectMapper;
@@ -165,5 +167,12 @@ public class MessageEntityTest {
   @Test
   public void testMakeDir() {
     assertEquals("Successfully create receiver directory.", message.makeDirectory("/Users", 1));
+  }
+
+  @Test
+  public void testEncode() throws IOException, EncodeException {
+    when(objectMapper.writeValueAsString(any(Message.class))).thenThrow(IOException.class);
+    messageEncoder.setObjectMapper(objectMapper);
+    assertEquals("{}", messageEncoder.encode(message));
   }
 }
