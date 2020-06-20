@@ -803,7 +803,10 @@ function updateTranslationOutput(translatedMessage) {
 
 async function getLanguageAPI() {
     let select = document.getElementById('language');
-    const languages = [{value:"zh-Hans", text:"Chinese Simplified"},{value:"da", text:"Danish"},{value:"fr", text:"French"},{value:"de", text:"German"},{value:"it", text:"Italian"},{value:"ja", text:"Japanese"},{value:"ko", text:"Korean"},{value:"pl", text:"Polish"},{value:"ru", text:"Russian"},{value:"ru", text:"Russian"},{value:"es", text:"Spanish"},];
+    const languages = [{value:"zh-Hans", text:"Chinese Simplified"},{value:"da", text:"Danish"},
+        {value:"fr", text:"French"},{value:"de", text:"German"},{value:"it", text:"Italian"},
+        {value:"ja", text:"Japanese"},{value:"ko", text:"Korean"},{value:"pl", text:"Polish"},
+        {value:"ru", text:"Russian"},{value:"ru", text:"Russian"},{value:"es", text:"Spanish"},];
     languages.forEach((language) => {
         let option = document.createElement("option");
         option.value = language.value;
