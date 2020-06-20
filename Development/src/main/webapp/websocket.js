@@ -755,6 +755,68 @@ async function getGroupMembers(groupId) {
     cur.style.backgroundColor = "Gainsboro"
 }
 
+async function translateMessage() {
+    let toLanguage = document.getElementById('language').value;
+    let parseXml;
+// create xml parsing functions
+// the next if/else block is from the following thread
+    if (typeof window.DOMParser != "undefined") {
+        parseXml = function(content) {
+            return ( new window.DOMParser() ).parseFromString(content, "text/xml");
+        };
+    } else if (typeof window.ActiveXObject != "undefined" &&
+               new window.ActiveXObject("Microsoft.XMLDOM")) {
+        parseXml = function(content) {
+            let xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = "false";
+            xmlDoc.loadXML(content);
+            return xmlDoc;
+        };
+    } else {
+        throw new Error("No XML parser found");
+    }
+    const data = encodeURI(document.getElementById('messageToTranslate').value);
+    fetch(
+        "https://microsoft-azure-translation-v1.p.rapidapi.com/translate?from=en&to=" + toLanguage + "&text=" + data,
+        {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-host": "microsoft-azure-translation-v1.p.rapidapi.com",
+                "x-rapidapi-key": "b496f70aa3mshd47b6501eee64dep117676jsn1e1d922eb551",
+            }
+        })
+        .then(response => response.text())
+        .then(text => {
+            let document = parseXml(text);
+            let stringElementArray = document.getElementsByTagName('string');
+            console.log(stringElementArray[0].innerHTML);
+            updateTranslationOutput(stringElementArray[0].innerHTML)
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+function updateTranslationOutput(translatedMessage) {
+    document.getElementById("translated").value = translatedMessage;
+}
+
+async function getLanguageAPI() {
+    let select = document.getElementById('language');
+    const languages = [{value:"zh-Hans", text:"Chinese Simplified"},{value:"da", text:"Danish"},
+        {value:"fr", text:"French"},{value:"de", text:"German"},{value:"it", text:"Italian"},
+        {value:"ja", text:"Japanese"},{value:"ko", text:"Korean"},{value:"pl", text:"Polish"},
+        {value:"ru", text:"Russian"},{value:"ru", text:"Russian"},{value:"es", text:"Spanish"},];
+    languages.forEach((language) => {
+        let option = document.createElement("option");
+        option.value = language.value;
+        option.text = language.text;
+        select.appendChild(option);
+    })
+}
+
+
+
 
 
 
