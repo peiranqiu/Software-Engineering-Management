@@ -5,8 +5,6 @@
     <link href="style.css" rel="stylesheet">
 </head>
 
-<body onload="getAllUsers()">
-
 <table>
     <caption>Table</caption>
     <tr>
@@ -133,12 +131,17 @@
     </tr>
 
     <tr>
+
         <td>
             <input id ='messageToTranslate' type ='text' placeholder="Message waiting for translation"/>
+            <select id='language'>
+                <option disabled hidden selected value="getLanguageList">Language Options</option>
+            </select>
+
             <button onclick="translateMessage()"> Translate </button>
         </td>
-
     </tr>
+
     <tr>
         <td>
             <textarea readonly="true" rows="3" cols="60" id="translated"></textarea>
@@ -150,4 +153,10 @@
 </table>
 </body>
 <script src="websocket.js"></script>
+<script>
+    window.onload=function(){
+        getAllUsers();
+        getLanguageAPI();
+    }
+</script>
 </html>

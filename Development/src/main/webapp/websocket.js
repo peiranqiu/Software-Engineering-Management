@@ -756,10 +756,10 @@ async function getGroupMembers(groupId) {
 }
 
 async function translateMessage() {
+    let toLanguage = document.getElementById('language').value;
     let parseXml;
 // create xml parsing functions
 // the next if/else block is from the following thread
-// https://stackoverflow.com/questions/649614/xml-parsing-of-a-variable-string-in-javascript
     if (typeof window.DOMParser != "undefined") {
         parseXml = function(content) {
             return ( new window.DOMParser() ).parseFromString(content, "text/xml");
@@ -777,7 +777,7 @@ async function translateMessage() {
     }
     const data = encodeURI(document.getElementById('messageToTranslate').value);
     fetch(
-        "https://microsoft-azure-translation-v1.p.rapidapi.com/translate?from=en&to=es&text="+data,
+        "https://microsoft-azure-translation-v1.p.rapidapi.com/translate?from=en&to=" + toLanguage + "&text=" + data,
         {
             "method": "GET",
             "headers": {
@@ -800,6 +800,19 @@ async function translateMessage() {
 function updateTranslationOutput(translatedMessage) {
     document.getElementById("translated").value = translatedMessage;
 }
+
+async function getLanguageAPI() {
+    let select = document.getElementById('language');
+    const languages = [{value:"zh-Hans", text:"Chinese Simplified"},{value:"da", text:"Danish"},{value:"fr", text:"French"},{value:"de", text:"German"},{value:"it", text:"Italian"},{value:"ja", text:"Japanese"},{value:"ko", text:"Korean"},{value:"pl", text:"Polish"},{value:"ru", text:"Russian"},{value:"ru", text:"Russian"},{value:"es", text:"Spanish"},];
+    languages.forEach((language) => {
+        let option = document.createElement("option");
+        option.value = language.value;
+        option.text = language.text;
+        select.appendChild(option);
+    })
+}
+
+
 
 
 
