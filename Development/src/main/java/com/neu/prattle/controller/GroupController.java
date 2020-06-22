@@ -246,18 +246,6 @@ public class GroupController {
     return new Gson().toJson(list);
   }
 
-  /**
-   * Get all invitations of the group
-   * @param id group id
-   * @return
-   */
-  @GET
-  @Path("/{groupId}/invitations")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public String getGroupInvitations(@PathParam("groupId") int id) {
-    Map<User, Boolean> invitations = moderateService.getGroupInvitations(id);
-    return new Gson().toJson(invitations.keySet());
-  }
 
 }
 

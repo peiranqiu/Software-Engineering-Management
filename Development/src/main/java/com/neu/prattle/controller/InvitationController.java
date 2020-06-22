@@ -9,10 +9,14 @@ import com.neu.prattle.service.ModerateService;
 
 import org.springframework.stereotype.Controller;
 
+import java.util.Map;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 /***
@@ -40,18 +44,15 @@ public class InvitationController {
   /***
    * create an invitation
    *
-   * @param invitation the invitation
+   * @param groupId the group id
+   * @param userId the invitee id
    * @return the created invitation
    */
   @POST
-  @Path("/create")
+  @Path("/{groupId}/add/{userId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String createInvitation(JsonObject invitation) {
-    Group group = (Group) ((Object) invitation.get(GROUP));
-    User inviter = (User) ((Object) invitation.get(INVITER));
-    User invitee = (User) ((Object) invitation.get(INVITEE));
-    Boolean isInvite = (Boolean) ((Object) invitation.get("isInvite"));
-    if (moderateService.createInvitation(group, inviter, invitee, isInvite)) {
+  public String createInvitation(@PathParam("groupId") int groupId, @PathParam("userId") int userId) {
+    if (moderateService.createInvitation(groupId, userId)) {
       return new Gson().toJson("Invitation created successfully");
     }
     return new Gson().toJson("Creating invitation failed");
@@ -60,16 +61,14 @@ public class InvitationController {
   /***
    * delete an invitation
    *
-   * @param invitation the invitation
+   * @param groupId the group id
+   * @param userId the invitee id
    */
   @DELETE
-  @Path("/delete")
+  @Path("/{groupId}/delete/{userId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String deleteInvitation(JsonObject invitation) {
-    Group group = (Group) ((Object) invitation.get(GROUP));
-    User inviter = (User) ((Object) invitation.get(INVITER));
-    User invitee = (User) ((Object) invitation.get(INVITEE));
-    if (moderateService.deleteInvitation(group, inviter, invitee)) {
+  public String deleteInvitation(@PathParam("groupId") int groupId, @PathParam("userId") int userId) {
+    if (moderateService.deleteInvitation(groupId, userId)) {
       return new Gson().toJson("Invitation deleted successfully");
     }
     return new Gson().toJson("Deleting invitation failed");
@@ -78,19 +77,30 @@ public class InvitationController {
   /***
    * approve an invitation
    *
-   * @param invitation the invitation
+   * @param groupId the group id
+   * @param userId the invitee id
    */
   @POST
-  @Path("/approve")
+  @Path("/{groupId}/approve/{userId}")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String approveInvitation(JsonObject invitation) {
-    Group group = (Group) ((Object) invitation.get(GROUP));
-    User inviter = (User) ((Object) invitation.get(INVITER));
-    User invitee = (User) ((Object) invitation.get(INVITEE));
-    Boolean isInvite = (Boolean) ((Object) invitation.get("isInvite"));
-    if (moderateService.approveInvitation(group, inviter, invitee, isInvite)) {
+  public String approveInvitation(@PathParam("groupId") int groupId, @PathParam("userId") int userId) {
+    if (moderateService.approveInvitation(groupId, userId)) {
       return new Gson().toJson("Invitation approved");
     }
     return new Gson().toJson("Invitation not approved. Please try again.");
+  }
+
+
+  /**
+   * Get all invitations of the group
+   * @param id group id
+   * @return
+   */
+  @GET
+  @Path("/{groupId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupInvitations(@PathParam("groupId") int id) {
+    Map<User, Boolean> invitations = moderateService.getGroupInvitations(id);
+    return new Gson().toJson(invitations.keySet());
   }
 }

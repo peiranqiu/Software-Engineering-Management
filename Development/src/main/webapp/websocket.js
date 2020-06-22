@@ -329,19 +329,10 @@ async function unfollowGroup(id) {
 /**
  * create add member invitation.
  */
-async function createInvitation() {
-    console.log(currentUser);
-    // group, invitee to be completed according to your frontend elements!!!
-    let invitation = {
-        'group': null,
-        'inviter': currentUser,
-        'invitee': null,
-        'isInvite': true
-    };
-    const response = await fetch(URL + 'invitation/create',
+async function createInvitation(groupId, inviteeId) {
+    const response = await fetch(URL + 'invitation/' + groupId + '/add/' + inviteeId,
         {
             method: 'POST',
-            body: JSON.stringify(invitation),
             headers: {
                 'content-type': 'application/json'
             }
@@ -353,19 +344,10 @@ async function createInvitation() {
 /**
  * approve an invitation.
  */
-async function approveInvitation() {
-    console.log(currentUser);
-    // group, invitee, isInvite to be completed according to your frontend elements!!!
-    let invitation = {
-        'group': null,
-        'inviter': currentUser,
-        'invitee': null,
-        'isInvite': false
-    };
-    const response = await fetch(URL + 'invitation/approve',
+async function approveInvitation(groupId, inviteeId) {
+    const response = await fetch(URL + 'invitation/' + groupId + '/approve/' + inviteeId,
         {
             method: 'POST',
-            body: JSON.stringify(invitation),
             headers: {
                 'content-type': 'application/json'
             }
@@ -376,19 +358,10 @@ async function approveInvitation() {
 /**
  * delete/disapprove an invitation.
  */
-async function deleteInvitation() {
-    console.log(currentUser);
-    // group, invitee, isInvite to be completed according to your frontend elements!!!
-    let invitation = {
-        'group': null,
-        'inviter': currentUser,
-        'invitee': null,
-        'isInvite': false
-    };
-    const response = await fetch(URL + 'invitation/delete',
+async function deleteInvitation(groupId, inviteeId) {
+    const response = await fetch(URL + 'invitation/' + groupId + '/delete/' + inviteeId,
         {
             method: 'DELETE',
-            body: JSON.stringify(invitation),
             headers: {
                 'content-type': 'application/json'
             }
@@ -400,7 +373,7 @@ async function deleteInvitation() {
  * Get all invitations associated with the group
  */
 async function getGroupInvitations(groupId) {
-    const response = await fetch(URL + 'group/' + groupId + '/invitations',
+    const response = await fetch(URL + 'invitation/' + groupId,
         {
             method: 'GET',
             headers: {
