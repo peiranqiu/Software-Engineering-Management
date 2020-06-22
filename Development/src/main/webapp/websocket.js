@@ -67,11 +67,28 @@ async function connect() {
 
         ws = new WebSocket("ws://" + host + pathname + "chat/" + username);
 
-        ws.onmessage = function (event) {
+        ws.onmessage = async function (event) {
             var log = document.getElementById("log");
             console.log(event.data);
             var message = JSON.parse(event.data);
             log.innerHTML += message.from + " : " + message.content + "\n";
+
+            let content = document.getElementById("msg").value;
+            let json = JSON.stringify({
+                                          "from":currentUser.name,
+                                          "content": content,
+                                          "to": document.getElementById('to').value
+                                      });
+
+            const response = await fetch(URL +  'user/send', {
+                method: 'POST',
+                body: JSON.stringify(message),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            }).then(rs => rs.json());
+
+            console.log(response);
         };
     } else {
         console.log("Log in failed.")

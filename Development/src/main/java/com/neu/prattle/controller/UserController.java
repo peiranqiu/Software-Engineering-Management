@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.model.Group;
+import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
 import com.neu.prattle.service.ModerateService;
@@ -182,6 +183,20 @@ public final class UserController {
       return new Gson().toJson("Unfollow successful");
     }
     return new Gson().toJson("Unfollow failed");
+  }
+
+
+  /**
+   * Send a message to a user
+   *
+   * @param msg the message to ben sent
+   */
+  @POST
+  @Path("/send")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String sendToUser(Message msg) {
+    //TODO: handle the msg storage
+    return new Gson().toJson(msg.getContent());
   }
 
 }
