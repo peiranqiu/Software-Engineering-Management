@@ -13,6 +13,7 @@ import com.neu.prattle.service.ModerateService;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ws.rs.Consumes;
@@ -243,6 +244,19 @@ public class GroupController {
     Group group = groupService.getGroupById(id);
     List<User> list = moderateService.getMembers(group);
     return new Gson().toJson(list);
+  }
+
+  /**
+   * Get all invitations of the group
+   * @param id group id
+   * @return
+   */
+  @GET
+  @Path("/{groupId}/invitations")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupInvitations(@PathParam("groupId") int id) {
+    Map<User, Boolean> invitations = moderateService.getGroupInvitations(id);
+    return new Gson().toJson(invitations.keySet());
   }
 
 }

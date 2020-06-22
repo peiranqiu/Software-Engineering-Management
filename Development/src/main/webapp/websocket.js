@@ -12,13 +12,14 @@ async function createUser() {
         'name': document.getElementById('newName').value,
         'password': document.getElementById('newPsw').value
     };
-    const response = await fetch(URL + 'user/create', {
-                                                          method: 'POST',
-                                                          body: JSON.stringify(markers),
-                                                          headers: {
-                                                              'content-type': 'application/json'
-                                                          }
-                                                      }).then(rs => rs.json());
+    const response = await fetch(URL + 'user/create',
+        {
+            method: 'POST',
+            body: JSON.stringify(markers),
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -42,12 +43,13 @@ async function watchUser() {
  * get list of all users.
  */
 async function getAllUsers() {
-    const response = await fetch(URL + 'user/getAllUser', {
-                                                              method: 'GET',
-                                                              headers: {
-                                                                  'content-type': 'application/json'
-                                                              }
-                                                          }).then(rs => rs.json());
+    const response = await fetch(URL + 'user/getAllUser',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
 
     let select = document.getElementById('to');
@@ -67,13 +69,14 @@ async function connect() {
     let password = document.getElementById("password").value;
     let markers = {'name': username, 'password': password};
 
-    const response = await fetch(URL + 'user/login', {
-                                                         method: 'POST',
-                                                         body: JSON.stringify(markers),
-                                                         headers: {
-                                                             'content-type': 'application/json'
-                                                         }
-                                                     }).then(rs => rs.json());
+    const response = await fetch(URL + 'user/login',
+        {
+            method: 'POST',
+            body: JSON.stringify(markers),
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
 
     if (response !== null) {
@@ -99,10 +102,11 @@ async function connect() {
  */
 function send() {
     let content = document.getElementById("msg").value;
-    let json = JSON.stringify({
-                                  "content": content,
-                                  "to": document.getElementById('to').value
-                              });
+    let json = JSON.stringify(
+        {
+            "content": content,
+            "to": document.getElementById('to').value
+        });
     ws.send(json);
 }
 
@@ -111,11 +115,12 @@ function send() {
  */
 function sendGroup() {
     let content = document.getElementById("groupMsg").value;
-    let json = JSON.stringify({
-                                  "content": content,
-                                  "to": document.getElementById('toGroup').value,
-                                  "sendToGroup": true
-                              });
+    let json = JSON.stringify(
+        {
+            "content": content,
+            "to": document.getElementById('toGroup').value,
+            "sendToGroup": true
+        });
     ws.send(json);
 }
 
@@ -124,12 +129,13 @@ function sendGroup() {
  */
 async function userGetFollower(evt) {
     console.log(currentUser);
-    const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollower', {
-                                                                                          method: 'GET',
-                                                                                          headers: {
-                                                                                              'content-type': 'application/json'
-                                                                                          }
-                                                                                      })
+    const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollower',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
     let list = generateList(response, "getFollowers");
@@ -210,12 +216,13 @@ function generateList(response, operatoin) {
  */
 async function userGetFollowee(evt) {
     console.log(currentUser);
-    const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee', {
-                                                                                          method: 'GET',
-                                                                                          headers: {
-                                                                                              'content-type': 'application/json'
-                                                                                          }
-                                                                                      })
+    const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 
@@ -229,12 +236,13 @@ async function userGetFollowee(evt) {
  */
 async function getHasGroup(evt) {
     console.log(currentUser);
-    const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup', {
-                                                                                          method: 'GET',
-                                                                                          headers: {
-                                                                                              'content-type': 'application/json'
-                                                                                          }
-                                                                                      })
+    const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 
@@ -248,12 +256,13 @@ async function getHasGroup(evt) {
  */
 async function getFollowedGroup(evt) {
     console.log(currentUser);
-    const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowedGroup', {
-                                                                                               method: 'GET',
-                                                                                               headers: {
-                                                                                                   'content-type': 'application/json'
-                                                                                               }
-                                                                                           })
+    const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowedGroup',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 
@@ -272,12 +281,13 @@ async function followUser(followeeId) {
     // followeeId to be replaced according to your frontend elements!!!
     // let followeeId = 1;
 
-    const response = await fetch(URL + 'user/' + followerId + '/follow/' + followeeId, {
-                                                                                           method: 'POST',
-                                                                                           headers: {
-                                                                                               'content-type': 'application/json'
-                                                                                           }
-                                                                                       });
+    const response = await fetch(URL + 'user/' + followerId + '/follow/' + followeeId,
+        {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
     console.log(response);
 }
 
@@ -289,12 +299,13 @@ async function unfollowUser(followeeId) {
     let followerId = currentUser.userId;
     // followeeId to be replaced according to your frontend elements!!!
     // let followeeId = 1;
-    const response = await fetch(URL + 'user/' + followerId + '/unfollow/' + followeeId, {
-                                                                                             method: 'DELETE',
-                                                                                             headers: {
-                                                                                                 'content-type': 'application/json'
-                                                                                             }
-                                                                                         });
+    const response = await fetch(URL + 'user/' + followerId + '/unfollow/' + followeeId,
+        {
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
     console.log(response);
 }
 
@@ -305,19 +316,20 @@ async function unfollowGroup(id) {
     console.log(currentUser);
     let userId = currentUser.userId;
     // groupId to be replaced according to your frontend elements!!!
-    const response = await fetch(URL + 'group/' + userId + '/unfollow/' + id, {
-                                                                                  method: 'DELETE',
-                                                                                  headers: {
-                                                                                      'content-type': 'application/json'
-                                                                                  }
-                                                                              });
+    const response = await fetch(URL + 'group/' + userId + '/unfollow/' + id,
+        {
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
     console.log(response);
 }
 
 /**
  * create add member invitation.
  */
-async function createAddInvitation() {
+async function createInvitation() {
     console.log(currentUser);
     // group, invitee to be completed according to your frontend elements!!!
     let invitation = {
@@ -326,37 +338,17 @@ async function createAddInvitation() {
         'invitee': null,
         'isInvite': true
     };
-    const response = await fetch(URL + 'invitation/create', {
-                                                                method: 'POST',
-                                                                body: JSON.stringify(invitation),
-                                                                headers: {
-                                                                    'content-type': 'application/json'
-                                                                }
-                                                            });
+    const response = await fetch(URL + 'invitation/create',
+        {
+            method: 'POST',
+            body: JSON.stringify(invitation),
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
     console.log(response);
 }
 
-/**
- * create delete member request.
- */
-async function createDeleteInvitation() {
-    console.log(currentUser);
-    // group, invitee to be completed according to your frontend elements!!!
-    let invitation = {
-        'group': null,
-        'inviter': currentUser,
-        'invitee': null,
-        'isInvite': false
-    };
-    const response = await fetch(URL + 'invitation/delete', {
-                                                                method: 'DELETE',
-                                                                body: JSON.stringify(invitation),
-                                                                headers: {
-                                                                    'content-type': 'application/json'
-                                                                }
-                                                            });
-    console.log(response);
-}
 
 /**
  * approve an invitation.
@@ -370,13 +362,51 @@ async function approveInvitation() {
         'invitee': null,
         'isInvite': false
     };
-    const response = await fetch(URL + 'invitation/approve', {
-                                                                 method: 'POST',
-                                                                 body: JSON.stringify(invitation),
-                                                                 headers: {
-                                                                     'content-type': 'application/json'
-                                                                 }
-                                                             });
+    const response = await fetch(URL + 'invitation/approve',
+        {
+            method: 'POST',
+            body: JSON.stringify(invitation),
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
+    console.log(response);
+}
+
+/**
+ * delete/disapprove an invitation.
+ */
+async function deleteInvitation() {
+    console.log(currentUser);
+    // group, invitee, isInvite to be completed according to your frontend elements!!!
+    let invitation = {
+        'group': null,
+        'inviter': currentUser,
+        'invitee': null,
+        'isInvite': false
+    };
+    const response = await fetch(URL + 'invitation/delete',
+        {
+            method: 'DELETE',
+            body: JSON.stringify(invitation),
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
+    console.log(response);
+}
+
+/**
+ * Get all invitations associated with the group
+ */
+async function getGroupInvitations(groupId) {
+    const response = await fetch(URL + 'group/' + groupId + '/invitations',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -389,12 +419,13 @@ async function addGroupModerator() {
     // group, user to be completed according to your frontend elements!!!
 
     const response = await fetch(
-        URL + 'group/' + currentUser.userId + '/moderate/' + currentGroup.groupId, {
-                                                                                       method: 'POST',
-                                                                                       headers: {
-                                                                                           'content-type': 'application/json'
-                                                                                       }
-                                                                                   })
+        URL + 'group/' + currentUser.userId + '/moderate/' + currentGroup.groupId,
+        {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 }
@@ -410,13 +441,14 @@ async function deleteGroupModerator() {
         'moderator': currentUser,
         'user': null,
     };
-    const response = await fetch(URL + 'group/moderator/delete', {
-                                                                     method: 'DELETE',
-                                                                     body: JSON.stringify(markers),
-                                                                     headers: {
-                                                                         'content-type': 'application/json'
-                                                                     }
-                                                                 });
+    const response = await fetch(URL + 'group/moderator/delete',
+        {
+            method: 'DELETE',
+            body: JSON.stringify(markers),
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
     console.log(response);
 }
 
@@ -427,12 +459,13 @@ async function addGroupMember() {
     // console.log(currentUser);
     // group, user to be completed according to your frontend elements!!!
     const response = await fetch(
-        URL + 'group/' + currentUser.userId + '/member/' + currentGroup.groupId, {
-                                                                                     method: 'POST',
-                                                                                     headers: {
-                                                                                         'content-type': 'application/json'
-                                                                                     }
-                                                                                 })
+        URL + 'group/' + currentUser.userId + '/member/' + currentGroup.groupId,
+        {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 }
@@ -448,13 +481,14 @@ async function deleteGroupMember() {
         'moderator': currentUser,
         'user': null,
     };
-    const response = await fetch(URL + 'group/member/delete', {
-                                                                  method: 'DELETE',
-                                                                  body: JSON.stringify(markers),
-                                                                  headers: {
-                                                                      'content-type': 'application/json'
-                                                                  }
-                                                              });
+    const response = await fetch(URL + 'group/member/delete',
+        {
+            method: 'DELETE',
+            body: JSON.stringify(markers),
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
     console.log(response);
 }
 
@@ -484,12 +518,13 @@ function openTab(evt, tabName, content) {
  * get list of all groups.
  */
 async function getAllGroups(event) {
-    const response = await fetch(URL + 'group/getAllGroups', {
-                                                                 method: 'GET',
-                                                                 headers: {
-                                                                     'content-type': 'application/json'
-                                                                 }
-                                                             }).then(rs => rs.json());
+    const response = await fetch(URL + 'group/getAllGroups',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
     let list = generateList(response, 'getAllGroups');
     openTab(event, "All Groups", list);
@@ -500,22 +535,24 @@ async function getAllGroups(event) {
  */
 async function createGroup() {
     let markers = {'name': document.getElementById('groupName').value};
-    const response = await fetch(URL + 'group/create', {
-                                                           method: 'POST',
-                                                           body: JSON.stringify(markers),
-                                                           headers: {
-                                                               'content-type': 'application/json'
-                                                           }
-                                                       }).then(rs => rs.json());
+    const response = await fetch(URL + 'group/create',
+        {
+            method: 'POST',
+            body: JSON.stringify(markers),
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
     console.log(markers.name);
 
-    const response2 = await fetch(URL + 'group/' + markers.name, {
-                                                                     method: 'GET',
-                                                                     headers: {
-                                                                         'content-type': 'application/json'
-                                                                     }
-                                                                 }).then(rs => rs.json());
+    const response2 = await fetch(URL + 'group/' + markers.name,
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response2);
 
     if (response2) {
@@ -532,12 +569,13 @@ async function createGroup() {
  */
 
 async function getSubGroups(groupId) {
-    const response = await fetch(URL + 'group/' + groupId + '/getSubGroups', {
-                                                                                 method: 'GET',
-                                                                                 headers: {
-                                                                                     'content-type': 'application/json'
-                                                                                 }
-                                                                             })
+    const response = await fetch(URL + 'group/' + groupId + '/getSubGroups',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
@@ -578,26 +616,28 @@ async function setGroupPassword() {
     let groupName = document.getElementById('groupName2').value;
     let password = document.getElementById("groupPass").value;
 
-    const response2 = await fetch(URL + 'group/' + groupName, {
-                                                                  method: 'GET',
-                                                                  headers: {
-                                                                      'content-type': 'application/json'
-                                                                  }
-                                                              }).then(rs => rs.json());
+    const response2 = await fetch(URL + 'group/' + groupName,
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response2);
 
     if (response2) {
         currentGroup = response2.value;
     }
 
-    const response = await fetch(URL + 'group/' + currentGroup.groupId + '/password', {
-                                                                                          method: 'POST',
-                                                                                          body: JSON.stringify(
-                                                                                              password),
-                                                                                          headers: {
-                                                                                              'content-type': 'application/json'
-                                                                                          }
-                                                                                      })
+    const response = await fetch(URL + 'group/' + currentGroup.groupId + '/password',
+        {
+            method: 'POST',
+            body: JSON.stringify(
+                password),
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 }
@@ -608,12 +648,13 @@ async function setGroupPassword() {
  */
 
 async function getGroupFollowers(groupId) {
-    const response = await fetch(URL + 'group/' + groupId + '/followers', {
-                                                                              method: 'GET',
-                                                                              headers: {
-                                                                                  'content-type': 'application/json'
-                                                                              }
-                                                                          }).then(rs => rs.json());
+    const response = await fetch(URL + 'group/' + groupId + '/followers',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
     let title = document.createElement('h3');
@@ -645,14 +686,15 @@ async function getGroupFollowers(groupId) {
  *follow a group
  */
 async function followGroup(groupId) {
-    const response = await fetch(URL + 'group/' + currentUser.userId + '/follow/' + groupId, {
-                                                                                                 method: 'POST',
-                                                                                                 body: JSON.stringify(
-                                                                                                     password),
-                                                                                                 headers: {
-                                                                                                     'content-type': 'application/json'
-                                                                                                 }
-                                                                                             })
+    const response = await fetch(URL + 'group/' + currentUser.userId + '/follow/' + groupId,
+        {
+            method: 'POST',
+            body: JSON.stringify(
+                password),
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 
@@ -666,27 +708,30 @@ async function addSubGroup() {
     let SubGroupName = document.getElementById("SubGroupName").value;
     console.log(SubGroupName);
     console.log(SuperGroupName);
-    const response1 = await fetch(URL + 'group/' + SuperGroupName, {
-                                                                       method: 'GET',
-                                                                       headers: {
-                                                                           'content-type': 'application/json'
-                                                                       }
-                                                                   }).then(rs => rs.json());
+    const response1 = await fetch(URL + 'group/' + SuperGroupName,
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
 
-    const response2 = await fetch(URL + 'group/' + SubGroupName, {
-                                                                     method: 'GET',
-                                                                     headers: {
-                                                                         'content-type': 'application/json'
-                                                                     }
-                                                                 }).then(rs => rs.json());
+    const response2 = await fetch(URL + 'group/' + SubGroupName,
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
 
     const response = await fetch(
-        URL + 'group/' + response1.value.groupId + '/add/' + response2.value.groupId, {
-                                                                                          method: 'POST',
-                                                                                          headers: {
-                                                                                              'content-type': 'application/json'
-                                                                                          }
-                                                                                      })
+        URL + 'group/' + response1.value.groupId + '/add/' + response2.value.groupId,
+        {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 }
@@ -695,12 +740,13 @@ async function addSubGroup() {
  * find Group by name
  */
 async function findGroupByName(name) {
-    const response = await fetch(URL + 'group/' + name, {
-                                                            method: 'GET',
-                                                            headers: {
-                                                                'content-type': 'application/json'
-                                                            }
-                                                        }).then(rs => rs.json());
+    const response = await fetch(URL + 'group/' + name,
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
 }
 
@@ -710,12 +756,13 @@ async function findGroupByName(name) {
  */
 
 async function getGroupModerators(groupId) {
-    const response = await fetch(URL + 'group/' + groupId + '/moderators', {
-                                                                               method: 'GET',
-                                                                               headers: {
-                                                                                   'content-type': 'application/json'
-                                                                               }
-                                                                           }).then(rs => rs.json());
+    const response = await fetch(URL + 'group/' + groupId + '/moderators',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
     let title = document.createElement('h3');
@@ -749,12 +796,13 @@ async function getGroupModerators(groupId) {
  */
 
 async function getGroupMembers(groupId) {
-    const response = await fetch(URL + 'group/' + groupId + '/members', {
-                                                                            method: 'GET',
-                                                                            headers: {
-                                                                                'content-type': 'application/json'
-                                                                            }
-                                                                        }).then(rs => rs.json());
+    const response = await fetch(URL + 'group/' + groupId + '/members',
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
     let title = document.createElement('h3');
@@ -831,13 +879,17 @@ function updateTranslationOutput(translatedMessage) {
 
 async function getLanguageAPI() {
     let select = document.getElementById('language');
-    const languages = [{value: "zh-Hans", text: "Chinese Simplified"},
+    const languages = [
+        {value: "zh-Hans", text: "Chinese Simplified"},
         {value: "da", text: "Danish"},
-        {value: "fr", text: "French"}, {value: "de", text: "German"},
+        {value: "fr", text: "French"},
+        {value: "de", text: "German"},
         {value: "it", text: "Italian"},
-        {value: "ja", text: "Japanese"}, {value: "ko", text: "Korean"},
+        {value: "ja", text: "Japanese"},
+        {value: "ko", text: "Korean"},
         {value: "pl", text: "Polish"},
-        {value: "ru", text: "Russian"}, {value: "ru", text: "Russian"},
+        {value: "ru", text: "Russian"},
+        {value: "ru", text: "Russian"},
         {value: "es", text: "Spanish"},];
     languages.forEach((language) => {
         let option = document.createElement("option");

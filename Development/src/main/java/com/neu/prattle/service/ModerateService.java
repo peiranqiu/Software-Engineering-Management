@@ -6,6 +6,7 @@ import com.neu.prattle.model.User;
 import com.neu.prattle.service.api.APIFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The class made to delegate tasks to the JPA service and send results back to Service. Services
@@ -273,6 +274,15 @@ public class ModerateService {
       }
     }
     return b;
+  }
+
+  /**
+   * Get invitations of the group
+   * @param groupId the group id
+   * @return invitations of the group
+   */
+  public Map<User, Boolean> getGroupInvitations(int groupId) {
+    return api.getInvitations(groupId);
   }
 
 
