@@ -2,6 +2,8 @@ package com.neu.prattle.model;
 
 import com.neu.prattle.websocket.MessageEncoder;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.CharArrayWriter;
@@ -18,10 +20,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import javax.websocket.EncodeException;
+
 
 /***
  * The Message class built to get the necessary message attributes and message information
@@ -35,7 +43,8 @@ public class Message {
   private static final String MESSAGERECEIVE = "/messageReceived";
   private static final String JSON = ".json";
   private static final String USER = "/User";
-  private Logger logger = Logger.getLogger(Message.class.getName());
+
+  private static Logger logger = Logger.getLogger(Message.class.getName());
   /***
    * The name of the user who sent this message.
    */
@@ -80,6 +89,8 @@ public class Message {
   /***
    * Create an object of MessageBuilder class
    */
+
+  ServletContext context;
   public static MessageBuilder messageBuilder() {
     return new MessageBuilder();
   }
@@ -230,9 +241,10 @@ public class Message {
    * Get the parent directory of the message folder
    */
   public String getMessagePath() {
-    String path = Message.class.getResource("").getPath();
-    String mainPath = path.substring(0, path.indexOf("Development") + 11);
-    return mainPath + "/src";
+//    String path = Message.class.getResource("").getPath();
+//    String mainPath = path.substring(0, path.indexOf("Development") + 11);
+//    return mainPath + "/src";
+      return "";
   }
 
   /***
@@ -263,35 +275,28 @@ public class Message {
   /***
    * Create the messageSent and messageReceived directories for the current user
    */
-  public String makeDirectory(String messagePath, int userID) {
-    String dirName0 = messagePath + USER;
-    File userFile = new File(dirName0);
-    if (!userFile.mkdir()) {
-      logger.info("User folder already exists.");
-    }
-    logger.info("Successfully create User folder.");
+  private void makeDirectory(String messagePath) {
+    File userFile = new File(messagePath);
+    createDirectory(messagePath, userFile);
 
-    String dirName1 = messagePath + USER + "/" + userID;
-    File fromUserFile = new File(dirName1);
-    if (!fromUserFile.mkdir()) {
-      logger.info("This userID folder already exists.");
-    }
-    logger.info("Successfully create userID folder.");
+    File fileUserSent = new File(messagePath + MESSAGESENT);
+    createDirectory(messagePath, fileUserSent);
 
-    String dirName2 = messagePath + USER + "/" + userID + MESSAGESENT;
-    File fileUserSent = new File(dirName2);
-    if (!fileUserSent.mkdir()) {
-      logger.info("MessageSent folder for this user already exists.");
-    }
-    logger.info("Successfully create MessageSent folder for this user");
+    File fileUserReceived = new File(messagePath + MESSAGERECEIVE);
+    createDirectory(messagePath, fileUserReceived);
+    return;
+  }
 
-    String dirName3 = messagePath + USER + "/" + userID + MESSAGERECEIVE;
-    File fileUserReceived = new File(dirName3);
-    if (!fileUserReceived.mkdir()) {
-      logger.info("MessageReceived folder for this user already exists.");
+  private void createDirectory(String messagePath, File userFile) {
+    try {
+      if (userFile.mkdir()) {
+        logger.info("Created User Folder: " + messagePath);
+      } else {
+        logger.info("folder already exists: " + messagePath);
+      }
+    } catch (SecurityException e) {
+      throw new SecurityException("Cannot create this directory." + messagePath);
     }
-    logger.info("Successfully create MessageReceived folder for this user.");
-    return "Successfully create receiver directory.";
   }
 
   /***
@@ -299,25 +304,41 @@ public class Message {
    */
   public boolean storeMessage() throws IOException, EncodeException {
     if (!sendToGroup && fromID != -1 && toID != -1 && !content.isEmpty() && !from.isEmpty() && !to.isEmpty()) {
+      logger.info("Preparing to store message." + this.toString());
+      String fromPath = "/opt/prattle/messages" + USER + "/" + fromID;
+      String toPath = "/opt/prattle/messages" + USER + "/" + toID;
+      logger.info("fromPath = " + fromPath);
 
-      if (!Files.exists(Paths.get(messagePath + USER + "/" + fromID))) {
-        makeDirectory(messagePath, fromID);
+      makeDirectory(fromPath);
+      makeDirectory(toPath);
+
+      File file1 = new File(fromPath + MESSAGESENT + "/" + messageID + JSON);
+      File file2 = new File(toPath + MESSAGERECEIVE + "/" + messageID + JSON);
+
+      if (file1.createNewFile()) {
+        writeFiles(file1);
+      } else {
+        throw new IOException("File cannot be created.");
       }
-      if (!Files.exists(Paths.get(messagePath + USER + "/" + toID))) {
-        makeDirectory(messagePath, toID);
-      }
-      String name1 = messagePath + USER + "/" + fromID + MESSAGESENT + "/" + messageID + JSON;
-      String name2 = messagePath + USER + "/" + toID + MESSAGERECEIVE + "/" + messageID + JSON;
-      File file1 = new File(name1);
-      File file2 = new File(name2);
-      if (file1.createNewFile() && file2.createNewFile()) {
-        writeFile();
+
+      if (file2.createNewFile()) {
+        writeFiles(file2);
         return true;
       } else {
         throw new IOException("File cannot be created.");
       }
     }
     return false;
+  }
+
+  private void writeFiles(File myfile) throws IOException, EncodeException {
+    try (FileWriter myWriter = new FileWriter(myfile)) {
+      MessageEncoder msEncoder = new MessageEncoder();
+      myWriter.write(msEncoder.encode(this));
+      logger.info("write file success: " + myfile.getName());
+    } catch (NullPointerException e) {
+      logger.info(e.getMessage());
+    }
   }
 
   /***
@@ -506,6 +527,12 @@ public class Message {
     }
 
     public Message build() {
+      try {
+        Handler fh = new FileHandler("~/message.log");
+        logger.addHandler(fh);
+      } catch (IOException | SecurityException e2) {
+        e2.printStackTrace();
+      }
       return message;
     }
   }

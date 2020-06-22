@@ -211,7 +211,7 @@ public class ChatEndpoint {
   public void sendPersonalMessage(Message message) throws IOException, EncodeException {
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
-      if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
+      if (message.getTo().equals(users.get(endpoint.session.getId()))) {
         synchronized (endpoint) {
           try {
             endpoint.session.getBasicRemote()
