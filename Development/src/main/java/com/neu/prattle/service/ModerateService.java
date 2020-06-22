@@ -5,6 +5,7 @@ import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.api.APIFactory;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -189,6 +190,10 @@ public class ModerateService {
     return api.getMembers(groupId);
   }
 
+  public List<User> getMembers(int groupId) {
+    return api.getMembers(groupId);
+  }
+
   /**
    * Get groups that the given user moderates
    *
@@ -241,6 +246,10 @@ public class ModerateService {
     return api.createInvitation(group.getGroupId(), invitee.getUserId(), isInvite);
   }
 
+  public boolean createInvitation(int groupId, int inviteeId) {
+    return api.createInvitation(groupId, inviteeId, true);
+  }
+
 
   /**
    * Group moderator does not approve the invitation and deletes it.
@@ -253,6 +262,10 @@ public class ModerateService {
   public boolean deleteInvitation(Group group, User moderator, User invitee) {
     checkModerator(group, moderator);
     return api.deleteInvitation(group.getGroupId(), invitee.getUserId());
+  }
+
+  public boolean deleteInvitation(int groupId, int inviteeId) {
+    return api.deleteInvitation(groupId, inviteeId);
   }
 
 
@@ -272,6 +285,14 @@ public class ModerateService {
       } else {
         b = deleteGroupMember(group, moderator, invitee);
       }
+    }
+    return b;
+  }
+
+  public boolean approveInvitation(int groupId, int inviteeId) {
+    boolean b = false;
+    if(deleteInvitation(groupId, inviteeId)) {
+      b = addGroupMember(groupId, inviteeId);
     }
     return b;
   }
