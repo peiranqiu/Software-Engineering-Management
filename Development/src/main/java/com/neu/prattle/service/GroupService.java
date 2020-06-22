@@ -1,8 +1,7 @@
 package com.neu.prattle.service;
 
 import com.neu.prattle.model.Group;
-import com.neu.prattle.service.api.FollowAPI;
-import com.neu.prattle.service.api.GroupAPI;
+import com.neu.prattle.service.api.APIFactory;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -72,14 +71,9 @@ public interface GroupService {
   Group getGroupById(int id);
 
   /**
-   * Set the user api used by this service
+   * Set the api used by this service
    */
-  void setAPI(GroupAPI api);
-
-  /**
-   * Set follow api to be used by this service
-   */
-  void setFollowAPI(FollowAPI newFollowAPI);
+  void setAPI(APIFactory api);
 
   /**
    * a method to get all groups in the database

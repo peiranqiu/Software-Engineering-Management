@@ -3,11 +3,9 @@ package com.neu.prattle.service;
 import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.api.ModerateAPI;
+import com.neu.prattle.service.api.APIFactory;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The class made to delegate tasks to the JPA service and send results back to Service. Services
@@ -23,14 +21,14 @@ public class ModerateService {
 
   private UserService userService;
   private GroupService groupService;
-  private ModerateAPI api;
+  private APIFactory api;
 
   /**
    * ModerateService is a Singleton class.
    */
   private ModerateService() {
 
-    api = new ModerateAPI();
+    api = new APIFactory();
     userService = UserServiceImpl.getInstance();
     groupService = GroupServiceImpl.getInstance();
   }
@@ -47,8 +45,8 @@ public class ModerateService {
   /**
    * Set moderate api to be used by this service.
    */
-  public void setAPI(ModerateAPI moderateAPI) {
-    api = moderateAPI;
+  public void setAPI(APIFactory apiFactory) {
+    api = apiFactory;
   }
 
   /**
@@ -75,22 +73,16 @@ public class ModerateService {
    */
   public User addGroupModerator(Group group, User moderator, User user) {
     User result = null;
-    Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
-    Optional<User> optionalUser = userService.findUserByName(user.getName());
-    if (optionalGroup.isPresent() && optionalUser.isPresent()) {
-      List<User> moderators = getModerators(group);
-      if (!moderators.isEmpty()) {
-        checkModerator(group, moderator);
-      }
-      Group g = optionalGroup.get();
-      User u = optionalUser.get();
-      if (Boolean.FALSE.equals(u.getModerator())) {
-        u.setModerator(true);
-        userService.setModerator(u);
-      }
-      if (api.addModerator(g.getGroupId(), u.getUserId())) {
-        result = u;
-      }
+    List<User> moderators = getModerators(group);
+    if (!moderators.isEmpty()) {
+      checkModerator(group, moderator);
+    }
+    if (Boolean.FALSE.equals(user.getModerator())) {
+      user.setModerator(true);
+      userService.setModerator(user);
+    }
+    if (api.addModerator(group.getGroupId(), user.getUserId())) {
+      result = user;
     }
     return result;
   }
@@ -116,28 +108,19 @@ public class ModerateService {
    * @return true if downgrade success
    */
   public boolean deleteGroupModerator(Group group, User moderator, User user) {
-    Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
-    Optional<User> optionalUser = userService.findUserByName(user.getName());
-    boolean b = false;
-    if (optionalGroup.isPresent() && optionalUser.isPresent()) {
-      checkModerator(group, moderator);
-      List<User> moderators = getModerators(group);
-      if (moderators.size() == 1 && moderators.contains(user)) {
-        throw new IllegalStateException("Cannot delete this moderator because this is the only moderator of the group.");
-      }
-      if (!moderators.contains(user)) {
-        throw new IllegalStateException("The user to be removed is not a group moderator yet.");
-      }
-
-      Group g = optionalGroup.get();
-      User u = optionalUser.get();
-      if (getModerateGroups(u).size() == 1) {
-        u.setModerator(false);
-        userService.setModerator(u);
-      }
-      b = api.deleteModerator(g.getGroupId(), u.getUserId());
+    checkModerator(group, moderator);
+    List<User> moderators = getModerators(group);
+    if (moderators.size() == 1 && moderators.contains(user)) {
+      throw new IllegalStateException("Cannot delete this moderator because this is the only moderator of the group.");
     }
-    return b;
+    if (!moderators.contains(user)) {
+      throw new IllegalStateException("The user to be removed is not a group moderator yet.");
+    }
+    if (getModerateGroups(user).size() == 1) {
+      user.setModerator(false);
+      userService.setModerator(user);
+    }
+    return api.deleteModerator(group.getGroupId(), user.getUserId());
   }
 
   /**
@@ -149,25 +132,16 @@ public class ModerateService {
    * @return true if delete is successful
    */
   public boolean deleteGroupMember(Group group, User moderator, User user) {
-    boolean b = false;
-    Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
-    Optional<User> optionalUser = userService.findUserByName(user.getName());
-    if (optionalGroup.isPresent() && optionalUser.isPresent()) {
-      checkModerator(group, moderator);
-      List<User> moderators = getModerators(group);
-      if (moderators.contains(user)) {
-        throw new IllegalStateException("Cannot delete a group moderator.");
-      }
-      List<User> members = getMembers(group);
-      if (!members.contains(user)) {
-        throw new IllegalStateException("The user is not a member of the group yet.");
-      }
-
-      Group g = optionalGroup.get();
-      User u = optionalUser.get();
-      b = api.deleteMember(g.getGroupId(), u.getUserId());
+    checkModerator(group, moderator);
+    List<User> moderators = getModerators(group);
+    if (moderators.contains(user)) {
+      throw new IllegalStateException("Cannot delete a group moderator.");
     }
-    return b;
+    List<User> members = getMembers(group);
+    if (!members.contains(user)) {
+      throw new IllegalStateException("The user is not a member of the group yet.");
+    }
+    return api.deleteMember(group.getGroupId(), user.getUserId());
   }
 
   /**
@@ -179,20 +153,12 @@ public class ModerateService {
    * @return true if add member success
    */
   public boolean addGroupMember(Group group, User moderator, User member) {
-    Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
-    Optional<User> optionalMember = userService.findUserByName(member.getName());
-    boolean b = false;
-    if (optionalGroup.isPresent() && optionalMember.isPresent()) {
-      checkModerator(group, moderator);
-      List<User> members = getMembers(group);
-      if (members.contains(member)) {
-        throw new IllegalStateException("The user to be added is already the group member.");
-      }
-      Group g = optionalGroup.get();
-      User u = optionalMember.get();
-      b = api.addMember(g.getGroupId(), u.getUserId());
+    checkModerator(group, moderator);
+    List<User> members = getMembers(group);
+    if (members.contains(member)) {
+      throw new IllegalStateException("The user to be added is already the group member.");
     }
-    return b;
+    return api.addMember(group.getGroupId(), member.getUserId());
   }
 
   public boolean addGroupMember(Integer groupId, Integer userId) {
@@ -207,13 +173,8 @@ public class ModerateService {
    * @return its moderator list
    */
   public List<User> getModerators(Group group) {
-    List<User> list = new ArrayList<>();
-    Optional<Group> optional = groupService.findGroupByName(group.getName());
-    if (optional.isPresent()) {
-      int groupId = optional.get().getGroupId();
-      list = api.getModerators(groupId);
-    }
-    return list;
+    int groupId = group.getGroupId();
+    return api.getModerators(groupId);
   }
 
   /**
@@ -223,13 +184,8 @@ public class ModerateService {
    * @return its member list
    */
   public List<User> getMembers(Group group) {
-    List<User> list = new ArrayList<>();
-    Optional<Group> optional = groupService.findGroupByName(group.getName());
-    if (optional.isPresent()) {
-      int groupId = optional.get().getGroupId();
-      list = api.getMembers(groupId);
-    }
-    return list;
+    int groupId = group.getGroupId();
+    return api.getMembers(groupId);
   }
 
   /**
@@ -239,13 +195,8 @@ public class ModerateService {
    * @return its moderated group list
    */
   public List<Group> getModerateGroups(User user) {
-    List<Group> list = new ArrayList<>();
-    Optional<User> optional = userService.findUserByName(user.getName());
-    if (optional.isPresent()) {
-      int userId = optional.get().getUserId();
-      list = api.getModerateGroups(userId);
-    }
-    return list;
+    int userId = user.getUserId();
+    return api.getModerateGroups(userId);
   }
 
   /**
@@ -255,13 +206,8 @@ public class ModerateService {
    * @return the group list
    */
   public List<Group> getHasGroups(User user) {
-    List<Group> list = new ArrayList<>();
-    Optional<User> optional = userService.findUserByName(user.getName());
-    if (optional.isPresent()) {
-      int userId = optional.get().getUserId();
-      list = api.getHasGroups(userId);
-    }
-    return list;
+    int userId = user.getUserId();
+    return api.getHasGroups(userId);
   }
 
   public List<Group> getHasGroups(int userId) {
@@ -280,27 +226,18 @@ public class ModerateService {
    * @return true if invitation created successfully
    */
   public boolean createInvitation(Group group, User inviter, User invitee, boolean isInvite) {
-    boolean b = false;
-    Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
-    Optional<User> optionalUser = userService.findUserByName(invitee.getName());
-    if (optionalGroup.isPresent() && optionalUser.isPresent()) {
-      List<User> members = getMembers(group);
-      String operation = Boolean.TRUE.equals(isInvite) ? "invite" : "remove";
-      if (!members.contains(inviter)) {
-        throw new IllegalStateException("The current user is not a member of the group and cannot " + operation + " members.");
-      }
-      if (Boolean.TRUE.equals(isInvite) && members.contains(invitee)) {
-        throw new IllegalStateException("The user to be added is already the group member.");
-      }
-      if (Boolean.FALSE.equals(isInvite) && !members.contains(invitee)) {
-        throw new IllegalStateException("The user to be deleted is currently not the group member.");
-      }
-
-      Group g = optionalGroup.get();
-      User u = optionalUser.get();
-      b = api.createInvitation(g.getGroupId(), u.getUserId(), isInvite);
+    List<User> members = getMembers(group);
+    String operation = Boolean.TRUE.equals(isInvite) ? "invite" : "remove";
+    if (!members.contains(inviter)) {
+      throw new IllegalStateException("The current user is not a member of the group and cannot " + operation + " members.");
     }
-    return b;
+    if (Boolean.TRUE.equals(isInvite) && members.contains(invitee)) {
+      throw new IllegalStateException("The user to be added is already the group member.");
+    }
+    if (Boolean.FALSE.equals(isInvite) && !members.contains(invitee)) {
+      throw new IllegalStateException("The user to be deleted is currently not the group member.");
+    }
+    return api.createInvitation(group.getGroupId(), invitee.getUserId(), isInvite);
   }
 
 
@@ -313,17 +250,8 @@ public class ModerateService {
    * @return true if delete success
    */
   public boolean deleteInvitation(Group group, User moderator, User invitee) {
-    boolean b = false;
-    Optional<Group> optionalGroup = groupService.findGroupByName(group.getName());
-    Optional<User> optionalUser = userService.findUserByName(invitee.getName());
-    if (optionalGroup.isPresent() && optionalUser.isPresent()) {
-      checkModerator(group, moderator);
-
-      Group g = optionalGroup.get();
-      User u = optionalUser.get();
-      b = api.deleteInvitation(g.getGroupId(), u.getUserId());
-    }
-    return b;
+    checkModerator(group, moderator);
+    return api.deleteInvitation(group.getGroupId(), invitee.getUserId());
   }
 
 

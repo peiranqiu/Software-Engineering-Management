@@ -27,7 +27,6 @@ public class FollowAPI extends DBUtils {
    * Construct a followAPI object.
    */
   public FollowAPI() {
-    super();
     userAPI = new UserAPI();
     groupAPI = new GroupAPI();
   }

@@ -97,6 +97,20 @@ public final class UserController {
   }
 
   /**
+   * Government watches a user
+   *
+   * @param id the user id
+   * @return user with updated watch status
+   */
+  @POST
+  @Path("/{userId}/watch")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String watchUser(@PathParam("userId") int id) {
+    User u = userService.setWatched(id);
+    return new Gson().toJson(u);
+  }
+
+  /**
    * Get followers of a user
    *
    * @param id the user id

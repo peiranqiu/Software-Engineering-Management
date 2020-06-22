@@ -5,7 +5,7 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.api.UserAPI;
+import com.neu.prattle.service.api.APIFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,13 +26,13 @@ public class UserServiceImpl implements UserService {
     userService = new UserServiceImpl();
   }
 
-  private UserAPI api;
+  private APIFactory api;
 
   /***
    * UserServiceImpl is a Singleton class.
    */
   private UserServiceImpl() {
-    api = new UserAPI();
+    api = new APIFactory();
   }
 
   /**
@@ -47,19 +47,18 @@ public class UserServiceImpl implements UserService {
   /**
    * Set the api useed by user Service.
    *
-   * @param userAPI user api
    */
   @Override
-  public void setAPI(UserAPI userAPI) {
-    api = userAPI;
+  public void setAPI(APIFactory newAPIFactory) {
+    api = newAPIFactory;
   }
 
   @Override
   public Optional<User> findUserByName(String name) {
     Optional<User> optional = Optional.empty();
     try {
-      if (api.getUserByName(name) != null) {
-        optional = Optional.of(api.getUserByName(name));
+      if (api.getUser(name) != null) {
+        optional = Optional.of(api.getUser(name));
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -71,7 +70,7 @@ public class UserServiceImpl implements UserService {
   public User findUserById(int id) {
     User user = new User();
     try {
-      user = api.getUserById(id);
+      user = api.getUser(id);
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
@@ -102,7 +101,7 @@ public class UserServiceImpl implements UserService {
     }
 
     try {
-      api.addUser(user);
+      api.create(user);
       return true;
     } catch (IllegalStateException e) {
       throw new UserAlreadyPresentException(String.format("User already present with name: %s", user.getName()));
@@ -113,17 +112,15 @@ public class UserServiceImpl implements UserService {
   public User updateUser(User user, String field) {
     User u = null;
     try {
-      User newUser = api.getUserByName(user.getName());
+      User newUser = api.getUser(user.getName());
       if (newUser == null) {
         throw new UserNotFoundException(String.format("User %s not found.", user.getName()));
       }
       newUser.setPassword(user.getPassword());
       if (field.equals("password")) {
-        String value = user.getPassword();
-        u = api.updateUser(newUser, field, value);
+        u = api.updateUser(newUser, field, user.getPassword());
       } else if (field.equals("avatar")) {
-        String value = user.getAvatar();
-        u = api.updateUser(newUser, field, value);
+        u = api.updateUser(newUser, field, user.getAvatar());
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -135,6 +132,17 @@ public class UserServiceImpl implements UserService {
   public User setModerator(User user) {
     try {
       user = api.setModerator(user);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return user;
+  }
+
+  @Override
+  public User setWatched(int userId) {
+    User user = null;
+    try {
+      user = api.setWatched(userId);
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }

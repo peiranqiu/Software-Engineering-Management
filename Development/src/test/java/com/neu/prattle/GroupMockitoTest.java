@@ -5,6 +5,7 @@ import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.api.APIFactory;
 import com.neu.prattle.service.api.FollowAPI;
 import com.neu.prattle.service.api.GroupAPI;
 
@@ -36,33 +37,26 @@ public class GroupMockitoTest {
   private GroupService groupService;
 
   @Mock
-  private GroupAPI api;
+  private APIFactory api;
 
-  @Mock
-  private FollowAPI followAPI;
-
-  private Group group1;
   private Group group2 = new Group("testGroup2");
-  private Group group3 = new Group("testGroup3");
 
   @Before
   public void setUp() {
     groupService = GroupServiceImpl.getInstance();
-    api = mock(GroupAPI.class);
-    followAPI = new FollowAPI();
-    followAPI = mock(FollowAPI.class);
+    api = mock(APIFactory.class);
   }
 
   @Test
   public void testAddGroup() {
-    when(api.addGroup(any(Group.class))).thenReturn(true);
+    when(api.create(any(Group.class))).thenReturn(true);
     groupService.setAPI(api);
     assertTrue(groupService.addGroup(group2));
   }
 
   @Test(expected = GroupAlreadyPresentException.class)
   public void testGroupAlreadyExist() {
-    when(api.addGroup(any(Group.class))).thenThrow(GroupAlreadyPresentException.class);
+    when(api.create(any(Group.class))).thenThrow(GroupAlreadyPresentException.class);
     groupService.setAPI(api);
     groupService.addGroup(group2);
   }
@@ -81,14 +75,14 @@ public class GroupMockitoTest {
   @Test
   public void testgetSubGroupList() throws SQLException {
     List<Group> groupList = groupService.getSubGroupList(4);
-    when(api.getSubGroupList(anyInt())).thenReturn(groupList);
+    when(api.getAllSubgroups(anyInt())).thenReturn(groupList);
     groupService.setAPI(api);
     assertEquals(groupList, groupService.getSubGroupList(4));
   }
 
   @Test
   public void testAddSubgroupIntoGroup() throws SQLException {
-    when(api.addSubgroupIntoGroup(anyInt(), anyInt())).thenReturn(true);
+    when(api.addSubgroup(anyInt(), anyInt())).thenReturn(true);
     groupService.setAPI(api);
     assertTrue(groupService.addSubgroupIntoGroup(1, 4));
   }
@@ -103,17 +97,15 @@ public class GroupMockitoTest {
 
   @Test
   public void testFindGroupById() throws SQLException {
-    when(api.getGroupById(anyInt())).thenReturn(group2);
+    when(api.getGroup(anyInt())).thenReturn(group2);
     groupService.setAPI(api);
     assertEquals(groupService.getGroupById(group2.getGroupId()).getName(), group2.getName());
   }
 
   @Test
   public void testSetPasswordForGroup() throws SQLException {
-    when(api.setPasswordforGroup(anyInt(), anyString())).thenReturn(true);
+    when(api.setGroupPassword(anyInt(), anyString())).thenReturn(true);
     groupService.setAPI(api);
-    when(followAPI.groupGetFollowers(anyInt())).thenReturn(new ArrayList<>());
-    groupService.setFollowAPI(followAPI);
     assertTrue(groupService.setPasswordforGroup(group2.getGroupId(), "passWord1"));
   }
 
@@ -134,22 +126,18 @@ public class GroupMockitoTest {
     followers.add(f1);
     followers.add(f2);
 
-    when(api.setPasswordforGroup(anyInt(), anyString())).thenReturn(true);
+    when(api.setGroupPassword(anyInt(), anyString())).thenReturn(true);
     groupService.setAPI(api);
-
-    when(followAPI.groupGetFollowers(anyInt())).thenReturn(followers);
-    groupService.setFollowAPI(followAPI);
-
     assertTrue(groupService.setPasswordforGroup(1, "ABCabc1234"));
   }
 
   @Test
   public void testSQLException() throws SQLException {
     when(api.getGroup(anyString())).thenThrow(SQLException.class);
-    when(api.setPasswordforGroup(anyInt(), anyString())).thenThrow(SQLException.class);
-    when(api.addSubgroupIntoGroup(anyInt(), anyInt())).thenThrow(SQLException.class);
-    when(api.getSubGroupList(anyInt())).thenThrow(SQLException.class);
-    when(api.getGroupById(anyInt())).thenThrow(SQLException.class);
+    when(api.getGroup(anyInt())).thenThrow(SQLException.class);
+    when(api.setGroupPassword(anyInt(), anyString())).thenThrow(SQLException.class);
+    when(api.addSubgroup(anyInt(), anyInt())).thenThrow(SQLException.class);
+    when(api.getAllSubgroups(anyInt())).thenThrow(SQLException.class);
     when(api.getAllGroups()).thenThrow(SQLException.class);
     groupService.setAPI(api);
     groupService.findGroupByName("1");
@@ -160,6 +148,4 @@ public class GroupMockitoTest {
     groupService.getAllGroups();
 
   }
-
-
 }
