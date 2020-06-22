@@ -195,3 +195,7 @@ p {
     cursor: pointer;
 }
 
+#invitation-tab{
+    display: none;
+}
+

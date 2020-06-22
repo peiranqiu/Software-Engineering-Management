@@ -46,6 +46,12 @@
                     Following Groups
                 </button>
 
+                <button class="tablinks" id="invitation-tab">
+                        <!--onclick='getFollowedGroup(event)'-->
+
+                    Invitations
+                </button>
+
 
             </div>
 
@@ -71,6 +77,9 @@
             <div class="groupModerators" id="Group Moderators">
             </div>
             <div class="groupMembers" id="Group Members">
+            </div>
+
+            <div class="tabcontent" id="Invitation">
             </div>
 
 
@@ -148,6 +157,22 @@
         </td>
 
     </tr>
+
+    <tr>
+        <td>
+        <select id="invitee">
+            <option disabled hidden selected value="">User</option>
+        </select>
+
+        to
+            <input placeholder="Group" />
+
+            <button>Invite</button>
+        </td>
+
+
+    </tr>
+
 
 
 </table>

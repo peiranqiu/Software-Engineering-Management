@@ -35,11 +35,13 @@ async function getAllUsers() {
     console.log(response);
 
     let select = document.getElementById('to');
+    let invitee = document.getElementById('invitee');
     response.forEach((user) => {
         let option = document.createElement("option");
         option.value = user.name;
         option.text = user.name;
         select.appendChild(option);
+        invitee.appendChild(option);
     })
 }
 
@@ -62,6 +64,11 @@ async function connect() {
 
     if (response !== null) {
         currentUser = response;
+
+        if (currentUser.isModerator){
+            document.getElementById("invitation-tab").style.display = 'block';
+        }
+
         let host = document.location.host;
         let pathname = document.location.pathname;
 
