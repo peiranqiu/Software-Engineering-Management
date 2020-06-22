@@ -22,17 +22,14 @@ public class ModerateAPI extends DBUtils {
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   private UserAPI userAPI;
   private GroupAPI groupAPI;
-  private FollowAPI followAPI;
   private ResultSet rs = null;
 
   /**
    * Construct a moderateAPI object.
    */
   public ModerateAPI() {
-    super();
     userAPI = new UserAPI();
     groupAPI = new GroupAPI();
-    followAPI = new FollowAPI();
   }
 
   /**
@@ -261,34 +258,5 @@ public class ModerateAPI extends DBUtils {
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return list;
-  }
-
-  /**
-   * Delete a group and its moderators, members, followers subgroups and invitations.
-   */
-  public boolean deleteGroup(int groupId) {
-    List<User> moderators = getModerators(groupId);
-    for (User u : moderators) {
-      deleteModerator(groupId, u.getUserId());
-    }
-    List<User> members = getMembers(groupId);
-    for (User u : members) {
-      deleteMember(groupId, u.getUserId());
-    }
-    List<User> followers = followAPI.groupGetFollowers(groupId);
-    for (User u : followers) {
-      followAPI.userUnfollowGroup(u.getUserId(), groupId);
-    }
-    Map<User, Boolean> invitations = getInvitationsOfGroup(groupId);
-    for (User u : invitations.keySet()) {
-      deleteInvitation(groupId, u.getUserId());
-    }
-    try {
-      groupAPI.deleteGroupFromGroupHasGroup(groupId);
-    } catch (SQLException e) {
-      LOGGER.log(Level.INFO, e.getMessage());
-    }
-    groupAPI.deleteGroup(groupId);
-    return true;
   }
 }

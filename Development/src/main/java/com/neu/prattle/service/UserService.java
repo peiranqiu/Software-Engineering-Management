@@ -1,7 +1,7 @@
 package com.neu.prattle.service;
 
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.api.UserAPI;
+import com.neu.prattle.service.api.APIFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +58,13 @@ public interface UserService {
   User setModerator(User user);
 
   /**
+   * Update the user's government watched control.
+   * @param userId the user id
+   * @return the updated user
+   */
+  User setWatched(int userId);
+
+  /**
    * Get all users in the database.
    *
    * @return all users
@@ -65,7 +72,7 @@ public interface UserService {
   List<User> getAllUsers();
 
   /**
-   * Set the user api used by this service
+   * Set api to use
    */
-  void setAPI(UserAPI api);
+  void setAPI(APIFactory apiFactory);
 }
