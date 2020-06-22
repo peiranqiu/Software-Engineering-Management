@@ -22,10 +22,6 @@ public class GroupAPI extends DBUtils {
   private ResultSet rs1 = null;
   private PreparedStatement stmt1 = null;
 
-  public GroupAPI() {
-    super();
-  }
-
   /**
    * add group into database
    *
@@ -141,25 +137,6 @@ public class GroupAPI extends DBUtils {
       stmt.close();
     }
     return true;
-  }
-
-  /**
-   * method to delete a subgroup from a group
-   */
-  public void deleteSubgroupfromGroup(int groupId, int subGroupId) throws SQLException {
-    try {
-      con = getConnection();
-      String sql = "DELETE FROM Group_has_Group WHERE super_Group_id = ? AND sub_Group_id = ?";
-      stmt = con.prepareStatement(sql);
-      stmt.setInt(1, groupId);
-      stmt.setInt(2, subGroupId);
-      stmt.executeUpdate();
-
-    } catch (SQLException e) {
-      LOGGER.log(Level.INFO, e.getMessage());
-    } finally {
-      stmt.close();
-    }
   }
 
   /**

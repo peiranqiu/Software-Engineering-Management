@@ -20,14 +20,6 @@ public abstract class DBUtils {
 
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   protected Connection con = null;
-  protected DataSource ds;
-
-  /**
-   * Construct a DBUtils object.
-   */
-  public DBUtils() {
-
-  }
 
   /**
    * Connect to the db
@@ -39,7 +31,7 @@ public abstract class DBUtils {
       try {
         Context initCtx = new InitialContext();
         Context envCtx = (Context) initCtx.lookup("java:comp/env");
-        ds = (DataSource) envCtx.lookup("jdbc/mydb");
+        DataSource ds = (DataSource) envCtx.lookup("jdbc/mydb");
         con = ds.getConnection();
       } catch (SQLException e) {
         LOGGER.log(Level.INFO, e.getMessage());

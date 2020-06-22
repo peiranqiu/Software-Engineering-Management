@@ -8,6 +8,7 @@ import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
+import com.neu.prattle.service.api.APIFactory;
 import com.neu.prattle.service.api.ModerateAPI;
 
 import org.junit.Before;
@@ -55,7 +56,7 @@ public class ModerateMockitoTest {
   private UserService userService;
 
   @Mock
-  private ModerateAPI api;
+  private APIFactory api;
 
   @Before
   public void setUp() {
@@ -64,7 +65,7 @@ public class ModerateMockitoTest {
     groupService = GroupServiceImpl.getInstance();
     groupService = mock(GroupService.class);
     moderateService = ModerateService.getInstance();
-    api = mock(ModerateAPI.class);
+    api = mock(APIFactory.class);
   }
 
   /**
@@ -85,8 +86,6 @@ public class ModerateMockitoTest {
     when(api.getModerators(anyInt())).thenReturn(new ArrayList<>());
     when(api.getMembers(anyInt())).thenReturn(new ArrayList<>());
     moderateService.setAPI(api);
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
-    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     moderateService.setGroupService(groupService);
     moderateService.setUserService(userService);
     assertEquals(moderateService.addGroupModerator(group1, user1, user1), user1);
@@ -113,9 +112,7 @@ public class ModerateMockitoTest {
     userService.addUser(user3);
     when(api.getMembers(anyInt())).thenReturn(new ArrayList<>());
     when(api.addMember(anyInt(), anyInt())).thenReturn(true);
-    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     moderateService.setGroupService(groupService);
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
     moderateService.setUserService(userService);
     List<User> list = new ArrayList<>();
     list.add(user1);
@@ -136,7 +133,6 @@ public class ModerateMockitoTest {
     when(api.getHasGroups(anyInt())).thenReturn(list);
     moderateService.setAPI(api);
     moderateService.setGroupService(groupService);
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
     moderateService.setUserService(userService);
     assertEquals(moderateService.getModerateGroups(user1).get(0).getName(), group1.getName());
     assertEquals(moderateService.getHasGroups(user3).get(0).getName(), group1.getName());
@@ -183,7 +179,7 @@ public class ModerateMockitoTest {
   @Test
   public void test2AddModeratorSuccess() {
     moderateService = helperAddModerator(false);
-    assertEquals(moderateService.addGroupModerator(group1, user1, user3).getName(), user1.getName());
+    assertEquals(moderateService.addGroupModerator(group1, user1, user3).getName(), user3.getName());
   }
 
   /**
@@ -496,9 +492,7 @@ public class ModerateMockitoTest {
    * @return moderate service
    */
   private ModerateService helperService() {
-    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     moderateService.setGroupService(groupService);
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(user1));
     when(userService.findUserById(anyInt())).thenReturn(user1);
     moderateService.setUserService(userService);
     return moderateService;

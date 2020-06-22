@@ -52,7 +52,6 @@ public class ChatEndpointMockitoTest {
   private static User testUser3 = new User("testName3", "User3Password");
   private Message message;
   private Group group1 = new Group("testChatGroup1");
-  private Group group2 = new Group("testChatGroup2");
 
 
   // Mocking Session to connect with websocket
