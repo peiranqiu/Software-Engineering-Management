@@ -450,7 +450,6 @@ async function getGroupInvitations(groupId) {
         cur.replaceChild(list, cur.childNodes[0]);
     }
 
-    console.log("global moderators:" + moderators)
     if (moderators.includes(currentUser.name)){
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"}
@@ -791,7 +790,6 @@ async function getGroupModerators(groupId) {
             }
         }).then(rs => rs.json());
 
-    console.log("Moderators:" + response);
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
     let title = document.createElement('h3');
