@@ -36,14 +36,7 @@ public class GroupEntityTest {
     User moderator = new User();
     moderator.setName("moderator1");
     moderator.setModerator(true);
-
-  }
-
-  @Test
-  public void test3() {
-    Group group1 = new Group("group1");
-    Group group2 = new Group("group2");
-    Group group3 = new Group("group3");
+    assertTrue(moderator.getModerator());
 
   }
 

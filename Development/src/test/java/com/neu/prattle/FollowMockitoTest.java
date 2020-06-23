@@ -44,20 +44,10 @@ public class FollowMockitoTest {
   private FollowService followService;
 
   @Mock
-  private UserService userService;
-
-  @Mock
-  private GroupService groupService;
-
-  @Mock
   private APIFactory api;
 
   @Before
   public void setup() {
-    userService = UserServiceImpl.getInstance();
-    userService = mock(UserService.class);
-    groupService = GroupServiceImpl.getInstance();
-    groupService = mock(GroupService.class);
     followService = FollowService.getInstance();
     api = APIFactory.getInstance();
     api = mock(APIFactory.class);
@@ -68,13 +58,8 @@ public class FollowMockitoTest {
    */
   @Test
   public void testUserFollowUser() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    assertTrue(userService.addUser(user1));
-    assertTrue(userService.addUser(user2));
-
     List<User> list = new ArrayList<>();
     list.add(user2);
-    followService.setUserService(userService);
 
     when(api.getFollowedUsers(anyInt())).thenReturn(list);
     when(api.followUser(anyInt(), anyInt())).thenReturn(true);
@@ -85,7 +70,6 @@ public class FollowMockitoTest {
     assertTrue(followService.followUser(user1.getUserId(), user2.getUserId()));
     assertEquals(followService.getFollowingUsers(user1).get(0).getName(), user2.getName());
 
-    followService.setUserService(userService);
     when(api.getFollowedUsers(anyInt())).thenReturn(list);
     followService.setAPI(api);
     assertTrue(followService.unfollowUser(user1, user2));
@@ -100,11 +84,6 @@ public class FollowMockitoTest {
    */
   @Test(expected = AlreadyFollowException.class)
   public void testFollowUserFail() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    assertTrue(userService.addUser(user1));
-    assertTrue(userService.addUser(user2));
-
-    followService.setUserService(userService);
     when(api.followUser(anyInt(), anyInt())).thenReturn(true);
     followService.setAPI(api);
     assertTrue(followService.followUser(user1, user2));
@@ -119,11 +98,7 @@ public class FollowMockitoTest {
    */
   @Test(expected = AlreadyFollowException.class)
   public void testFollowUserFail1() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    assertTrue(userService.addUser(user1));
-    assertTrue(userService.addUser(user2));
 
-    followService.setUserService(userService);
     when(api.followUser(anyInt(), anyInt())).thenReturn(true);
     followService.setAPI(api);
     assertTrue(followService.followUser(user1, user2));
@@ -140,11 +115,7 @@ public class FollowMockitoTest {
    */
   @Test(expected = FollowNotFoundException.class)
   public void testUnfollowUserFail() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    userService.addUser(user2);
     followService.setAPI(api);
-    followService.setUserService(userService);
     followService.unfollowUser(user1, user2);
   }
 
@@ -153,11 +124,6 @@ public class FollowMockitoTest {
    */
   @Test
   public void testUserGetFollowers() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    userService.addUser(user2);
-
-    followService.setUserService(userService);
     when(api.userGetFollowers(anyInt())).thenReturn(new ArrayList<>());
     followService.setAPI(api);
     assertTrue(followService.userGetFollowers(user2).isEmpty());
@@ -177,12 +143,7 @@ public class FollowMockitoTest {
    */
   @Test
   public void testGetFollowingUsers() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    userService.addUser(user2);
-
     followService.setAPI(api);
-    followService.setUserService(userService);
     assertTrue(followService.getFollowingUsers(user1).isEmpty());
     assertTrue(followService.getFollowingUsers(user1.getUserId()).isEmpty());
 
@@ -198,12 +159,7 @@ public class FollowMockitoTest {
    */
   @Test
   public void testGetFollowingUsers1() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    userService.addUser(user2);
-
     followService.setAPI(api);
-    followService.setUserService(userService);
     assertTrue(followService.getFollowingUsers(user1).isEmpty());
     assertTrue(followService.getFollowingUsers(user1.getUserId()).isEmpty());
   }
@@ -213,18 +169,9 @@ public class FollowMockitoTest {
    */
   @Test
   public void testFollowGroup() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    when(groupService.addGroup(any(Group.class))).thenReturn(true);
-    groupService.addGroup(group1);
-
-    when(userService.findUserById(anyInt())).thenReturn(user1);
-    when(groupService.getGroupById(anyInt())).thenReturn(group1);
     when(api.followGroup(anyInt(), anyInt())).thenReturn(true);
     when(api.getFollowedGroups(anyInt())).thenReturn(new ArrayList<>());
     followService.setAPI(api);
-    followService.setUserService(userService);
-    followService.setGroupService(groupService);
     assertTrue(followService.followGroup(user1, group1));
     assertTrue(followService.followGroup(user1.getUserId(), group1.getGroupId()));
 
@@ -247,12 +194,7 @@ public class FollowMockitoTest {
    */
   @Test
   public void testGetFollowingGroups1() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    userService.addUser(user2);
-
     followService.setAPI(api);
-    followService.setUserService(userService);
     assertTrue(followService.getFollowingGroups(user1).isEmpty());
     assertTrue(followService.getFollowingGroups(user1.getUserId()).isEmpty());
   }
@@ -263,14 +205,8 @@ public class FollowMockitoTest {
    */
   @Test(expected = AlreadyFollowException.class)
   public void testFollowGroupFail1() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    when(groupService.addGroup(any(Group.class))).thenReturn(true);
-    groupService.addGroup(group1);
     when(api.followGroup(anyInt(), anyInt())).thenReturn(true);
     followService.setAPI(api);
-    followService.setUserService(userService);
-    followService.setGroupService(groupService);
     assertTrue(followService.followGroup(user1, group1));
 
     when(api.getFollowedGroups(anyInt())).thenReturn(Arrays.asList(group1));
@@ -283,13 +219,7 @@ public class FollowMockitoTest {
    */
   @Test(expected = NoPrivilegeException.class)
   public void testFollowGroupFail2() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    when(groupService.addGroup(any(Group.class))).thenReturn(true);
-    groupService.addGroup(group1);
     followService.setAPI(api);
-    followService.setUserService(userService);
-    followService.setGroupService(groupService);
 
     group1.setPassword("Password1");
     followService.followGroup(user1, group1);
@@ -300,13 +230,7 @@ public class FollowMockitoTest {
    */
   @Test(expected = FollowNotFoundException.class)
   public void testUnfollowGroupFail1() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    when(groupService.addGroup(any(Group.class))).thenReturn(true);
-    groupService.addGroup(group1);
     followService.setAPI(api);
-    followService.setUserService(userService);
-    followService.setGroupService(groupService);
     followService.unfollowGroup(user1, group1);
   }
 
@@ -315,15 +239,8 @@ public class FollowMockitoTest {
    */
   @Test
   public void testGroupGetFollowers() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    userService.addUser(user2);
-    when(groupService.addGroup(any(Group.class))).thenReturn(true);
-    groupService.addGroup(group1);
     when(api.followGroup(anyInt(), anyInt())).thenReturn(true);
     followService.setAPI(api);
-    followService.setUserService(userService);
-    followService.setGroupService(groupService);
     assertTrue(followService.followGroup(user1, group1));
     assertTrue(followService.followGroup(user2, group1));
 
@@ -341,12 +258,8 @@ public class FollowMockitoTest {
    */
   @Test
   public void testGroupGetFolowers1() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    userService.addUser(user2);
 
     followService.setAPI(api);
-    followService.setGroupService(groupService);
     assertTrue(followService.groupGetFollowers(group1).isEmpty());
   }
 
@@ -355,12 +268,7 @@ public class FollowMockitoTest {
    */
   @Test
   public void testGetFollower1() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    userService.addUser(user2);
-
     followService.setAPI(api);
-    followService.setUserService(userService);
     assertTrue(followService.userGetFollowers(user1).isEmpty());
     assertTrue(followService.userGetFollowers(user1.getUserId()).isEmpty());
   }
@@ -370,16 +278,10 @@ public class FollowMockitoTest {
    */
   @Test
   public void testGetFollowingGroups() {
-    when(userService.addUser(any(User.class))).thenReturn(true);
-    userService.addUser(user1);
-    when(groupService.addGroup(any(Group.class))).thenReturn(true);
-    groupService.addGroup(group1);
 
     when(api.followGroup(anyInt(), anyInt())).thenReturn(true);
-    followService.setGroupService(groupService);
     when(api.getFollowedGroups(anyInt())).thenReturn(new ArrayList<>());
     followService.setAPI(api);
-    followService.setUserService(userService);
     assertTrue(followService.getFollowingGroups(user1).isEmpty());
     assertTrue(followService.getFollowingGroups(user1.getUserId()).isEmpty());
     assertTrue(followService.followGroup(user1, group1));

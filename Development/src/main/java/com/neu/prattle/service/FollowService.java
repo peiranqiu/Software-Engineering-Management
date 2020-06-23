@@ -21,8 +21,6 @@ public class FollowService {
     followService = new FollowService();
   }
 
-  private UserService userService;
-  private GroupService groupService;
   private APIFactory api;
 
   /**
@@ -31,8 +29,6 @@ public class FollowService {
   private FollowService() {
 
     api = APIFactory.getInstance();
-    userService = UserServiceImpl.getInstance();
-    groupService = GroupServiceImpl.getInstance();
   }
 
   /**
@@ -51,19 +47,6 @@ public class FollowService {
     api = apiFactory;
   }
 
-  /**
-   * Set userService to be used by this service.
-   */
-  public void setUserService(UserService service) {
-    userService = service;
-  }
-
-  /**
-   * Set groupService to be used by this service.
-   */
-  public void setGroupService(GroupService service) {
-    groupService = service;
-  }
 
   /**
    * User1 follows user2. Return true if successfully followed.
@@ -169,8 +152,6 @@ public class FollowService {
   }
 
   public boolean unfollowGroup(int userId, int groupId) {
-    User user = userService.findUserById(userId);
-    Group group = groupService.getGroupById(groupId);
     return api.unfollowGroup(userId, groupId);
   }
 
