@@ -173,9 +173,8 @@
 </body>
 <script src="websocket.js"></script>
 <script>
-    window.onload=function(){
-        getAllUsers();
-        getLanguageAPI();
+    window.onload=async function(){
+        await getAllUsers().then(()=>getLanguageAPI());
     }
 </script>
 </html>

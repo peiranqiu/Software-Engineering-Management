@@ -53,13 +53,13 @@ async function getAllUsers() {
     console.log(response);
 
     let select = document.getElementById('to');
-    let invitee = document.getElementById('invitee');
+    //let invitee = document.getElementById('invitee');
     response.forEach((user) => {
         let option = document.createElement("option");
         option.value = user.name;
         option.text = user.name;
         select.appendChild(option);
-        invitee.appendChild(option);
+        //invitee.appendChild(option);
     })
 }
 
@@ -103,7 +103,7 @@ async function connect() {
                                       });
             console.log(json);
 
-            const response1 = await fetch(URL +  'user/send', {
+            const response = await fetch(URL +  'user/send', {
                 method: 'POST',
                 body: JSON.stringify(message),
                 headers: {
@@ -111,7 +111,7 @@ async function connect() {
                 }
             }).then(rs => rs.json());
 
-            console.log(response1);
+            console.log(response);
         };
     } else {
         console.log("Log in failed.")
@@ -202,29 +202,30 @@ function generateList(response, operatoin) {
 
             });
         } else if (operatoin === 'getGroups') {
-            user.addEventListener('click', (event) => {
-                document.getElementById('toGroup').value = event.target.innerHTML;
-                user.addEventListener('click', (e) => {
-                    getSubGroups(u.groupId);
-                    getGroupFollowers(u.groupId);
-                    getGroupModerators(u.groupId);
-                    getGroupMembers(u.groupId);
+
+                user.addEventListener('click', async function(event){
+                    document.getElementById('toGroup').value = event.target.innerHTML;
+                   await getSubGroups(u.groupId)
+                       .then(()=>getGroupFollowers(u.groupId))
+                       .then(()=>(getGroupModerators(u.groupId)))
+                       .then(()=>getGroupMembers(u.groupId))
+                       .then(()=>getGroupInvitations(u.groupId));
+
                     // if current user is in group moderator list, then get group invitations
-                    getGroupInvitations(u.groupId);
+
 
                 });
-            });
         } else if (operatoin === 'getAllGroups') {
             follow.innerText = "+";
             follow.addEventListener('click', (event) => {
                 followGroup(u.groupId);
             });
-            user.addEventListener('click', (event) => {
-                getSubGroups(u.groupId);
-                getGroupFollowers(u.groupId);
-                getGroupModerators(u.groupId);
-                getGroupMembers(u.groupId);
-                getGroupInvitations(u.groupId);
+            user.addEventListener('click', async function(){
+                await getSubGroups(u.groupId)
+                    .then(()=>getGroupFollowers(u.groupId))
+                    .then(()=>(getGroupModerators(u.groupId)))
+                    .then(()=>getGroupMembers(u.groupId))
+                    .then(()=>getGroupInvitations(u.groupId));
 
             });
         } else if (operatoin === 'getFollowingGroups') {
@@ -426,6 +427,7 @@ async function getGroupInvitations(groupId) {
             console.log(invitation.innerText);
             list.removeChild(invitationRow);
             approveInvitation(groupId, i.userId);
+           // deleteInvitation(groupId, i.userId);
         });
         cancel.innerText = "Cancel";
         cancel.addEventListener('click', ()=>{
@@ -446,7 +448,7 @@ async function getGroupInvitations(groupId) {
     } else {
         cur.replaceChild(list, cur.childNodes[0]);
     }
-    // cur.style.display = "block";
+    cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
 }
 
@@ -825,6 +827,9 @@ async function getGroupMembers(groupId) {
                 'content-type': 'application/json'
             }
         }).then(rs => rs.json());
+
+    console.log(response);
+
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
     let title = document.createElement('h3');
