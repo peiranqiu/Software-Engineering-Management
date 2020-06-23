@@ -223,6 +223,7 @@ function generateList(response, operatoin) {
                 getGroupFollowers(u.groupId);
                 getGroupModerators(u.groupId);
                 getGroupMembers(u.groupId);
+                getGroupInvitations(u.groupId);
 
             });
         } else if (operatoin === 'getFollowingGroups') {
@@ -409,21 +410,38 @@ async function getGroupInvitations(groupId) {
                 'content-type': 'application/json'
             }
         }).then(rs => rs.json());
-    console.log(groupId);
+    console.log(response);
 
     let list = document.createElement('ul');
     list.id = 'invitation-list';
     let title = document.createElement('h3');
     title.innerText = "Invitations";
     list.appendChild(title);
+    debugger;
 
     response.forEach(i => {
 
         let invitationRow = document.createElement('div');
         let invitation = document.createElement("p");
         invitationRow.classList.add("panel");
+        let ok = document.createElement("button");
+        let cancel = document.createElement('button');
+        ok.innerText="OK";
+        ok.addEventListener('click', ()=>{
+            console.log(invitation.innerText);
+            list.removeChild(invitationRow);
+            approveInvitation(groupId, i.userId);
+            deleteInvitation(groupId, i.userId);
+        });
+        cancel.innerText = "Cancel";
+        cancel.addEventListener('click', ()=>{
+            list.removeChild(invitationRow);
+            deleteInvitation(groupId, i.userId);
+        });
         invitation.innerText = i.name;
         invitationRow.appendChild(invitation);
+        invitationRow.appendChild(ok);
+        invitationRow.appendChild(cancel);
         list.appendChild(invitationRow);
     });
     clearList("invitations");
