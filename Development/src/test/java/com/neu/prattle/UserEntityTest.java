@@ -5,8 +5,6 @@ import com.neu.prattle.model.User;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static junit.framework.TestCase.assertFalse;

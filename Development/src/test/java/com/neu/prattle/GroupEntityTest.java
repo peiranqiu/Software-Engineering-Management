@@ -31,19 +31,11 @@ public class GroupEntityTest {
   public void test2() {
     Group group2 = new Group("group2");
     User user = new User("user1");
-    group2.setFollower(user);
-    assertTrue(group2.getFollowers().contains(user));
     User member = new User();
     member.setName("member1");
-    group2.addMember(member);
-    assertTrue(group2.getMembers().contains(member));
     User moderator = new User();
     moderator.setName("moderator1");
     moderator.setModerator(true);
-    group2.addModerator(moderator);
-    assertTrue(group2.getModerators().contains(moderator));
-    group2.removeMember(member);
-    assertFalse(group2.getMembers().contains(member));
 
   }
 
@@ -52,10 +44,6 @@ public class GroupEntityTest {
     Group group1 = new Group("group1");
     Group group2 = new Group("group2");
     Group group3 = new Group("group3");
-    group1.addGroup(group2);
-    group1.addGroup(group3);
-    assertTrue(group1.getGroups().contains(group2));
-    assertTrue(group1.getGroups().contains(group3));
 
   }
 

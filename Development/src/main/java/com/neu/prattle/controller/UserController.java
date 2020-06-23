@@ -2,12 +2,10 @@ package com.neu.prattle.controller;
 
 import com.google.gson.Gson;
 
-import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
-import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;

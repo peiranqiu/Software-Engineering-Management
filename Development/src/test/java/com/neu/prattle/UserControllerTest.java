@@ -67,7 +67,7 @@ public class UserControllerTest {
 
     when(userService.addUser(any(User.class))).thenReturn(false);
     userController.setUserService(userService);
-    assertEquals(userController.createUserAccount(user1), null);
+    assertEquals(null, userController.createUserAccount(user1));
   }
 
   /**
