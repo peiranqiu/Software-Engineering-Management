@@ -3,6 +3,8 @@ const URL = 'http://localhost:8080/java-websocket/rest/';
 let ws;
 let currentUser;
 let currentGroup;
+let moderators;
+let allUsers = [];
 
 /**
  * Create a new user
@@ -55,6 +57,7 @@ async function getAllUsers() {
     let select = document.getElementById('to');
     //let invitee = document.getElementById('invitee');
     response.forEach((user) => {
+        allUsers.push(user);
         let option = document.createElement("option");
         option.value = user.name;
         option.text = user.name;
@@ -448,8 +451,13 @@ async function getGroupInvitations(groupId) {
     } else {
         cur.replaceChild(list, cur.childNodes[0]);
     }
+
+    if (moderators.includes(currentUser.name)){
     cur.style.display = "block";
-    cur.style.backgroundColor = "Gainsboro"
+    cur.style.backgroundColor = "Gainsboro"}
+    else {
+        cur.style.display = "none";
+    }
 }
 
 /**
@@ -783,11 +791,13 @@ async function getGroupModerators(groupId) {
                 'content-type': 'application/json'
             }
         }).then(rs => rs.json());
+
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
     let title = document.createElement('h3');
     title.innerText = "Group Moderators List:";
     list.appendChild(title);
+    moderators = [];
 
     let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
                                  {
@@ -806,11 +816,12 @@ async function getGroupModerators(groupId) {
     );
 
     response.forEach(i => {
-        if(i.name === currentUser.name){
+        if(currentUser !== null && i.name === currentUser.name){
             document.getElementById("Invitations").style.display = 'block';
            // console.log("Is moderator!");
         }
 
+       moderators.push(i.name);
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
         subGroupRow.classList.add("panel");
@@ -899,12 +910,41 @@ async function getGroupMembers(groupId) {
     });
     clearList("groupMembers");
     let cur = document.getElementById("Group Members");
+    cur.removeChild(cur.lastChild);
     if (cur.childNodes.length === 0) {
         cur.appendChild(list);
 
     } else {
         cur.replaceChild(list, cur.childNodes[0]);
     }
+
+    let addMember = document.createElement('div');
+    let select = document.createElement('select');
+    let btn = document.createElement('button');
+    btn.innerText = 'Invite';
+    btn.addEventListener('click', ()=>{
+        console.log(select.value);
+    });
+    let placeholder = document.createElement('option');
+    placeholder.hidden = true;
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    placeholder.value = "";
+
+    select.append(placeholder);
+
+    allUsers.forEach(user=>{
+        let option = document.createElement("option");
+        option.value = user.userId;
+        option.text = user.name;
+        select.appendChild(option);
+    });
+    addMember.append(select);
+    addMember.append(btn);
+
+
+   // cur.removeChild(cur.lastChild);
+    cur.appendChild(addMember);
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
 }
