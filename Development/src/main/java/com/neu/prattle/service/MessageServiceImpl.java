@@ -1,23 +1,16 @@
 package com.neu.prattle.service;
 
-import com.mysql.cj.protocol.MessageSender;
 import com.neu.prattle.model.Message;
-import com.neu.prattle.service.api.FollowAPI;
-import com.neu.prattle.service.api.GroupAPI;
 import com.neu.prattle.service.api.MessageAPI;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MessageServiceImpl implements MessageService {
-
+  private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   private static MessageService messageService;
 
   static {
@@ -54,9 +47,36 @@ public class MessageServiceImpl implements MessageService {
     api = messageAPI;
   }
 
+  @Override
+  public List<Message> getAllPrivateMessages(String fromName, String toName) {
+    List<Message> allMessages = new ArrayList<>();
+    try {
+      allMessages = api.getAllPrivateMessages(fromName, toName);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return allMessages;
+  }
 
   @Override
-  public void deleteMessage(int messageId) {
+  public boolean deleteMessage(String fromName, String toName, String timeStamp) {
+    boolean rst = false;
+    try {
+      rst = api.deleteMessage(fromName, toName, timeStamp);
+    } catch (SQLException e) {
+      LOGGER.log(Level.WARNING, e.getMessage());
+    }
+    return rst;
+  }
 
+  @Override
+  public boolean addMessage(Message message) {
+    boolean rst = false;
+    try{
+      rst = api.addMessage(message);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return rst;
   }
 }

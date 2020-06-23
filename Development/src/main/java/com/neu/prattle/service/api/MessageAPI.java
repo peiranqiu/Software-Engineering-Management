@@ -25,7 +25,7 @@ public class MessageAPI extends DBUtils {
   }
 
   /**
-   * Get all users.
+   * Get all message object for private conversation.
    */
   public List<Message> getAllPrivateMessages(String fromName, String toName) throws SQLException {
     List<Message> allMessages = new ArrayList<>();
@@ -50,16 +50,30 @@ public class MessageAPI extends DBUtils {
   /**
    * Fetch the Message with the given id from db
    *
-   * @param fromName sender name
-   * @param toName receiver name
+   * @param fromName  sender name
+   * @param toName    receiver name
    * @param timeStamp message timestamp
-   *
    * @return if the Message is in the db
-   *
    */
-  public Message deleteMessage(String fromName, String toName, String timeStamp) throws SQLException {
-    String sql = "DELETE FROM Message WHERE from = ? AND to = ? AND timeStamp = ?;";
-    return prepareMessage(sql, fromName, toName, timeStamp);
+  public boolean deleteMessage(String fromName, String toName, String timeStamp) throws SQLException {
+    boolean b = false;
+    con = getConnection();
+    String sqlDelete = "DELETE FROM Message WHERE from = ? AND to = ? AND timeStamp = ?";
+    try (PreparedStatement sttmt = con.prepareStatement(sqlDelete, Statement.RETURN_GENERATED_KEYS)) {
+      sttmt.setString(1,fromName);
+      sttmt.setString(2, toName);
+      sttmt.setString(3, timeStamp);
+      sttmt.executeUpdate();
+      ResultSet result = sttmt.getGeneratedKeys();
+      if (result.next()) {
+        b = true;
+      }
+      result.close();
+    } catch (SQLException e) {
+      throw new IllegalStateException("delete message failed.");
+    }
+    return b;
+
   }
 
 
@@ -70,9 +84,10 @@ public class MessageAPI extends DBUtils {
     try (PreparedStatement sttmt = con.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
       sttmt.setString(1, message.getFrom());
       sttmt.setString(2, message.getTo());
-      sttmt.setString(3, message.getTimeStamp());
-      sttmt.setBoolean(4, message.getSendToGroup());
-      sttmt.setString(5, message.getDate());
+      sttmt.setInt(3, message.getGroupId());
+      sttmt.setString(4, message.getTimeStamp());
+      sttmt.setBoolean(5, message.getSendToGroup());
+      sttmt.setString(6, message.getDate());
       sttmt.executeUpdate();
       ResultSet result = sttmt.getGeneratedKeys();
       if (result.next()) {
@@ -104,36 +119,5 @@ public class MessageAPI extends DBUtils {
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return message;
-  }
-
-  /**
-   * Helper method to get Message with given from, to, and timeStamp
-   *
-   * @param sql  the sql query string
-   * @param from   the sender name
-   * @param to the receiver name
-   * @param timeStamp the timeStamp
-   *
-   * @return the message if exist
-   */
-  public Message prepareMessage(String sql, String from, String to, String timeStamp) throws SQLException {
-    Message m = null;
-    try {
-      con = getConnection();
-      stmt = con.prepareStatement(sql);
-      stmt.setString(1, from);
-      stmt.setString(2, to);
-      stmt.setString(3, timeStamp);
-      rs = stmt.executeQuery();
-      if (rs.next()) {
-        m = constructMessage(rs);
-      }
-    } catch (SQLException e) {
-      LOGGER.log(Level.INFO, e.getMessage());
-    } finally {
-      rs.close();
-      stmt.close();
-    }
-    return m;
   }
 }
