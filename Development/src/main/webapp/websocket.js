@@ -84,10 +84,6 @@ async function connect() {
     if (response !== null) {
         currentUser = response;
 
-        if (currentUser.isModerator){
-            document.getElementById("invitation-tab").style.display = 'block';
-        }
-
         let host = document.location.host;
         let pathname = document.location.pathname;
 
@@ -218,6 +214,7 @@ function generateList(response, operatoin) {
                 getGroupFollowers(u.groupId);
                 getGroupModerators(u.groupId);
                 getGroupMembers(u.groupId);
+                getGroupInvitations(u.groupId);
 
             })
         } else if (operatoin === 'getFollowingGroups') {
@@ -405,6 +402,32 @@ async function getGroupInvitations(groupId) {
             }
         }).then(rs => rs.json());
     console.log(response);
+
+    // let list = document.createElement('ul');
+    // list.id = 'invitation-list';
+    // let title = document.createElement('h3');
+    // title.innerText = "Invitations";
+    // list.appendChild(title);
+    //
+    // response.forEach(i => {
+    //
+    //     let subGroupRow = document.createElement('div');
+    //     let subGroup = document.createElement("p");
+    //     subGroupRow.classList.add("panel");
+    //     subGroup.innerText = i.name;
+    //     subGroupRow.appendChild(subGroup);
+    //     list.appendChild(subGroupRow);
+    // });
+    // clearList("subGroupContent");
+    // let cur = document.getElementById("Sub Groups");
+    // if (cur.childNodes.length === 0) {
+    //     cur.appendChild(list);
+    //
+    // } else {
+    //     cur.replaceChild(list, cur.childNodes[0]);
+    // }
+    // cur.style.display = "block";
+    // cur.style.backgroundColor = "Gainsboro"
 }
 
 /**
@@ -767,6 +790,9 @@ async function getGroupModerators(groupId) {
     list.appendChild(title);
 
     response.forEach(i => {
+        if(i.name === currentUser.name){
+            document.getElementById("Invitations").style.display = 'block';
+        }
 
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
