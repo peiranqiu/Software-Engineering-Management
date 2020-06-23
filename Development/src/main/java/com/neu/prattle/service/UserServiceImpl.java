@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
    * UserServiceImpl is a Singleton class.
    */
   private UserServiceImpl() {
-    api = new APIFactory();
+    api = APIFactory.getInstance();
   }
 
   /**

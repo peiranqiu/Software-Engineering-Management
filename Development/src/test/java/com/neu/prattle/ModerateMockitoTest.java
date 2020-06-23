@@ -65,6 +65,7 @@ public class ModerateMockitoTest {
     groupService = GroupServiceImpl.getInstance();
     groupService = mock(GroupService.class);
     moderateService = ModerateService.getInstance();
+    api = APIFactory.getInstance();
     api = mock(APIFactory.class);
   }
 

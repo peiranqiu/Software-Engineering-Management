@@ -53,6 +53,7 @@ public class UserMockitoTest {
   @Before
   public void setUp() {
     userService = UserServiceImpl.getInstance();
+    api = APIFactory.getInstance();
     api = mock(APIFactory.class);
 
     user1 = new User("HarryPotter" + getRandom());

@@ -45,6 +45,7 @@ public class GroupMockitoTest {
   @Before
   public void setUp() {
     groupService = GroupServiceImpl.getInstance();
+    api = APIFactory.getInstance();
     api = mock(APIFactory.class);
   }
 

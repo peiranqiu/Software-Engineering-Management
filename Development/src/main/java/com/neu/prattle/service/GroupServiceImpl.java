@@ -21,6 +21,9 @@ public class GroupServiceImpl implements GroupService {
     groupService = new GroupServiceImpl();
   }
 
+  private GroupServiceImpl() {
+    api = APIFactory.getInstance();
+  }
   private Logger logger = Logger.getLogger(this.getClass().getName());
 
   /**

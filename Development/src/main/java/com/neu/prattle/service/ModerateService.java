@@ -30,7 +30,7 @@ public class ModerateService {
    */
   private ModerateService() {
 
-    api = new APIFactory();
+    api = APIFactory.getInstance();
     userService = UserServiceImpl.getInstance();
     groupService = GroupServiceImpl.getInstance();
   }

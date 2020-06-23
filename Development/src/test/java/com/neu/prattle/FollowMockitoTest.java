@@ -62,6 +62,7 @@ public class FollowMockitoTest {
     groupService = GroupServiceImpl.getInstance();
     groupService = mock(GroupService.class);
     followService = FollowService.getInstance();
+    api = APIFactory.getInstance();
     api = mock(APIFactory.class);
   }
 
