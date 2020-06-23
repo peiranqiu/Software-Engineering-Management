@@ -1,7 +1,6 @@
 package com.neu.prattle.service.api;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,9 +20,6 @@ public abstract class DBUtils {
 
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
   protected Connection con = null;
-//  protected String url = "jdbc:mysql://mydb.cd4ztimoe6ek.us-east-1.rds.amazonaws.com:3306/mydb?";
-//  protected String user = "mydb";
-//  protected String pd = "CS5500team4";
 
   /**
    * Connect to the db
@@ -37,7 +33,6 @@ public abstract class DBUtils {
         Context envCtx = (Context) initCtx.lookup("java:comp/env");
         DataSource ds = (DataSource) envCtx.lookup("jdbc/mydb");
         con = ds.getConnection();
-        //con = DriverManager.getConnection(url, user, pd);
       } catch (SQLException e) {
         LOGGER.log(Level.INFO, e.getMessage());
         System.exit(1);

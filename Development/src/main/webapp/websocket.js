@@ -101,8 +101,9 @@ async function connect() {
                                           "content": content,
                                           "to": document.getElementById('to').value
                                       });
+            console.log(json);
 
-            const response = await fetch(URL +  'user/send', {
+            const response1 = await fetch(URL +  'user/send', {
                 method: 'POST',
                 body: JSON.stringify(message),
                 headers: {
@@ -110,7 +111,7 @@ async function connect() {
                 }
             }).then(rs => rs.json());
 
-            console.log(response);
+            console.log(response1);
         };
     } else {
         console.log("Log in failed.")
@@ -203,7 +204,7 @@ function generateList(response, operatoin) {
         } else if (operatoin === 'getGroups') {
             user.addEventListener('click', (event) => {
                 document.getElementById('toGroup').value = event.target.innerHTML;
-                user.addEventListener('click', (event) => {
+                user.addEventListener('click', (e) => {
                     getSubGroups(u.groupId);
                     getGroupFollowers(u.groupId);
                     getGroupModerators(u.groupId);
