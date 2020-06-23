@@ -3,6 +3,7 @@ const URL = 'http://localhost:8080/java-websocket/rest/';
 let ws;
 let currentUser;
 let currentGroup;
+let moderators;
 
 /**
  * Create a new user
@@ -448,8 +449,14 @@ async function getGroupInvitations(groupId) {
     } else {
         cur.replaceChild(list, cur.childNodes[0]);
     }
+
+    console.log("global moderators:" + moderators)
+    if (moderators.includes(currentUser.name)){
     cur.style.display = "block";
-    cur.style.backgroundColor = "Gainsboro"
+    cur.style.backgroundColor = "Gainsboro"}
+    else {
+        cur.style.display = "none";
+    }
 }
 
 /**
@@ -783,18 +790,22 @@ async function getGroupModerators(groupId) {
                 'content-type': 'application/json'
             }
         }).then(rs => rs.json());
+
+    console.log("Moderators:" + response);
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
     let title = document.createElement('h3');
     title.innerText = "Group Moderators List:";
     list.appendChild(title);
+    moderators = [];
 
     response.forEach(i => {
-        if(i.name === currentUser.name){
+        if(currentUser !== null && i.name === currentUser.name){
             document.getElementById("Invitations").style.display = 'block';
            // console.log("Is moderator!");
         }
 
+       moderators.push(i.name);
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
         subGroupRow.classList.add("panel");
