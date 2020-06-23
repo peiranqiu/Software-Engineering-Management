@@ -74,6 +74,7 @@ public class GroupServiceImpl implements GroupService {
    */
   @Override
   public boolean addGroup(Group group) {
+
     return api.create(group);
   }
 

@@ -2,7 +2,6 @@ package com.neu.prattle.controller;
 
 import com.google.gson.Gson;
 
-import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
@@ -45,6 +44,30 @@ public class GroupController {
     return groupController;
   }
 
+  /**
+   * Set group service for the group controller
+   * @param service group service
+   */
+  public void setGroupService(GroupService service) {
+    groupService = service;
+  }
+
+  /**
+   * Set moderate service for the group controller
+   * @param service moderate service
+   */
+  public void setModerateService(ModerateService service) {
+    moderateService = service;
+  }
+
+  /**
+   * Set follow service for the group controller
+   * @param service follow service
+   */
+  public void setFollowService(FollowService service) {
+    followService = service;
+  }
+
   /***
    * create a group
    *
@@ -55,12 +78,8 @@ public class GroupController {
   @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
   public String createGroup(Group group) {
-    try {
-      if (groupService.addGroup(group)) {
-        return new Gson().toJson(group);
-      }
-    } catch (GroupAlreadyPresentException e) {
-      return new Gson().toJson("Group Already Present");
+    if (groupService.addGroup(group)) {
+      return new Gson().toJson(group);
     }
     return null;
   }
@@ -141,8 +160,7 @@ public class GroupController {
   @Path("/getAllGroups")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getAllGroups() {
-    List<Group> list = groupService.getAllGroups();
-    return new Gson().toJson(list);
+    return new Gson().toJson(groupService.getAllGroups());
   }
 
   /**
@@ -154,8 +172,7 @@ public class GroupController {
   @Path("/{groupId}/getSubGroups")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getSubGroups(@PathParam("groupId") int id) {
-    List<Group> list = groupService.getSubGroupList(id);
-    return new Gson().toJson(list);
+    return new Gson().toJson(groupService.getSubGroupList(id));
   }
 
   /**
@@ -183,8 +200,11 @@ public class GroupController {
   @Path("/{groupName}")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getGroupbyName(@PathParam("groupName") String name) {
-    Optional<Group> group = groupService.findGroupByName(name);
-    return new Gson().toJson(group);
+    Optional<Group> optional = groupService.findGroupByName(name);
+    if(optional.isPresent()) {
+      return new Gson().toJson(optional.get());
+    }
+    return new Gson().toJson(null);
   }
 
   /**

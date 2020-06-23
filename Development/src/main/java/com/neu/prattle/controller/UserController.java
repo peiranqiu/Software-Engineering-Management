@@ -7,6 +7,7 @@ import com.neu.prattle.model.Group;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
+import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
@@ -44,6 +45,31 @@ public final class UserController {
     return userController;
   }
 
+
+  /**
+   * Set user service for the user controller
+   * @param service user service
+   */
+  public void setUserService(UserService service) {
+    userService = service;
+  }
+
+  /**
+   * Set moderate service for the user controller
+   * @param service moderate service
+   */
+  public void setModerateService(ModerateService service) {
+    moderateService = service;
+  }
+
+  /**
+   * Set follow service for the user controller
+   * @param service follow service
+   */
+  public void setFollowService(FollowService service) {
+    followService = service;
+  }
+
   /***
    * Handles a HTTP POST request for user creation
    *
@@ -54,12 +80,8 @@ public final class UserController {
   @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
   public String createUserAccount(User user) {
-    try {
-      if (userService.addUser(user)) {
-        return new Gson().toJson(user);
-      }
-    } catch (UserAlreadyPresentException e) {
-      return new Gson().toJson("User Already Present");
+    if (userService.addUser(user)) {
+      return new Gson().toJson(user);
     }
     return null;
   }
@@ -73,8 +95,7 @@ public final class UserController {
   @Path("/getAllUser")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getAllUsers() {
-    List<User> list = userService.getAllUsers();
-    return new Gson().toJson(list);
+    return new Gson().toJson(userService.getAllUsers());
   }
 
   /**

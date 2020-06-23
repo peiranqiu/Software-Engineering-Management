@@ -1,14 +1,10 @@
 package com.neu.prattle;
 
-import com.neu.prattle.controller.GroupController;
-import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
 import com.neu.prattle.service.api.APIFactory;
-import com.neu.prattle.service.api.FollowAPI;
-import com.neu.prattle.service.api.GroupAPI;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -57,12 +53,6 @@ public class GroupMockitoTest {
     assertTrue(groupService.addGroup(group2));
   }
 
-  @Test(expected = GroupAlreadyPresentException.class)
-  public void testGroupAlreadyExist() {
-    when(api.create(any(Group.class))).thenThrow(GroupAlreadyPresentException.class);
-    groupService.setAPI(api);
-    groupService.addGroup(group2);
-  }
 
   @Test
   public void testFindGroup() throws SQLException {
