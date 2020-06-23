@@ -23,7 +23,7 @@ public class MessageServiceImpl implements MessageService {
    * MessageServiceImpl is a Singleton class.
    */
 
-  private MessageServiceImpl() {
+  public MessageServiceImpl() {
   }
 
   /**
@@ -57,16 +57,16 @@ public class MessageServiceImpl implements MessageService {
     return allMessages;
   }
 
-  @Override
-  public boolean deleteMessage(String fromName, String toName, String timeStamp) {
-    boolean rst = false;
-    try {
-      rst = api.deleteMessage(fromName, toName, timeStamp);
-    } catch (SQLException e) {
-      LOGGER.log(Level.WARNING, e.getMessage());
-    }
-    return rst;
-  }
+//  @Override
+//  public boolean deleteMessage(String fromName, String toName, String timeStamp) {
+//    boolean rst = false;
+//    try {
+//      rst = api.deleteMessage(fromName, toName, timeStamp);
+//    } catch (SQLException e) {
+//      LOGGER.log(Level.WARNING, e.getMessage());
+//    }
+//    return rst;
+//  }
 
   @Override
   public boolean addMessage(Message message) {

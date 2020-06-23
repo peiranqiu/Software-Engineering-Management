@@ -71,13 +71,10 @@ public class Message {
   @Column
   private String Date;
 
-
-  /**
-   * Initiate a new message.
-   */
   public Message() {
 
   }
+
   public static MessageBuilder messageBuilder() {
     return new MessageBuilder();
   }
@@ -142,33 +139,48 @@ public class Message {
    * Retrieve current Date
    */
   public String getDate() {
-    DateFormat dateFormat = new SimpleDateFormat("MMddyyyy");
-    Date date = new Date();
-    return dateFormat.format(date);
+    return Date;
   }
 
   /***
-   * Retrieve current Date
+   * Set current Date
    */
-  public void setDate(String Date) {
-    this.Date = Date;
+  public void setDate() {
+    DateFormat dateFormat = new SimpleDateFormat("MMddyyyy");
+    Date date = new Date();
+    this.Date = dateFormat.format(date);
+  }
+
+  /***
+   * Set current Date
+   */
+  public void setDate(String date) {
+    this.Date = date;
   }
 
   /***
    * Retrieve the time stamp of the current message
    */
   public String getTimeStamp() {
-    DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-    LocalDateTime now = LocalDateTime.now();
-    timeStamp = mdy.format(now);
     return timeStamp;
   }
 
   /***
-   * Get the time stamp of the current message
+   * Set the time stamp of the current message
    */
-  public void setTimeStamp(String timeStamp) {
-    this.timeStamp = timeStamp;
+  public void setTimeStamp()
+  {
+    DateTimeFormatter mdy = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
+    this.timeStamp = mdy.format(now);
+  }
+
+  /***
+   * Set the time stamp of the current message
+   */
+  public void setTimeStamp(String ts)
+  {
+    this.timeStamp = ts;
   }
 
   public void setGroupId(int groupId) {

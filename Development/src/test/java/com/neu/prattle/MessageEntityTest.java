@@ -12,12 +12,14 @@ import static org.junit.Assert.assertTrue;
 public class MessageEntityTest {
   @Test
   public void test1() {
-    Group group1 = new Group();
+    Message msg = new Message();
+    msg.setFrom("Julia123");
+    msg.setTo("Yijia123");
+    msg.setContent("Hello World!");
+    msg.setSendToGroup(false);
+    msg.setGroupId(-1);
+    msg.setTimeStamp(msg.getTimeStamp());
+    msg.setDate(msg.getDate());
+  }
 
-    group1.setGroupId(4);
-    assertEquals(4, group1.getGroupId());
-    group1.setName("group1");
-    assertEquals("group1", group1.getName());
-    group1.setPassword("test");
-    assertEquals("test", group1.getPassword());
 }
