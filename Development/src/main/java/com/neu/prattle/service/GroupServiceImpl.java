@@ -4,6 +4,7 @@ package com.neu.prattle.service;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.api.APIFactory;
+import com.neu.prattle.service.api.GroupAPI;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -153,8 +154,9 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public List<Group> getAllGroups() {
     List<Group> groups = new ArrayList<>();
+    GroupAPI groupAPI = new GroupAPI();
     try {
-      groups = api.getAllGroups();
+      groups = groupAPI.getAllGroups();
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in getting groups in database");
     }

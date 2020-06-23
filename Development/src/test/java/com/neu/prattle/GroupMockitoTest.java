@@ -1,5 +1,6 @@
 package com.neu.prattle;
 
+import com.neu.prattle.controller.GroupController;
 import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
@@ -110,15 +111,6 @@ public class GroupMockitoTest {
   }
 
   @Test
-  public void testGetAllGroups() throws SQLException {
-    List<Group> groupList = groupService.getAllGroups();
-    when(api.getAllGroups()).thenReturn(groupList);
-    groupService.setAPI(api);
-    assertEquals(groupList, groupService.getAllGroups());
-  }
-
-
-  @Test
   public void testSetPsw() throws SQLException {
     List<User> followers = new ArrayList<>();
     User f1 = new User("follow1");
@@ -138,14 +130,14 @@ public class GroupMockitoTest {
     when(api.setGroupPassword(anyInt(), anyString())).thenThrow(SQLException.class);
     when(api.addSubgroup(anyInt(), anyInt())).thenThrow(SQLException.class);
     when(api.getAllSubgroups(anyInt())).thenThrow(SQLException.class);
-    when(api.getAllGroups()).thenThrow(SQLException.class);
     groupService.setAPI(api);
     groupService.findGroupByName("1");
     assertFalse(groupService.setPasswordforGroup(1, "password"));
     groupService.addSubgroupIntoGroup(1, 1);
     groupService.getSubGroupList(1);
     groupService.getGroupById(1);
-    groupService.getAllGroups();
 
   }
 }
+
+
