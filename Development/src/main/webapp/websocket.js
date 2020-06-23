@@ -223,6 +223,7 @@ function generateList(response, operatoin) {
                 getGroupFollowers(u.groupId);
                 getGroupModerators(u.groupId);
                 getGroupMembers(u.groupId);
+                getGroupInvitations(u.groupId);
 
             });
         } else if (operatoin === 'getFollowingGroups') {
@@ -416,14 +417,21 @@ async function getGroupInvitations(groupId) {
     let title = document.createElement('h3');
     title.innerText = "Invitations";
     list.appendChild(title);
+    debugger;
 
     response.forEach(i => {
 
         let invitationRow = document.createElement('div');
         let invitation = document.createElement("p");
         invitationRow.classList.add("panel");
+        let ok = document.createElement("button");
+        let cancel = document.createElement('button');
+        ok.innerText="OK";
+        cancel.innerText = "Cancel";
         invitation.innerText = i.name;
         invitationRow.appendChild(invitation);
+        invitationRow.appendChild(ok);
+        invitationRow.appendChild(cancel);
         list.appendChild(invitationRow);
     });
     clearList("invitations");
