@@ -55,22 +55,15 @@ public class APIFactory {
   /**
    * create a user follow user
    */
-  public boolean follow(User user1, User user2) {
-    return followAPI.userFollowUser(user1.getUserId(), user2.getUserId());
+  public boolean followUser(int user1Id, int user2Id) {
+    return followAPI.userFollowUser(user1Id, user2Id);
   }
 
   /**
    * create a user follow group
    */
-  public boolean follow(User user, Group group) {
-    return followAPI.userFollowGroup(user.getUserId(), group.getGroupId());
-  }
-
-  /**
-   * delete a user follow user
-   */
-  public boolean unfollow(User user1, User user2) {
-    return followAPI.userUnfollowUser(user1.getUserId(), user2.getUserId());
+  public boolean followGroup(int userId, int groupId) {
+    return followAPI.userFollowGroup(userId, groupId);
   }
 
   /**
@@ -83,8 +76,8 @@ public class APIFactory {
   /**
    * delete a user follow group
    */
-  public boolean unfollow(User user, Group group) {
-    return followAPI.userUnfollowGroup(user.getUserId(), group.getGroupId());
+  public boolean unfollowGroup(int userId, int groupId) {
+    return followAPI.userUnfollowGroup(userId, groupId);
   }
 
   /**
@@ -174,29 +167,30 @@ public class APIFactory {
   /**
    * User get followed users
    */
-  public List<User> getFollowedUsers(User user) {
-    return followAPI.getFollowingUsers(user.getUserId());
+  public List<User> getFollowedUsers(int userId) {
+    return followAPI.getFollowingUsers(userId);
   }
 
   /**
    * User get followed groups
    */
-  public List<Group> getFollowedGroups(User user) {
-    return followAPI.getFollowingGroups(user.getUserId());
+  public List<Group> getFollowedGroups(int userId) {
+    return followAPI.getFollowingGroups(userId);
   }
 
   /**
    * User get followers
    */
-  public List<User> getFollowers(User user) {
-    return followAPI.userGetFollowers(user.getUserId());
+  public List<User> userGetFollowers(int userId) {
+
+    return followAPI.userGetFollowers(userId);
   }
 
   /**
    * Group get followers
    */
-  public List<User> getFollowers(Group group) {
-    return followAPI.groupGetFollowers(group.getGroupId());
+  public List<User> groupGetFollowers(int groupId) {
+    return followAPI.groupGetFollowers(groupId);
   }
 
   /**

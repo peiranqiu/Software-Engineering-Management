@@ -87,10 +87,9 @@ public class GroupServiceImpl implements GroupService {
   public boolean setPasswordforGroup(int groupId, String password) {
     try {
       api.setGroupPassword(groupId, password);
-      Group group = api.getGroup(groupId);
-      List<User> followers = api.getFollowers(group);
+      List<User> followers = api.groupGetFollowers(groupId);
       for (User u : followers) {
-        api.unfollow(u, group);
+        api.unfollowGroup(u.getUserId(), groupId);
       }
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in set psw for group");

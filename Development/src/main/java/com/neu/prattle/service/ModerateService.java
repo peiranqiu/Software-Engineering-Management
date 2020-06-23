@@ -333,5 +333,4 @@ public class ModerateService {
       throw new NoPrivilegeException("The current user is not moderator of the group and cannot execute this operation.");
     }
   }
-
 }

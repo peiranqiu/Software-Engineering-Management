@@ -77,13 +77,11 @@ public class FollowService {
     if (list.contains(user2)) {
       throw new AlreadyFollowException(String.format("User %s already followed user %s.", user1.getName(), user2.getName()));
     }
-    return api.follow(user1, user2);
+    return api.followUser(user1.getUserId(), user2.getUserId());
   }
 
   public boolean followUser(int user1Id, int user2Id) {
-    User user1 = userService.findUserById(user1Id);
-    User user2 = userService.findUserById(user2Id);
-    return followUser(user1, user2);
+    return api.followUser(user1Id, user2Id);
   }
 
   /**
@@ -98,7 +96,7 @@ public class FollowService {
     if (!list.contains(user2)) {
       throw new FollowNotFoundException(String.format("User %s has not followed user %s.", user1.getName(), user2.getName()));
     }
-    return api.unfollow(user1, user2);
+    return api.unfollowUser(user1.getUserId(), user2.getUserId());
   }
 
   public boolean unfollowUser(int user1Id, int user2Id) {
@@ -112,11 +110,11 @@ public class FollowService {
    * @return the list of users the user follows
    */
   public List<User> getFollowingUsers(User user) {
-    return api.getFollowedUsers(user);
+    return api.getFollowedUsers(user.getUserId());
   }
 
   public List<User> getFollowingUsers(int userId) {
-    return api.getFollowedUsers(userService.findUserById(userId));
+    return api.getFollowedUsers(userId);
   }
 
   /**
@@ -126,11 +124,11 @@ public class FollowService {
    * @return the list of the user's followers
    */
   public List<User> userGetFollowers(User user) {
-    return api.getFollowers(user);
+    return api.userGetFollowers(user.getUserId());
   }
 
   public List<User> userGetFollowers(int userId) {
-    return api.getFollowers(userService.findUserById(userId));
+    return api.userGetFollowers(userId);
   }
 
   /**
@@ -148,13 +146,11 @@ public class FollowService {
     if (list.contains(group)) {
       throw new AlreadyFollowException(String.format("User %s already followed group %s.", user.getName(), group.getName()));
     }
-    return api.follow(user, group);
+    return api.followGroup(user.getUserId(), group.getGroupId());
   }
 
   public boolean followGroup(int userId, int groupId) {
-    User user = userService.findUserById(userId);
-    Group group = groupService.getGroupById(groupId);
-    return followGroup(user, group);
+    return api.followGroup(userId, groupId);
   }
 
   /**
@@ -169,13 +165,13 @@ public class FollowService {
     if (!list.contains(group)) {
       throw new FollowNotFoundException(String.format("User %s has not followed group %s.", user.getName(), group.getName()));
     }
-    return api.unfollow(user, group);
+    return api.unfollowGroup(user.getUserId(), group.getGroupId());
   }
 
   public boolean unfollowGroup(int userId, int groupId) {
     User user = userService.findUserById(userId);
     Group group = groupService.getGroupById(groupId);
-    return unfollowGroup(user, group);
+    return api.unfollowGroup(userId, groupId);
   }
 
   /**
@@ -185,12 +181,13 @@ public class FollowService {
    * @return the list of groups the user follows
    */
   public List<Group> getFollowingGroups(User user) {
-    return api.getFollowedGroups(user);
+
+    return api.getFollowedGroups(user.getUserId());
   }
 
   public List<Group> getFollowingGroups(int userId) {
 
-    return api.getFollowedGroups(userService.findUserById(userId));
+    return api.getFollowedGroups(userId);
   }
 
   /**
@@ -200,6 +197,12 @@ public class FollowService {
    * @return the list of the group's followers
    */
   public List<User> groupGetFollowers(Group group) {
-    return api.getFollowers(group);
+
+    return api.groupGetFollowers(group.getGroupId());
+  }
+
+  public List<User> groupGetFollowers(int groupId) {
+
+    return api.groupGetFollowers(groupId);
   }
 }
