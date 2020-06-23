@@ -5,7 +5,6 @@ import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.api.APIFactory;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 

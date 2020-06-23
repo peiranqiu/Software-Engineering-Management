@@ -4,7 +4,6 @@ package com.neu.prattle.service;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.api.APIFactory;
-import com.neu.prattle.service.api.GroupAPI;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -74,6 +74,13 @@ public class APIFactory {
   }
 
   /**
+   * delete a user follow user
+   */
+  public boolean unfollowUser(int user1Id, int user2Id) {
+    return followAPI.userUnfollowUser(user1Id, user2Id);
+  }
+
+  /**
    * delete a user follow group
    */
   public boolean unfollow(User user, Group group) {

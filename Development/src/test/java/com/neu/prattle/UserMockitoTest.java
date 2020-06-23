@@ -91,21 +91,19 @@ public class UserMockitoTest {
    * Test failure of user creation because of invalid username.
    */
   @Test(expected = UserNameInvalidException.class)
-  public void testCreateUserInvalidName() {
+  public void testCreateUserInvalidName1() {
     userService.setAPI(api);
     user2.setName("123456nfkgfkgsdfhdjfdkekgfhsdfk");
     userService.addUser(user2);
+  }
 
+  /**
+   * Test failure of user creation because of invalid username.
+   */
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName2() {
+    userService.setAPI(api);
     user2.setName("-1");
-    userService.addUser(user2);
-
-    user2.setName("GOODGOODGOOD123");
-    userService.addUser(user2);
-
-    user2.setName("goodgoodgood");
-    userService.addUser(user2);
-
-    user2.setName("GoodgoodGood");
     userService.addUser(user2);
   }
 
@@ -113,24 +111,22 @@ public class UserMockitoTest {
    * Test failure of user creation because of invalid password.
    */
   @Test(expected = PasswordInvalidException.class)
-  public void testCreateUserInvalidPassword() {
+  public void testCreateUserInvalidPassword1() {
     userService.setAPI(api);
     user2.setPassword("-1");
     userService.addUser(user2);
-
-    user2.setPassword("-112v456nfkgfkgsdfhdjfdkekgfhsd3");
-    userService.addUser(user2);
-
-    user2.setPassword("GOODGOODGOOD123");
-    userService.addUser(user2);
-
-    user2.setPassword("goodgoodgood");
-    userService.addUser(user2);
-
-    user2.setPassword("GoodgoodGood");
-    userService.addUser(user2);
   }
 
+
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword2() {
+    userService.setAPI(api);
+    user2.setPassword("-112v456nfkgfkgsdfhdjfdkekgfhsd3");
+    userService.addUser(user2);
+  }
   /**
    * Test timeout for adding a large number of users.
    */
@@ -233,6 +229,7 @@ public class UserMockitoTest {
 
     newUser.setAvatar("newPassword123");
     assertEquals(userService.updateUser(newUser, "avatar").getName(), newUser.getName());
+    assertNull(userService.updateUser(newUser, "avatar0"));
   }
 
   /**

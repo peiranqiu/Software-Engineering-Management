@@ -102,7 +102,7 @@ public class FollowService {
   }
 
   public boolean unfollowUser(int user1Id, int user2Id) {
-    return unfollowUser(userService.findUserById(user1Id), userService.findUserById(user2Id));
+    return api.unfollowUser(user1Id, user2Id);
   }
 
   /**

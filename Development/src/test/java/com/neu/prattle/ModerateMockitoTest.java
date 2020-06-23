@@ -21,12 +21,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -180,7 +182,12 @@ public class ModerateMockitoTest {
   @Test
   public void test2AddModeratorSuccess() {
     moderateService = helperAddModerator(false);
+    when(api.getModerators(anyInt())).thenReturn(Arrays.asList(user1));
+    moderateService.setAPI(api);
     assertEquals(moderateService.addGroupModerator(group1, user1, user3).getName(), user3.getName());
+    when(api.addModerator(anyInt(),anyInt())).thenReturn(false);
+    moderateService.setAPI(api);
+    assertNull(moderateService.addGroupModerator(group1, user1, user3));
   }
 
   /**
@@ -190,6 +197,9 @@ public class ModerateMockitoTest {
   public void test2AddModeratorSuccess2() {
     moderateService = helperAddModerator(false);
     assertEquals(moderateService.addGroupModerator(group1.getGroupId(), user2.getUserId()).getUserId(), user2.getUserId());
+    when(api.addModerator(anyInt(),anyInt())).thenReturn(false);
+    moderateService.setAPI(api);
+    assertNull(moderateService.addGroupModerator(group1.getGroupId(), user2.getUserId()));
   }
 
   /**
@@ -202,6 +212,9 @@ public class ModerateMockitoTest {
     list.add(user1);
     list.add(user3);
     when(api.getModerators(anyInt())).thenReturn(list);
+    moderateService.setAPI(api);
+    assertTrue(moderateService.deleteGroupModerator(group1, user1, user3));
+    when(api.getModerateGroups(anyInt())).thenReturn(Arrays.asList(group1));
     moderateService.setAPI(api);
     assertTrue(moderateService.deleteGroupModerator(group1, user1, user3));
   }
@@ -309,6 +322,7 @@ public class ModerateMockitoTest {
     moderateService = helperCreateInvitation(false);
     when(api.getMembers(anyInt())).thenReturn(Arrays.asList(user3));
     moderateService.setAPI(api);
+    assertTrue(moderateService.createInvitation(group1.getGroupId(), user1.getUserId()));
     assertTrue(moderateService.createInvitation(group1, user3, user4, true));
     assertTrue(moderateService.createInvitation(group1, user3, user3, false));
   }
@@ -325,6 +339,8 @@ public class ModerateMockitoTest {
     when(api.getMembers(anyInt())).thenReturn(Arrays.asList(user2));
     moderateService.setAPI(api);
     assertTrue(moderateService.createInvitation(group1, user2, user2, true));
+
+
   }
 
   /**
@@ -354,6 +370,18 @@ public class ModerateMockitoTest {
   }
 
   /**
+   * Test create add member invitation failed because The current user is not a member of the group.
+   */
+  @Test(expected = IllegalStateException.class)
+  public void test6CreateInvitationFail3() {
+
+    moderateService = helperCreateInvitation(true);
+    when(api.getMembers(anyInt())).thenReturn(Arrays.asList(user1));
+    moderateService.setAPI(api);
+    moderateService.createInvitation(group1, user2, user2, true);
+  }
+
+  /**
    * Test moderator approves an invitation.
    */
   @Test
@@ -364,9 +392,18 @@ public class ModerateMockitoTest {
     when(api.deleteMember(anyInt(), anyInt())).thenReturn(true);
     when(api.getModerators(anyInt())).thenReturn(Arrays.asList(user1));
     when(api.getMembers(anyInt())).thenReturn(Arrays.asList(user3));
+    when(api.getInvitations(anyInt())).thenReturn(new HashMap<>());
     moderateService.setAPI(api);
+    assertEquals(moderateService.getMembers(group1.getGroupId()), Arrays.asList(user3));
     assertTrue(moderateService.approveInvitation(group1, user1, user2, true));
+    assertTrue(moderateService.approveInvitation(group1.getGroupId(), user2.getUserId()));
     assertTrue(moderateService.approveInvitation(group1, user1, user3, false));
+    assertTrue(moderateService.getGroupInvitations(group1.getGroupId()).isEmpty());
+
+    when(api.deleteInvitation(anyInt(), anyInt())).thenReturn(false);
+    moderateService.setAPI(api);
+    assertFalse(moderateService.approveInvitation(group1.getGroupId(), user2.getUserId()));
+    assertFalse(moderateService.approveInvitation(group1, user1, user2, true));
   }
 
   /**

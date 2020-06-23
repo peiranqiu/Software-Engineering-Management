@@ -84,8 +84,10 @@ public class FollowMockitoTest {
     when(api.getFollowedUsers(any(User.class))).thenReturn(list);
     when(api.follow(any(User.class), any(User.class))).thenReturn(true);
     when(api.unfollow(any(User.class), any(User.class))).thenReturn(true);
+    when(api.unfollowUser(anyInt(), anyInt())).thenReturn(true);
     followService.setAPI(api);
 
+    assertTrue(followService.unfollowUser(user1.getUserId(), user2.getUserId()));
     assertTrue(followService.followUser(user1.getUserId(), user2.getUserId()));
     assertEquals(followService.getFollowingUsers(user1).get(0).getName(), user2.getName());
 
@@ -276,7 +278,8 @@ public class FollowMockitoTest {
     followService.setGroupService(groupService);
     assertTrue(followService.followGroup(user1, group1));
 
-    when(api.follow(any(User.class), any(Group.class))).thenThrow(AlreadyFollowException.class);
+    when(api.getFollowedGroups(any(User.class))).thenReturn(Arrays.asList(group1));
+    followService.setAPI(api);
     followService.followGroup(user1, group1);
   }
 
@@ -293,7 +296,7 @@ public class FollowMockitoTest {
     followService.setUserService(userService);
     followService.setGroupService(groupService);
 
-    when(api.follow(any(User.class), any(Group.class))).thenThrow(NoPrivilegeException.class);
+    group1.setPassword("Password1");
     followService.followGroup(user1, group1);
   }
 
@@ -301,7 +304,7 @@ public class FollowMockitoTest {
    * Test group unfollow failure because of a non existing follow.
    */
   @Test(expected = FollowNotFoundException.class)
-  public void testUnfollowGroupFail() {
+  public void testUnfollowGroupFail1() {
     when(userService.addUser(any(User.class))).thenReturn(true);
     userService.addUser(user1);
     when(groupService.addGroup(any(Group.class))).thenReturn(true);

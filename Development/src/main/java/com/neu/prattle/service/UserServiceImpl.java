@@ -156,9 +156,7 @@ public class UserServiceImpl implements UserService {
    * @return Returns true if username is valid
    */
   public boolean isValidUsername(User user) {
-    HashMap<String, Boolean> usernameCheck = checkRequirement(user.getName());
-    return !(!usernameCheck.get("low") || !usernameCheck.get("cap") || !usernameCheck.get("num") || user.getName().length() > 20 ||
-            user.getName().length() < 4);
+    return !(user.getName().length() > 20 || user.getName().length() < 4);
   }
 
   /**
@@ -168,38 +166,7 @@ public class UserServiceImpl implements UserService {
    * @return Returns true if password is valid
    */
   public boolean isValidPassword(User user) {
-    HashMap<String, Boolean> passwordCheck = checkRequirement(user.getPassword());
-    return !(!passwordCheck.get("low") || !passwordCheck.get("cap") || !passwordCheck.get("num") || user.getPassword().length() > 20 ||
-            user.getPassword().length() < 4);
-  }
-
-  /**
-   * Check if a given string meets all the requirement.
-   *
-   * @param string the string to be checked
-   * @return Returns true if it is valid
-   * @author CS5500 Teaching staff
-   */
-  private HashMap<String, Boolean> checkRequirement(String string) {
-    char character;
-    HashMap<String, Boolean> booleanHashMap = new HashMap<>();
-    booleanHashMap.put("cap", false);
-    booleanHashMap.put("low", false);
-    booleanHashMap.put("num", false);
-    for (int i = 0; i < string.length(); i++) {
-      character = string.charAt(i);
-      if (Character.isDigit(character)) {
-        booleanHashMap.replace("num", true);
-      } else if (Character.isUpperCase(character)) {
-        booleanHashMap.replace("cap", true);
-      } else if (Character.isLowerCase(character)) {
-        booleanHashMap.replace("low", true);
-      }
-      if (Boolean.TRUE.equals(booleanHashMap.get("num")) && Boolean.TRUE.equals(booleanHashMap.get("cap")) && Boolean.TRUE.equals(booleanHashMap.get("low"))) {
-        break;
-      }
-    }
-    return booleanHashMap;
+    return !(user.getPassword().length() > 20 || user.getPassword().length() < 4);
   }
 
 }

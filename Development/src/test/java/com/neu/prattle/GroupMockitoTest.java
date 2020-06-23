@@ -20,6 +20,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
@@ -120,8 +121,19 @@ public class GroupMockitoTest {
     followers.add(f2);
 
     when(api.setGroupPassword(anyInt(), anyString())).thenReturn(true);
+    when(api.getGroup(anyInt())).thenReturn(group2);
+    when(api.getFollowers(any(Group.class))).thenReturn(followers);
+    when(api.unfollow(any(User.class), any(Group.class))).thenReturn(true);
     groupService.setAPI(api);
     assertTrue(groupService.setPasswordforGroup(1, "ABCabc1234"));
+  }
+
+  @Test
+  public void testGetAllGroups() throws SQLException{
+
+    when(api.getAllGroups()).thenReturn(Arrays.asList(group2));
+    groupService.setAPI(api);
+    assertEquals(groupService.getAllGroups(), Arrays.asList(group2));
   }
 
   @Test
@@ -131,13 +143,14 @@ public class GroupMockitoTest {
     when(api.setGroupPassword(anyInt(), anyString())).thenThrow(SQLException.class);
     when(api.addSubgroup(anyInt(), anyInt())).thenThrow(SQLException.class);
     when(api.getAllSubgroups(anyInt())).thenThrow(SQLException.class);
+    when(api.getAllGroups()).thenThrow(SQLException.class);
     groupService.setAPI(api);
     groupService.findGroupByName("1");
     assertFalse(groupService.setPasswordforGroup(1, "password"));
     groupService.addSubgroupIntoGroup(1, 1);
     groupService.getSubGroupList(1);
     groupService.getGroupById(1);
-
+    groupService.getAllGroups();
   }
 }
 

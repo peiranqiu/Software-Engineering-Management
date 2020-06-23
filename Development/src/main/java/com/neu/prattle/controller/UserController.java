@@ -209,7 +209,6 @@ public final class UserController {
   @Path("/send")
   @Consumes(MediaType.APPLICATION_JSON)
   public String sendToUser(Message msg) {
-    //TODO: handle the msg storage
     return new Gson().toJson(msg.getContent());
   }
 
