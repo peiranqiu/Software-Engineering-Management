@@ -124,6 +124,10 @@ public class ModerateService {
     return api.deleteModerator(group.getGroupId(), user.getUserId());
   }
 
+  public boolean deleteGroupModerator(int groupId, int userId) {
+    return api.deleteModerator(groupId, userId);
+  }
+
   /**
    * Delete a member from group.
    *
@@ -143,6 +147,10 @@ public class ModerateService {
       throw new IllegalStateException("The user is not a member of the group yet.");
     }
     return api.deleteMember(group.getGroupId(), user.getUserId());
+  }
+
+  public boolean deleteGroupMember(int groupId, int userId) {
+    return api.deleteMember(groupId, userId);
   }
 
   /**

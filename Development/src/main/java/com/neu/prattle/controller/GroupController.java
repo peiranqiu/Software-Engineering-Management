@@ -135,6 +135,23 @@ public class GroupController {
   }
 
   /**
+   * delete group moderator
+   *
+   * @param userId  moderator id
+   * @param groupId group id
+   */
+  @DELETE
+  @Path("/{groupId}/deleteModerator/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String deleteModerator(@PathParam("userId") int userId, @PathParam("groupId") int groupId) {
+
+    if (moderateService.deleteGroupModerator(groupId, userId)) {
+      return new Gson().toJson("Delete moderator succeed");
+    }
+    return new Gson().toJson("Delete moderator failed");
+  }
+
+  /**
    * add group member
    *
    * @param userId  user id
@@ -150,7 +167,22 @@ public class GroupController {
     return new Gson().toJson("Add member failed");
   }
 
+  /**
+   * delete group member
+   *
+   * @param userId  member id
+   * @param groupId group id
+   */
+  @DELETE
+  @Path("/{groupId}/deleteMember/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String deleteMember(@PathParam("userId") int userId, @PathParam("groupId") int groupId) {
 
+    if (moderateService.deleteGroupMember(groupId, userId)) {
+      return new Gson().toJson("Delete member succeed");
+    }
+    return new Gson().toJson("Delete member failed");
+  }
   /**
    * Get all groups in database
    *

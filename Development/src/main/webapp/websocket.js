@@ -308,9 +308,6 @@ async function followUser(followeeId) {
     console.log(currentUser);
 
     let followerId = currentUser.userId;
-    // followeeId to be replaced according to your frontend elements!!!
-    // let followeeId = 1;
-
     const response = await fetch(URL + 'user/' + followerId + '/follow/' + followeeId,
         {
             method: 'POST',
@@ -327,8 +324,6 @@ async function followUser(followeeId) {
 async function unfollowUser(followeeId) {
     console.log(currentUser);
     let followerId = currentUser.userId;
-    // followeeId to be replaced according to your frontend elements!!!
-    // let followeeId = 1;
     const response = await fetch(URL + 'user/' + followerId + '/unfollow/' + followeeId,
         {
             method: 'DELETE',
@@ -345,7 +340,6 @@ async function unfollowUser(followeeId) {
 async function unfollowGroup(id) {
     console.log(currentUser);
     let userId = currentUser.userId;
-    // groupId to be replaced according to your frontend elements!!!
     const response = await fetch(URL + 'group/' + userId + '/unfollow/' + id,
         {
             method: 'DELETE',
@@ -417,7 +411,7 @@ async function getGroupInvitations(groupId) {
     let title = document.createElement('h3');
     title.innerText = "Invitations";
     list.appendChild(title);
-    debugger;
+    //debugger;
 
     response.forEach(i => {
 
@@ -431,7 +425,6 @@ async function getGroupInvitations(groupId) {
             console.log(invitation.innerText);
             list.removeChild(invitationRow);
             approveInvitation(groupId, i.userId);
-            deleteInvitation(groupId, i.userId);
         });
         cancel.innerText = "Cancel";
         cancel.addEventListener('click', ()=>{
@@ -459,13 +452,9 @@ async function getGroupInvitations(groupId) {
 /**
  * add a group moderator.
  */
-async function addGroupModerator() {
-    // console.log(currentUser);
-    // console.log(currentGroup);
-    // group, user to be completed according to your frontend elements!!!
-
+async function addGroupModerator(userId) {
     const response = await fetch(
-        URL + 'group/' + currentUser.userId + '/moderate/' + currentGroup.groupId,
+        URL + 'group/' + userId + '/moderate/' + currentGroup.groupId,
         {
             method: 'POST',
             headers: {
@@ -479,18 +468,10 @@ async function addGroupModerator() {
 /**
  * delete a group moderator.
  */
-async function deleteGroupModerator() {
-    console.log(currentUser);
-    // group, user to be completed according to your frontend elements!!!
-    let markers = {
-        'group': null,
-        'moderator': currentUser,
-        'user': null,
-    };
-    const response = await fetch(URL + 'group/moderator/delete',
+async function deleteGroupModerator(userId) {
+    const response = await fetch(URL + 'group/' + currentGroup.groupId + '/deleteModerator/' + userId,
         {
             method: 'DELETE',
-            body: JSON.stringify(markers),
             headers: {
                 'content-type': 'application/json'
             }
@@ -501,11 +482,9 @@ async function deleteGroupModerator() {
 /**
  * add a group member.
  */
-async function addGroupMember() {
-    // console.log(currentUser);
-    // group, user to be completed according to your frontend elements!!!
+async function addGroupMember(userId) {
     const response = await fetch(
-        URL + 'group/' + currentUser.userId + '/member/' + currentGroup.groupId,
+        URL + 'group/' + userId + '/member/' + currentGroup.groupId,
         {
             method: 'POST',
             headers: {
@@ -519,18 +498,10 @@ async function addGroupMember() {
 /**
  * delelte a group member.
  */
-async function deleteGroupMember() {
-    console.log(currentUser);
-    // group, user to be completed according to your frontend elements!!!
-    let markers = {
-        'group': null,
-        'moderator': currentUser,
-        'user': null,
-    };
-    const response = await fetch(URL + 'group/member/delete',
+async function deleteGroupMember(userId) {
+    const response = await fetch(URL + 'group/' + currentGroup.groupId + '/deleteMember/' + userId,
         {
             method: 'DELETE',
-            body: JSON.stringify(markers),
             headers: {
                 'content-type': 'application/json'
             }
@@ -604,8 +575,8 @@ async function createGroup() {
     if (response2) {
         currentGroup = response2.value;
     }
-    addGroupMember();
-    addGroupModerator();
+    addGroupModerator(currentUser.userId);
+    addGroupMember(currentUser.userId);
 
 }
 
