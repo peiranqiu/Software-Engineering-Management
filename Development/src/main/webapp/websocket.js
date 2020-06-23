@@ -471,8 +471,8 @@ async function addGroupModerator(userId) {
 /**
  * delete a group moderator.
  */
-async function deleteGroupModerator(userId) {
-    const response = await fetch(URL + 'group/' + currentGroup.groupId + '/deleteModerator/' + userId,
+async function deleteGroupModerator(userId,groupId) {
+    const response = await fetch(URL + 'group/' + groupId + '/deleteModerator/' + userId,
         {
             method: 'DELETE',
             headers: {
@@ -501,8 +501,8 @@ async function addGroupMember(userId) {
 /**
  * delelte a group member.
  */
-async function deleteGroupMember(userId) {
-    const response = await fetch(URL + 'group/' + currentGroup.groupId + '/deleteMember/' + userId,
+async function deleteGroupMember(userId,groupId) {
+    const response = await fetch(URL + 'group/' + groupId + '/deleteMember/' + userId,
         {
             method: 'DELETE',
             headers: {
@@ -789,6 +789,22 @@ async function getGroupModerators(groupId) {
     title.innerText = "Group Moderators List:";
     list.appendChild(title);
 
+    let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
+                                 {
+                                     method: 'GET',
+                                     headers: {
+                                         'content-type': 'application/json'
+                                     }
+                                 }).then(rs => rs.json());
+
+    let isModerator = false;
+    moderators.forEach(i => {
+                           if (i.userId === currentUser.userId) {
+                               isModerator = true;
+                           }
+                       }
+    );
+
     response.forEach(i => {
         if(i.name === currentUser.name){
             document.getElementById("Invitations").style.display = 'block';
@@ -800,6 +816,17 @@ async function getGroupModerators(groupId) {
         subGroupRow.classList.add("panel");
         subGroup.innerText = i.name;
         subGroupRow.appendChild(subGroup);
+
+        if (isModerator &&(i.userId!==currentUser.userId)) {
+            let remove = document.createElement("button");
+            remove.innerText = 'DownGrade to Member';
+            subGroupRow.appendChild(remove);
+            remove.addEventListener('click', async (event) => {
+                await deleteGroupModerator(i.userId,groupId)
+
+            });
+        }
+
         list.appendChild(subGroupRow);
     });
     clearList("groupModerators");
@@ -836,6 +863,21 @@ async function getGroupMembers(groupId) {
     title.innerText = "Group Members List:";
     list.appendChild(title);
 
+    let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
+                                 {
+                                     method: 'GET',
+                                     headers: {
+                                         'content-type': 'application/json'
+                                     }
+                                 }).then(rs => rs.json());
+
+    let isModerator = false;
+    moderators.forEach(i => {
+                           if (i.userId === currentUser.userId) {
+                               isModerator = true;
+                           }
+                       }
+    );
     response.forEach(i => {
 
         let subGroupRow = document.createElement('div');
@@ -843,6 +885,16 @@ async function getGroupMembers(groupId) {
         subGroupRow.classList.add("panel");
         subGroup.innerText = i.name;
         subGroupRow.appendChild(subGroup);
+
+        if (isModerator) {
+            let remove = document.createElement("button");
+            remove.innerText = 'delete';
+            subGroupRow.appendChild(remove);
+            remove.addEventListener('click', async (event) => {
+                await deleteGroupModerator(i.userId,groupId).then(() => deleteGroupMember(i.userId,groupId))
+
+            });
+        }
         list.appendChild(subGroupRow);
     });
     clearList("groupMembers");
