@@ -18,7 +18,6 @@ public class MessageServiceImpl implements MessageService {
   }
 
   private MessageAPI api = new MessageAPI();
-  private Logger logger = Logger.getLogger(this.getClass().getName());
 
   /***
    * MessageServiceImpl is a Singleton class.
