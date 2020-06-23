@@ -12,6 +12,8 @@ import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.MessageService;
+import com.neu.prattle.service.MessageServiceImpl;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
@@ -65,6 +67,8 @@ public class ChatEndpoint {
 
   private ModerateService moderateService = ModerateService.getInstance();
 
+  private MessageService messageService = MessageServiceImpl.getInstance();
+
   /**
    * Broadcast.
    *
@@ -93,10 +97,11 @@ public class ChatEndpoint {
    * @param newGroupService    new group service
    * @param newModerateService new moderate service
    */
-  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
+  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService, MessageService newMessageService) {
     accountService = newAccountService;
     groupService = newGroupService;
     moderateService = newModerateService;
+    messageService = newMessageService;
   }
 
   /**
@@ -222,8 +227,7 @@ public class ChatEndpoint {
         }
       }
     });
-    message.storeMessage();
-    message.saveChatLogPerson();
+    messageService.addMessage(message);
   }
 
   public void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
@@ -256,7 +260,7 @@ public class ChatEndpoint {
         }
       }
     });
-    message.saveChatLogGroup(currentGroupObject, true);
+    messageService.addMessage(message);
   }
 }
 

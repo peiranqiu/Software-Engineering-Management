@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -75,6 +77,9 @@ public class Message {
    */
   public Message() {
 
+  }
+  public static MessageBuilder messageBuilder() {
+    return new MessageBuilder();
   }
 
   /***
@@ -172,5 +177,63 @@ public class Message {
 
   public int getGroupId() {
     return groupId;
+  }
+
+    public String toString() {
+    return new StringBuilder()
+            .append("From: ").append(from)
+            .append("To: ").append(to)
+            .append("Content: ").append(message)
+            .toString();
+  }
+
+  public String toStringForPrivateChatLog() {
+    return new StringBuilder()
+            .append(from).append(": ")
+            .append(message).append("   ")
+            .append(timeStamp)
+            .toString();
+  }
+
+  public String toStringForGroupChatLog() {
+    return new StringBuilder()
+            .append(from).append(": ")
+            .append(message).append("   ")
+            .append(timeStamp)
+            .toString();
+  }
+
+    /***
+   * A Builder helper class to create instances of {@link Message}
+   */
+  public static class MessageBuilder {
+    /***
+     * Invoking the build method will return this message object.
+     */
+    Message message;
+
+    public MessageBuilder() {
+      message = new Message();
+      message.setFrom("Not set");
+    }
+
+    public MessageBuilder setFrom(String from) {
+      message.setFrom(from);
+      return this;
+    }
+
+    public MessageBuilder setTo(String to) {
+      message.setTo(to);
+      return this;
+    }
+
+    public MessageBuilder setMessageContent(String content) {
+      message.setContent(content);
+      return this;
+    }
+
+    public Message build() {
+      return message;
+    }
   }
 }
