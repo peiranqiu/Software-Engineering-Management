@@ -89,6 +89,10 @@ public class UserControllerTest {
     userController.setUserService(userService);
     assertEquals(userController.login(user1), gson.toJson(user1));
 
+    when(userService.findUserByName(anyString())).thenReturn(Optional.of(new User("user2", "passw")));
+    userController.setUserService(userService);
+    assertEquals(userController.login(user1), gson.toJson(null));
+
     when(userService.findUserByName(anyString())).thenReturn(Optional.empty());
     userController.setUserService(userService);
     assertEquals(userController.login(user1), gson.toJson(null));
