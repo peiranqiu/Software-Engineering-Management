@@ -23,7 +23,7 @@ USE `mydb`;
 
 LOCK TABLES `Group` WRITE;
 /*!40000 ALTER TABLE `Group` DISABLE KEYS */;
-INSERT INTO `Group` VALUES (2,'testModerateGroup3','\"TestModerateGroup3\"'),(3,'testChatGroup1',NULL),(4,'Abcdef1234',NULL),(6,'testGroup1',NULL),(7,'testGroup2',NULL),(8,'testGroup3',NULL),(10,'testFollowGroup8375',NULL),(11,'testFollowGroup5731',NULL),(12,'testFollowGroup3413',NULL),(13,'testFollowGroup4097',NULL),(14,'testFollowGroup1828',NULL),(15,'qjjjj1',NULL),(16,'NewGRoup',NULL),(17,'tesgt123','\"Tesgt1234\"');
+INSERT INTO `Group` VALUES (1,'CS5500Team4',NULL),(2,'CS5700Team1','Password1'),(3,'Library3rdFloor',NULL),(4,'STEMstudent',NULL),(5,'Align',NULL),(6,'WomenInStem',NULL),(7,'Running',NULL),(8,'Debug',NULL),(9,'Brunch','password2');
 /*!40000 ALTER TABLE `Group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -33,7 +33,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `Group_has_Group` WRITE;
 /*!40000 ALTER TABLE `Group_has_Group` DISABLE KEYS */;
-INSERT INTO `Group_has_Group` VALUES (6,7),(6,8);
+INSERT INTO `Group_has_Group` VALUES (1,2),(2,3),(2,4),(3,4),(6,5),(2,7),(6,7),(4,8),(5,8),(6,8),(7,8),(9,8);
 /*!40000 ALTER TABLE `Group_has_Group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -43,6 +43,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `Invitation` WRITE;
 /*!40000 ALTER TABLE `Invitation` DISABLE KEYS */;
+INSERT INTO `Invitation` VALUES (1,3,1),(1,6,1),(2,3,1),(2,4,1),(2,8,1),(3,4,1),(3,5,1),(3,8,1),(4,1,1),(5,5,1),(5,9,1),(7,2,1),(7,7,1),(8,1,1),(8,2,1),(9,2,1);
 /*!40000 ALTER TABLE `Invitation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -52,7 +53,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `User` WRITE;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES (1,'Abcdef1234','Abc12345',NULL,'en',0,NULL,0),(3,'testModerator1','Password1',NULL,'en',1,NULL,0),(4,'testModerator3','Password3',NULL,'en',0,NULL,0),(5,'testModerator5996','Password5375',NULL,'en',0,NULL,0),(6,'testModerator2338','Password827',NULL,'en',0,NULL,0),(7,'testModerator1515','Password3036',NULL,'en',0,NULL,0),(8,'testModerator3019','Password6910',NULL,'en',0,NULL,0),(9,'testModerator8676','Password4600',NULL,'en',0,NULL,0),(10,'testModerator4','Password4',NULL,'en',0,NULL,0),(11,'testModerator8322','Password3084',NULL,'en',0,NULL,0),(12,'testName1','User1Password',NULL,'en',1,NULL,0),(13,'testName2','User2Password',NULL,'en',0,NULL,0),(14,'HarryPotter1','Harry12345','picture.png','en',1,NULL,0),(16,'testFollowUser4224','Password1',NULL,'en',0,NULL,0),(17,'testFollowUser3730','Password1',NULL,'en',0,NULL,0),(18,'testFollowUser1695','Password1',NULL,'en',0,NULL,0),(19,'testFollowUser9270','Password2',NULL,'en',0,NULL,0),(20,'testFollowUser390','Password1',NULL,'en',0,NULL,0),(21,'testFollowUser9987','Password1',NULL,'en',0,NULL,0),(22,'testFollowUser9474','Password2',NULL,'en',0,NULL,0),(23,'testFollowUser850','Password1',NULL,'en',0,NULL,0),(24,'testFollowUser9595','Password2',NULL,'en',0,NULL,0),(25,'testFollowUser1037','Password1',NULL,'en',0,NULL,0),(26,'testFollowUser6305','Password1',NULL,'en',0,NULL,0),(27,'testFollowUser3788','Password2',NULL,'en',0,NULL,0),(28,'testFollowUser7088','Password1',NULL,'en',0,NULL,0),(29,'testFollowUser9048','Password2',NULL,'en',0,NULL,0),(30,'testFollowUser6759','Password1',NULL,'en',0,NULL,0),(31,'testFollowUser9819','Password2',NULL,'en',0,NULL,0),(32,'Danie123','Daa123',NULL,'en',0,NULL,0),(33,'Testuser12345','Testuser12345',NULL,'en',0,NULL,0),(34,'Alice124','Alice124',NULL,'en',0,NULL,0),(35,'Alice123','Alice123',NULL,'en',0,NULL,0);
+INSERT INTO `User` VALUES (1,'Rouni111','Password111',NULL,'en',1,NULL,0),(2,'Rob111','Password111',NULL,'en',0,NULL,0),(3,'Qingjing111','Password111',NULL,'en',1,NULL,0),(4,'Peiran111','Password111',NULL,'en',1,NULL,0),(5,'Harshil111','Password111',NULL,'en',0,NULL,0),(6,'Yijia111','Password111',NULL,'en',1,NULL,0),(7,'Zoe111','Password111',NULL,'en',0,NULL,0),(8,'Mike111','Password111',NULL,'en',0,NULL,1),(9,'Harry111','Password111',NULL,'en',0,NULL,1);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -62,7 +63,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `User_follows_Group` WRITE;
 /*!40000 ALTER TABLE `User_follows_Group` DISABLE KEYS */;
-INSERT INTO `User_follows_Group` VALUES (1,2),(4,2),(3,3),(3,4),(3,8),(3,10),(3,11),(3,15),(3,16);
+INSERT INTO `User_follows_Group` VALUES (4,1),(4,2),(2,3),(3,3),(3,4),(5,4),(3,5),(1,6),(1,7),(4,7),(6,7),(7,7),(2,8),(8,8),(9,8),(1,9);
 /*!40000 ALTER TABLE `User_follows_Group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -72,7 +73,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `User_follows_User` WRITE;
 /*!40000 ALTER TABLE `User_follows_User` DISABLE KEYS */;
-INSERT INTO `User_follows_User` VALUES (3,1),(1,3),(5,3),(3,4),(3,5);
+INSERT INTO `User_follows_User` VALUES (3,1),(4,1),(8,1),(1,2),(8,2),(9,2),(1,3),(2,3),(4,3),(5,3),(6,3),(7,3),(1,4),(3,4),(5,4),(1,5),(3,5),(4,5),(3,6),(3,7),(6,7),(8,7),(9,7),(2,8),(3,8),(4,8),(7,8),(2,9),(7,9);
 /*!40000 ALTER TABLE `User_follows_User` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -82,7 +83,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `User_has_Group` WRITE;
 /*!40000 ALTER TABLE `User_has_Group` DISABLE KEYS */;
-INSERT INTO `User_has_Group` VALUES (3,2),(4,2),(13,3),(3,15),(3,16),(3,17);
+INSERT INTO `User_has_Group` VALUES (1,1),(2,1),(3,1),(5,1),(6,1),(7,1),(1,2),(2,2),(3,2),(4,2),(5,2),(3,3),(5,3),(6,3),(7,3),(8,3),(1,4),(4,4),(8,4),(1,5),(2,5),(4,5),(3,6),(4,6),(3,7),(8,7),(9,7),(4,8),(5,8),(6,8),(2,9),(4,9),(6,9),(7,9),(8,9),(9,9);
 /*!40000 ALTER TABLE `User_has_Group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -92,7 +93,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `User_moderates_Group` WRITE;
 /*!40000 ALTER TABLE `User_moderates_Group` DISABLE KEYS */;
-INSERT INTO `User_moderates_Group` VALUES (3,2),(12,3),(3,15),(3,16),(3,17);
+INSERT INTO `User_moderates_Group` VALUES (1,1),(3,1),(6,1),(1,2),(3,3),(1,4),(4,5),(3,6),(4,6),(3,7),(4,8),(4,9),(6,9);
 /*!40000 ALTER TABLE `User_moderates_Group` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -105,4 +106,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-19  0:18:48
+-- Dump completed on 2020-06-23  0:46:02
