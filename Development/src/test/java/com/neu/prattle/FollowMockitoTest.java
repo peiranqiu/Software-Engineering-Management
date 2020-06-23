@@ -250,7 +250,7 @@ public class FollowMockitoTest {
     when(api.groupGetFollowers(anyInt())).thenReturn(list);
     followService.setAPI(api);
     assertEquals(followService.groupGetFollowers(group1).get(0).getName(), user1.getName());
-    assertEquals(followService.groupGetFollowers(group1).get(1).getName(), user2.getName());
+    assertEquals(followService.groupGetFollowers(1).get(1).getName(), user2.getName());
   }
 
   /**

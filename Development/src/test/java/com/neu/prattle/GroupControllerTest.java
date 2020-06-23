@@ -117,6 +117,20 @@ public class GroupControllerTest {
   }
 
   /**
+   * Test delete moderator
+   */
+  @Test
+  public void testDeleteModerator() {
+    when(moderateService.deleteGroupModerator(anyInt(), anyInt())).thenReturn(true);
+    groupController.setModerateService(moderateService);
+    assertEquals(groupController.deleteModerator(1, 1), gson.toJson("Delete moderator succeed"));
+
+    when(moderateService.deleteGroupModerator(anyInt(), anyInt())).thenReturn(false);
+    groupController.setModerateService(moderateService);
+    assertEquals(groupController.deleteModerator(1, 1), gson.toJson("Delete moderator failed"));
+  }
+
+  /**
    * Test add member
    */
   @Test
@@ -128,6 +142,20 @@ public class GroupControllerTest {
     when(moderateService.addGroupMember(anyInt(), anyInt())).thenReturn(false);
     groupController.setModerateService(moderateService);
     assertEquals(groupController.addMember(1, 1), gson.toJson("Add member failed"));
+  }
+
+  /**
+   * Test delete member
+   */
+  @Test
+  public void testDeleteMember() {
+    when(moderateService.deleteGroupMember(anyInt(), anyInt())).thenReturn(true);
+    groupController.setModerateService(moderateService);
+    assertEquals(groupController.deleteMember(1, 1), gson.toJson("Delete member succeed"));
+
+    when(moderateService.deleteGroupMember(anyInt(), anyInt())).thenReturn(false);
+    groupController.setModerateService(moderateService);
+    assertEquals(groupController.deleteMember(1, 1), gson.toJson("Delete member failed"));
   }
 
   /**

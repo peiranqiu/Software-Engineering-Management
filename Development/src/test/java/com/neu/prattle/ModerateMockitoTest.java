@@ -214,6 +214,7 @@ public class ModerateMockitoTest {
     when(api.getModerateGroups(anyInt())).thenReturn(Arrays.asList(group1));
     moderateService.setAPI(api);
     assertTrue(moderateService.deleteGroupModerator(group1, user1, user3));
+    assertTrue(moderateService.deleteGroupModerator(1,2));
   }
 
   /**
@@ -423,6 +424,7 @@ public class ModerateMockitoTest {
     when(api.getModerators(anyInt())).thenReturn(Arrays.asList(user1));
     moderateService.setAPI(api);
     assertTrue(moderateService.deleteGroupMember(group1, user1, user3));
+    assertTrue(moderateService.deleteGroupMember(1, 2));
   }
 
   /**
