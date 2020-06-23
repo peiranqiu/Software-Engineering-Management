@@ -202,7 +202,15 @@ function generateList(response, operatoin) {
         } else if (operatoin === 'getGroups') {
             user.addEventListener('click', (event) => {
                 document.getElementById('toGroup').value = event.target.innerHTML;
+                user.addEventListener('click', (event) => {
+                    getSubGroups(u.groupId);
+                    getGroupFollowers(u.groupId);
+                    getGroupModerators(u.groupId);
+                    getGroupMembers(u.groupId);
+                    // if current user is in group moderator list, then get group invitations
+                    getGroupInvitations(u.groupId);
 
+                });
             });
         } else if (operatoin === 'getAllGroups') {
             follow.innerText = "+";
@@ -214,9 +222,8 @@ function generateList(response, operatoin) {
                 getGroupFollowers(u.groupId);
                 getGroupModerators(u.groupId);
                 getGroupMembers(u.groupId);
-                getGroupInvitations(u.groupId);
 
-            })
+            });
         } else if (operatoin === 'getFollowingGroups') {
             follow.innerText = "-";
             follow.addEventListener('click', (event) => {
