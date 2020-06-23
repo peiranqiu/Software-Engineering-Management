@@ -351,7 +351,7 @@ async function unfollowGroup(id) {
  * create add member invitation.
  */
 async function createInvitation(groupId, inviteeId) {
-    const response = await fetch(URL + 'invitation/' + groupId + '/add/' + inviteeId,
+    const response = await fetch(URL + 'group/' + groupId + '/createInvitation/' + inviteeId,
         {
             method: 'POST',
             headers: {
@@ -366,7 +366,7 @@ async function createInvitation(groupId, inviteeId) {
  * approve an invitation.
  */
 async function approveInvitation(groupId, inviteeId) {
-    const response = await fetch(URL + 'invitation/' + groupId + '/approve/' + inviteeId,
+    const response = await fetch(URL + 'group/' + groupId + '/approveInvitation/' + inviteeId,
         {
             method: 'POST',
             headers: {
@@ -380,7 +380,7 @@ async function approveInvitation(groupId, inviteeId) {
  * delete/disapprove an invitation.
  */
 async function deleteInvitation(groupId, inviteeId) {
-    const response = await fetch(URL + 'invitation/' + groupId + '/delete/' + inviteeId,
+    const response = await fetch(URL + 'group/' + groupId + '/deleteInvitation/' + inviteeId,
         {
             method: 'DELETE',
             headers: {
@@ -394,7 +394,7 @@ async function deleteInvitation(groupId, inviteeId) {
  * Get all invitations associated with the group
  */
 async function getGroupInvitations(groupId) {
-    const response = await fetch(URL + 'invitation/' + groupId,
+    const response = await fetch(URL + 'group/' + groupId + '/getAllInvitation',
         {
             method: 'GET',
             headers: {

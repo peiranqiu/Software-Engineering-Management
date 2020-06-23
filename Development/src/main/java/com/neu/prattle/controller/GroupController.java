@@ -245,7 +245,67 @@ public class GroupController {
     List<User> list = moderateService.getMembers(group);
     return new Gson().toJson(list);
   }
+  /**
+   * Get all invitations of the group
+   * @param id group id
+   * @return
+   */
+  @GET
+  @Path("/{groupId}/getAllInvitation")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupInvitations(@PathParam("groupId") int id) {
+    Map<User, Boolean> invitations = moderateService.getGroupInvitations(id);
+    return new Gson().toJson(invitations.keySet());
+  }
 
+  /***
+   * create an invitation
+   *
+   * @param groupId the group id
+   * @param userId the invitee id
+   * @return the created invitation
+   */
+  @POST
+  @Path("/{groupId}/createInvitation/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String createInvitation(@PathParam("groupId") int groupId, @PathParam("userId") int userId) {
+    if (moderateService.createInvitation(groupId, userId)) {
+      return new Gson().toJson("Invitation created successfully");
+    }
+    return new Gson().toJson("Creating invitation failed");
+  }
+
+  /***
+   * delete an invitation
+   *
+   * @param groupId the group id
+   * @param userId the invitee id
+   */
+  @DELETE
+  @Path("/{groupId}/deleteInvitation/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String deleteInvitation(@PathParam("groupId") int groupId, @PathParam("userId") int userId) {
+    if (moderateService.deleteInvitation(groupId, userId)) {
+      return new Gson().toJson("Invitation deleted successfully");
+    }
+    return new Gson().toJson("Deleting invitation failed");
+  }
+
+  /***
+   * approve an invitation
+   *
+   * @param groupId the group id
+   * @param userId the invitee id
+   */
+  @POST
+  @Path("/{groupId}/approveInvitation/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String approveInvitation(@PathParam("groupId") int groupId, @PathParam("userId") int userId) {
+    if (moderateService.approveInvitation(groupId, userId)) {
+      return new Gson().toJson("Invitation approved");
+    }
+    return new Gson().toJson("Invitation not approved. Please try again.");
+  }
 
 }
 

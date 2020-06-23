@@ -157,9 +157,8 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public List<Group> getAllGroups() {
     List<Group> groups = new ArrayList<>();
-    GroupAPI groupAPI = new GroupAPI();
     try {
-      groups = groupAPI.getAllGroups();
+      groups = api.getAllGroups();
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in getting groups in database");
     }
