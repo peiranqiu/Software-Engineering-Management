@@ -4,6 +4,7 @@ let ws;
 let currentUser;
 let currentGroup;
 let moderators;
+let allUsers = [];
 
 /**
  * Create a new user
@@ -56,6 +57,7 @@ async function getAllUsers() {
     let select = document.getElementById('to');
     //let invitee = document.getElementById('invitee');
     response.forEach((user) => {
+        allUsers.push(user);
         let option = document.createElement("option");
         option.value = user.name;
         option.text = user.name;
@@ -856,12 +858,41 @@ async function getGroupMembers(groupId) {
     });
     clearList("groupMembers");
     let cur = document.getElementById("Group Members");
+    cur.removeChild(cur.lastChild);
     if (cur.childNodes.length === 0) {
         cur.appendChild(list);
 
     } else {
         cur.replaceChild(list, cur.childNodes[0]);
     }
+
+    let addMember = document.createElement('div');
+    let select = document.createElement('select');
+    let btn = document.createElement('button');
+    btn.innerText = 'Invite';
+    btn.addEventListener('click', ()=>{
+        console.log(select.value);
+    });
+    let placeholder = document.createElement('option');
+    placeholder.hidden = true;
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    placeholder.value = "";
+
+    select.append(placeholder);
+
+    allUsers.forEach(user=>{
+        let option = document.createElement("option");
+        option.value = user.userId;
+        option.text = user.name;
+        select.appendChild(option);
+    });
+    addMember.append(select);
+    addMember.append(btn);
+
+
+   // cur.removeChild(cur.lastChild);
+    cur.appendChild(addMember);
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
 }
