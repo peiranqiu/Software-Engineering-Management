@@ -27,7 +27,7 @@
 					<server>TomcatServer</server>
 					<path>/${project.artifactId}</path>
 					<username>admin</username>
-					<password>admin</password>
+					<password>password</password>
 					<update>true</update>
 				</configuration>
 			</plugin>

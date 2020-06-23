@@ -168,6 +168,7 @@ function generateList(response, operatoin) {
     clearList("groupFollowers");
     clearList("groupMembers");
     clearList("groupModerators");
+    clearList("invitations");
     let list = document.createElement('ul');
     // list.style.listStyleType = 'none';
     list.id = operatoin + '-list';
@@ -408,33 +409,33 @@ async function getGroupInvitations(groupId) {
                 'content-type': 'application/json'
             }
         }).then(rs => rs.json());
-    console.log(response);
+    console.log(groupId);
 
-    // let list = document.createElement('ul');
-    // list.id = 'invitation-list';
-    // let title = document.createElement('h3');
-    // title.innerText = "Invitations";
-    // list.appendChild(title);
-    //
-    // response.forEach(i => {
-    //
-    //     let subGroupRow = document.createElement('div');
-    //     let subGroup = document.createElement("p");
-    //     subGroupRow.classList.add("panel");
-    //     subGroup.innerText = i.name;
-    //     subGroupRow.appendChild(subGroup);
-    //     list.appendChild(subGroupRow);
-    // });
-    // clearList("subGroupContent");
-    // let cur = document.getElementById("Sub Groups");
-    // if (cur.childNodes.length === 0) {
-    //     cur.appendChild(list);
-    //
-    // } else {
-    //     cur.replaceChild(list, cur.childNodes[0]);
-    // }
+    let list = document.createElement('ul');
+    list.id = 'invitation-list';
+    let title = document.createElement('h3');
+    title.innerText = "Invitations";
+    list.appendChild(title);
+
+    response.forEach(i => {
+
+        let invitationRow = document.createElement('div');
+        let invitation = document.createElement("p");
+        invitationRow.classList.add("panel");
+        invitation.innerText = i.name;
+        invitationRow.appendChild(invitation);
+        list.appendChild(invitationRow);
+    });
+    clearList("invitations");
+    let cur = document.getElementById("Invitations");
+    if (cur.childNodes.length === 0) {
+        cur.appendChild(list);
+
+    } else {
+        cur.replaceChild(list, cur.childNodes[0]);
+    }
     // cur.style.display = "block";
-    // cur.style.backgroundColor = "Gainsboro"
+    cur.style.backgroundColor = "Gainsboro"
 }
 
 /**
@@ -799,6 +800,7 @@ async function getGroupModerators(groupId) {
     response.forEach(i => {
         if(i.name === currentUser.name){
             document.getElementById("Invitations").style.display = 'block';
+           // console.log("Is moderator!");
         }
 
         let subGroupRow = document.createElement('div');
@@ -821,7 +823,7 @@ async function getGroupModerators(groupId) {
 }
 
 /**
- * Get moderators based on groupId.
+ * Get members based on groupId.
  *
  */
 
