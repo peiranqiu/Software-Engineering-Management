@@ -632,6 +632,9 @@ async function getSubGroups(groupId) {
     cur.style.backgroundColor = "Gainsboro"
 }
 
+/**
+ * clear a render list in the front end by input className
+ */
 async function clearList(className) {
     let tabcontent = document.getElementsByClassName(className);
     for (let i = 0; i < tabcontent.length; i++) {
@@ -640,6 +643,9 @@ async function clearList(className) {
 
 }
 
+/**
+ * a method to set group password.
+ */
 async function setGroupPassword() {
     let groupName = document.getElementById('groupName2').value;
     let password = document.getElementById("groupPass").value;

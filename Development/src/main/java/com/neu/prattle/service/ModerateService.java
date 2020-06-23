@@ -298,7 +298,7 @@ public class ModerateService {
 
   public boolean approveInvitation(int groupId, int inviteeId) {
     boolean b = false;
-    if(deleteInvitation(groupId, inviteeId)) {
+    if (deleteInvitation(groupId, inviteeId)) {
       b = addGroupMember(groupId, inviteeId);
     }
     return b;
@@ -306,6 +306,7 @@ public class ModerateService {
 
   /**
    * Get invitations of the group
+   *
    * @param groupId the group id
    * @return invitations of the group
    */

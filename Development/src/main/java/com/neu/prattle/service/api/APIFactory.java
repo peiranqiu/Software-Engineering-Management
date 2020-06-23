@@ -32,7 +32,7 @@ public class APIFactory {
    * Get current instance of the class.
    */
   public static APIFactory getInstance() {
-    if(instance == null) {
+    if (instance == null) {
       instance = new APIFactory();
     }
     return instance;
@@ -125,14 +125,14 @@ public class APIFactory {
   /**
    * Update user
    */
-  public User updateUser(User user, String field, String value) throws SQLException{
+  public User updateUser(User user, String field, String value) throws SQLException {
     return userAPI.updateUser(user, field, value);
   }
 
   /**
    * set moderator
    */
-  public User setModerator(User user) throws SQLException{
+  public User setModerator(User user) throws SQLException {
     return userAPI.setModerator(user);
   }
 

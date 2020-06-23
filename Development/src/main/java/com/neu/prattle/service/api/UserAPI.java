@@ -168,9 +168,9 @@ public class UserAPI extends DBUtils {
 
   /**
    * Update user watched by government
+   *
    * @param userId the user id
    * @return updated user
-   * @throws SQLException
    */
   public User setWatched(int userId) throws SQLException {
     String sql = "UPDATE User SET watched = ? WHERE name = ?";

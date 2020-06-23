@@ -46,6 +46,7 @@ public final class UserController {
 
   /**
    * Set user service for the user controller
+   *
    * @param service user service
    */
   public void setUserService(UserService service) {
@@ -54,6 +55,7 @@ public final class UserController {
 
   /**
    * Set moderate service for the user controller
+   *
    * @param service moderate service
    */
   public void setModerateService(ModerateService service) {
@@ -62,6 +64,7 @@ public final class UserController {
 
   /**
    * Set follow service for the user controller
+   *
    * @param service follow service
    */
   public void setFollowService(FollowService service) {

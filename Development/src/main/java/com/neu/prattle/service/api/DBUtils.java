@@ -36,8 +36,7 @@ public abstract class DBUtils {
       } catch (SQLException e) {
         LOGGER.log(Level.INFO, e.getMessage());
         System.exit(1);
-      }
-      catch (NamingException e) {
+      } catch (NamingException e) {
         LOGGER.log(Level.INFO, e.getMessage());
       }
     }

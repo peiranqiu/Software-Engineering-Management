@@ -45,7 +45,6 @@ public class UserServiceImpl implements UserService {
 
   /**
    * Set the api useed by user Service.
-   *
    */
   @Override
   public void setAPI(APIFactory newAPIFactory) {
