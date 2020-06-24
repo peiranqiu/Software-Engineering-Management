@@ -29,12 +29,14 @@ public class MessageAPI extends DBUtils {
    */
   public List<Message> getAllPrivateMessages(String fromName, String toName) throws SQLException {
     List<Message> allMessages = new ArrayList<>();
-    String sql = "SELECT * FROM Message WHERE fromName = ? AND toName = ?";
+    String sql = "SELECT * FROM Message WHERE fromName IN (?,?) AND toName IN (?,?)";
     try {
       con = getConnection();
       stmt = con.prepareStatement(sql);
       stmt.setString(1, fromName);
       stmt.setString(2, toName);
+      stmt.setString(3, fromName);
+      stmt.setString(4, toName);
       rs = stmt.executeQuery();
       while (rs.next()) {
         Message m = constructMessage(rs);

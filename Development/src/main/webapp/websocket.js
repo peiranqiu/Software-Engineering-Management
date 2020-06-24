@@ -1176,6 +1176,13 @@ async function optionsGroupChat() {
     })
 }
 
+async function cleanPrivateChat() {
+    document.getElementById("personalChatLog").value = "";
+}
+
+async function cleanGroupChat() {
+    document.getElementById("groupChatLog").value = "";
+}
 
 
 
