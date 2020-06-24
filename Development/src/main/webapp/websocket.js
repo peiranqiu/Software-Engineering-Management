@@ -49,6 +49,7 @@ async function getAllUsers() {
     console.log(response);
 
     let select = document.getElementById('to');
+    let select2 = document.getElementById('to2');
     //let invitee = document.getElementById('invitee');
     response.forEach((user) => {
         allUsers.push(user);
@@ -56,8 +57,10 @@ async function getAllUsers() {
         option.value = user.name;
         option.text = user.name;
         select.appendChild(option);
+        select2.appendChild(option)
         //invitee.appendChild(option);
     })
+
 }
 
 /**
@@ -128,6 +131,20 @@ function send() {
         });
     ws.send(json);
 }
+
+/**
+ * Send point to point message for emoji.
+ */
+function send2() {
+    let content = document.getElementById("emoji").value;
+    let json = JSON.stringify(
+        {
+            "content": content,
+            "to": document.getElementById('to2').value
+        });
+    ws.send(json);
+}
+
 
 /**
  * Send group message
@@ -1121,6 +1138,24 @@ function fillWatched(){
         select.appendChild(option);
     })
 
+}
+
+
+async function getEmojiList() {
+    var target = document.getElementById("emoji");
+    var emojiCount = 20;
+
+    for(var index = 0; index < emojiCount; index++)
+    {
+        addEmoji(emoji[index]);
+    }
+
+    function addEmoji(code)
+    {
+        var option = document.createElement('option');
+        option.innerHTML =  code;
+        target.appendChild(option);
+    }
 }
 
 

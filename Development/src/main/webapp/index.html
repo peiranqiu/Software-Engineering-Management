@@ -98,6 +98,21 @@
     </tr>
     <tr>
         <td>
+            <select id="to2">
+                <option disabled hidden selected value="">To</option>
+            </select>
+
+            <select id="emoji">
+                <option disabled hidden selected value="">Emoji</option>
+            </select>
+            <button onclick="send2();" type="button">Send</button>
+
+        </td>
+    </tr>
+
+
+    <tr>
+        <td>
             <input id="toGroup" placeholder="To Group" size="15"/>
             <input id="groupMsg" placeholder="Message" size="51" type="text"/>
             <button onclick="sendGroup();" type="button">Send</button>
@@ -193,7 +208,8 @@
 <script src="websocket.js"></script>
 <script>
     window.onload=async function(){
-        await getAllUsers().then(()=>getLanguageAPI().then(fillWatched()));
+        await getAllUsers().then(()=>getLanguageAPI()).then(()=>fillWatched()).then(()=>getEmojiList());
     }
 </script>
+<script src="https://rawgit.com/theraot/emoji/master/emoji.js" charset="utf-8"></script>
 </html>
