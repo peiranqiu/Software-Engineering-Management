@@ -2,10 +2,10 @@
     <Resource name="jdbc/mydb"
               auth="Container"
               type="javax.sql.DataSource"
-              username="mydb"
+              username="mydb1"
               password="CS5500team4"
               driverClassName="com.mysql.jdbc.Driver"
-              url="jdbc:mysql://mydb.cd4ztimoe6ek.us-east-1.rds.amazonaws.com:3306/mydb?"
+              url="jdbc:mysql://aa6o9l8upu9q6g.cd4ztimoe6ek.us-east-1.rds.amazonaws.com:3306/mydb?"
               maxActive="15"
               maxIdle="3"
     />

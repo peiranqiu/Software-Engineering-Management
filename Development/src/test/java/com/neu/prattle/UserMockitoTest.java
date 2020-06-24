@@ -8,6 +8,7 @@ import com.neu.prattle.model.User;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 import com.neu.prattle.service.api.APIFactory;
+import com.neu.prattle.service.api.UserAPI;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
