@@ -5,6 +5,7 @@ let currentUser;
 let currentGroup;
 let moderators;
 let allUsers = [];
+let members;
 
 /**
  * Create a new user
@@ -938,7 +939,9 @@ async function getGroupMembers(groupId) {
         // console.log("Is moderator!");
     }
 
+    members = [];
     response.forEach(i => {
+        members.push(i.name);
 
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
@@ -957,9 +960,12 @@ async function getGroupMembers(groupId) {
         }
         list.appendChild(subGroupRow);
     });
+
+    let isMember = currentUser=== null?false:members.includes(currentUser.name);
+
     clearList("groupMembers");
     let cur = document.getElementById("Group Members");
-    cur.removeChild(cur.lastChild);
+    cur.innerHTML = "";
     if (cur.childNodes.length === 0) {
         cur.appendChild(list);
 
@@ -1004,7 +1010,9 @@ async function getGroupMembers(groupId) {
 
 
    // cur.removeChild(cur.lastChild);
-    cur.appendChild(addMember);
+    if (isMember || isModerator){
+    cur.appendChild(addMember);}
+
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
 }
