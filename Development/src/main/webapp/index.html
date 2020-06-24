@@ -91,30 +91,22 @@
                 <option disabled hidden selected value="">To</option>
             </select>
 
-            <input id="msg" placeholder="Message" size="51" type="text"/>
+            <input id="msg" placeholder="Message" size="48" type="text"/>
+            <select id="emoji" onchange="addEmoji()">
+            <option disabled hidden selected value="">Emoji</option>
+
+            </select>
+
             <button onclick="send();" type="button">Send</button>
 
         </td>
     </tr>
-    <tr>
-        <td>
-            <select id="to2">
-                <option disabled hidden selected value="">To</option>
-            </select>
-
-            <select id="emoji">
-                <option disabled hidden selected value="">Emoji</option>
-            </select>
-            <button onclick="send2();" type="button">Send</button>
-
-        </td>
-    </tr>
 
 
     <tr>
         <td>
-            <input id="toGroup" placeholder="To Group" size="15"/>
-            <input id="groupMsg" placeholder="Message" size="51" type="text"/>
+            <input id="toGroup" placeholder="To Group" size="10"/>
+            <input id="groupMsg" placeholder="Message" size="48" type="text"/>
             <button onclick="sendGroup();" type="button">Send</button>
 
         </td>
@@ -171,19 +163,6 @@
             <textarea readonly="true" rows="3" cols="60" id="translated"></textarea>
         </td>
 
-    </tr>
-
-    <tr>
-        <td>
-        <select id="invitee">
-            <option disabled hidden selected value="">User</option>
-        </select>
-
-        to
-            <input placeholder="Group" />
-
-            <button>Invite</button>
-        </td>
     </tr>
 
     <tr>
