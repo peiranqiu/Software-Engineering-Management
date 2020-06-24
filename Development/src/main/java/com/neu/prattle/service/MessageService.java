@@ -24,8 +24,6 @@ public interface MessageService {
 
   List<Message> getAllPrivateMessages(String fromName, String toName);
 
-//  boolean deleteMessage(String fromName, String toName, String timeStamp);
-
   boolean addMessage(Message message);
 
   List<Message> getAllGroupMessages(int groupId);
