@@ -805,27 +805,27 @@ async function getGroupModerators(groupId) {
     list.appendChild(title);
     moderators = [];
 
-    let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 }).then(rs => rs.json());
+    // let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
+    //                              {
+    //                                  method: 'GET',
+    //                                  headers: {
+    //                                      'content-type': 'application/json'
+    //                                  }
+    //                              }).then(rs => rs.json());
 
     let isModerator = false;
-    moderators.forEach(i => {
-                           if (i.userId === currentUser.userId) {
-                               isModerator = true;
-                           }
-                       }
-    );
+    // moderators.forEach(i => {
+    //                        if (i.userId === currentUser.userId) {
+    //                            isModerator = true;
+    //                        }
+    //                    }
+    // );
 
     response.forEach(i => {
-        if(currentUser !== null && i.name === currentUser.name){
-            document.getElementById("Invitations").style.display = 'block';
-           // console.log("Is moderator!");
-        }
+        // if(currentUser !== null && i.name === currentUser.name){
+        //     isModerator = true;
+        //    // console.log("Is moderator!");
+        // }
 
        moderators.push(i.name);
         let subGroupRow = document.createElement('div');
@@ -834,7 +834,7 @@ async function getGroupModerators(groupId) {
         subGroup.innerText = i.name;
         subGroupRow.appendChild(subGroup);
 
-        if (isModerator &&(i.userId!==currentUser.userId)) {
+        if (moderators.includes(i.name) &&(i.userId!==currentUser.userId)) {
             let remove = document.createElement("button");
             remove.innerText = 'DownGrade to Member';
             subGroupRow.appendChild(remove);
@@ -878,22 +878,29 @@ async function getGroupMembers(groupId) {
     title.innerText = "Group Members List:";
     list.appendChild(title);
 
-    let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 }).then(rs => rs.json());
+    // let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
+    //                              {
+    //                                  method: 'GET',
+    //                                  headers: {
+    //                                      'content-type': 'application/json'
+    //                                  }
+    //                              }).then(rs => rs.json());
 
+
+    // moderators.forEach(i => {
+    //                        if (i.userId === currentUser.userId) {
+    //                            isModerator = true;
+    //                        }
+    //                    }
+    // );
+    //
     let isModerator = false;
-    moderators.forEach(i => {
-                           if (i.userId === currentUser.userId) {
-                               isModerator = true;
-                           }
-                       }
-    );
     response.forEach(i => {
+
+        if(moderators.includes(i.name)){
+            isModerator = true;
+            // console.log("Is moderator!");
+        }
 
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
