@@ -30,4 +30,6 @@ public interface MessageService {
 
   List<Message> getAllGroupMessages(int groupId);
 
+  List<Message> getUserLog(String username);
+
 }

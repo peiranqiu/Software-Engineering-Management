@@ -31,19 +31,8 @@ async function createUser() {
  * Government watches a user
  */
 async function watchUser() {
-    //userId to be changed to a user to watch
-    let userId = document.getElementById("watch").value;
-    //TODO: request to download message logs of the user
-    // const response = await fetch(URL + 'user/' + userId + '/watch',
-    //     {
-    //         method: 'POST',
-    //         headers: {
-    //             'content-type': 'application/json'
-    //         }
-    //     }).then(rs => rs.json());
-    // console.log(response);
-
-    console.log("User watched id:" + userId);
+    window.open(URL + 'user/'+ document.getElementById("watch").value + '/watch',
+        '_blank', 'location=yes,height=400,width=600,scrollbars=yes,status=yes');
 }
 
 /**
@@ -69,6 +58,7 @@ async function getAllUsers() {
         select.appendChild(option);
         //invitee.appendChild(option);
     })
+
 }
 
 /**
@@ -140,6 +130,16 @@ function send() {
         });
     ws.send(json);
 }
+
+
+/**
+ * Send point to point message for emoji.
+ */
+function addEmoji(){
+    let msg = document.getElementById("msg").value;
+    document.getElementById("msg").value = msg + document.getElementById("emoji").value;
+}
+
 
 /**
  * Send group message
@@ -1183,6 +1183,24 @@ async function cleanPrivateChat() {
 
 async function cleanGroupChat() {
     document.getElementById("groupChatLog").innerHTML = "";
+}
+
+
+async function getEmojiList() {
+    var target = document.getElementById("emoji");
+    var emojiCount = 20;
+
+    for(var index = 0; index < emojiCount; index++)
+    {
+        addEmoji(emoji[index]);
+    }
+
+    function addEmoji(code)
+    {
+        var option = document.createElement('option');
+        option.innerHTML =  code;
+        target.appendChild(option);
+    }
 }
 
 

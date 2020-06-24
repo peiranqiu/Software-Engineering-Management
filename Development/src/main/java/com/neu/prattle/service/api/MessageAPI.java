@@ -145,4 +145,26 @@ public class MessageAPI extends DBUtils {
     }
     return message;
   }
+
+  /**
+   * Get user chat log.
+   * @param username user name
+   * @return
+   */
+  public List<Message> getUserLog(String username) {
+    List<Message> list = new ArrayList<>();
+    String sql = "SELECT * FROM mydb.Message WHERE fromName = ?";
+    con = getConnection();
+    try (PreparedStatement stmt = con.prepareStatement(sql)) {
+      stmt.setString(1, username);
+      rs = stmt.executeQuery();
+      while (rs.next()) {
+        list.add(constructMessage(rs));
+      }
+      rs.close();
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return list;
+  }
 }

@@ -99,16 +99,6 @@ public class UserControllerTest {
   }
 
   /**
-   * Test government watches user
-   */
-  @Test
-  public void testWatchUser() {
-    when(userService.setWatched(anyInt())).thenReturn(user1);
-    userController.setUserService(userService);
-    assertEquals(userController.watchUser(1), gson.toJson(user1));
-  }
-
-  /**
    * Test get follower
    */
   @Test
