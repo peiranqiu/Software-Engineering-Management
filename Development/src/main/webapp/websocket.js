@@ -115,6 +115,7 @@ async function connect() {
                 }
             }).then(rs => rs.json());
 
+            await optionsPersonChat();
             console.log(response);
         };
     } else {
@@ -1030,7 +1031,7 @@ async function getAllPrivateMessages() {
     // addMember.append(select);
     // addMember.append(btn);
     // let list = generateList(response, 'getAllPrivateMessages');
-    const response = await fetch(URL + 'user/getAllMessages/' + 'Alice123' + '/' + 'Apple123',
+    const response = await fetch(URL + 'user/getAllMessages/' + 'Alice123' + '/' + document.getElementById('toChatLog').value,
                                  {
                                      method: 'GET',
                                      headers: {
@@ -1039,19 +1040,21 @@ async function getAllPrivateMessages() {
                                  }).then(rs => rs.json());
     console.log(response);
     response.forEach(printMessage);
-
-    let select = document.getElementById('toChatLog');
-    allUsers.forEach(user=>{
-        let option = document.createElement("option");
-        option.value = user.userId;
-        option.text = user.name;
-        select.appendChild(option);
-    });
 }
 
 async function printMessage(item, index) {
     document.getElementById("personalChatLog").innerHTML += item.from + ": " + item.message + "      $time: " + item.timeStamp;
     document.getElementById("personalChatLog").innerHTML += "&#13;&#10";
+}
+
+async function optionsPersonChat() {
+    let select = document.getElementById('toChatLog');
+    allUsers.forEach(user=>{
+        let option = document.createElement("option");
+        option.value = user.name;
+        option.text = user.name;
+        select.appendChild(option);
+    });
 }
 
 
