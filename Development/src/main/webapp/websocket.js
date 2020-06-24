@@ -872,8 +872,6 @@ async function getGroupMembers(groupId) {
             }
         }).then(rs => rs.json());
 
-    console.log(response);
-
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
     let title = document.createElement('h3');
