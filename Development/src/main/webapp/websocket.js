@@ -895,12 +895,13 @@ async function getGroupMembers(groupId) {
     // );
     //
     let isModerator = false;
-    response.forEach(i => {
 
-        if(moderators.includes(i.name)){
-            isModerator = true;
-            // console.log("Is moderator!");
-        }
+    if(moderators.includes(currentUser.name)){
+        isModerator = true;
+        // console.log("Is moderator!");
+    }
+
+    response.forEach(i => {
 
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
