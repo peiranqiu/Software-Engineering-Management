@@ -216,7 +216,7 @@ public class ChatEndpoint {
   public void sendPersonalMessage(Message message) throws IOException, EncodeException {
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
-      if (message.getFrom().equals(users.get(endpoint.session.getId())) | message.getTo().equals(users.get(endpoint.session.getId()))) {
+      if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
         synchronized (endpoint) {
           try {
             endpoint.session.getBasicRemote()
@@ -227,10 +227,10 @@ public class ChatEndpoint {
         }
       }
     });
-//    message.setTimeStamp();
-//    message.setDate();
-//    message.setGroupId(-1);
-//    messageService.addMessage(message);
+    message.setTimeStamp();
+    message.setDate();
+    message.setGroupId(-1);
+    messageService.addMessage(message);
   }
 
   public void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {

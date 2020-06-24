@@ -127,19 +127,19 @@ UNLOCK TABLES;
 -- Dump completed on 2020-06-23  0:46:02
 -- Dump completed on 2020-06-23  0:46:02
 
--- -----------------------------------------------------
--- Table `mydb`.`Message`
--- -----------------------------------------------------
--- DROP TABLE IF EXISTS `mydb`.`Message` ;
---
--- CREATE TABLE IF NOT EXISTS `mydb`.`Message` (
---   `Message_id` INT NOT NULL auto_increment,
---   `fromName` VARCHAR(25) NOT NULL,
---   `toName` VARCHAR(25) NOT NULL,
---   `message` VARCHAR(50) NOT NULL,
---   `messageDate` VARCHAR(15) NOT NULL,
---   `messageTimeStamp` VARCHAR(35) NOT NULL,
---   `sendToGroup` TINYINT NOT NULL DEFAULT 0,
---   `groupId` INT NOT NULL DEFAULT -1,
---   PRIMARY KEY (`Message_id`))ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-----------------------------------------------------
+Table `mydb`.`Message`
+-----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`Message` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`Message` (
+  `Message_id` INT NOT NULL auto_increment,
+  `fromName` VARCHAR(25) NOT NULL,
+  `toName` VARCHAR(25) NOT NULL,
+  `message` VARCHAR(50) NOT NULL,
+  `messageDate` VARCHAR(15) NOT NULL,
+  `messageTimeStamp` VARCHAR(35) NOT NULL,
+  `sendToGroup` TINYINT NOT NULL DEFAULT 0,
+  `groupId` INT NOT NULL DEFAULT -1,
+  PRIMARY KEY (`Message_id`))ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
