@@ -120,6 +120,7 @@ async function connect() {
             }).then(rs => rs.json());
 
             await optionsPersonChat();
+            await optionsGroupChat();
             console.log(response);
         };
     } else {
@@ -1155,13 +1156,14 @@ async function printGroupMessage(item, index) {
 }
 
 async function optionsGroupChat() {
-    const response = await fetch(URL + 'group/getAllGroups',
+    const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup',
                                  {
                                      method: 'GET',
                                      headers: {
                                          'content-type': 'application/json'
                                      }
-                                 }).then(rs => rs.json());
+                                 })
+        .then(rs => rs.json());
     console.log(response);
 
     let select = document.getElementById('toGroupChatLog');
