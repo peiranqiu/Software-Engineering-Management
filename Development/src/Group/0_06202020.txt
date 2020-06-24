@@ -1,8 +1,0 @@
-
-
-testName1: Welcome to this group!   06/20/2020 12:53:49
-testName1: Welcome to this group again!   06/20/2020 12:53:49
-
-
-testName1: Welcome to this group!   06/20/2020 12:54:07
-testName1: Welcome to this group again!   06/20/2020 12:54:07
