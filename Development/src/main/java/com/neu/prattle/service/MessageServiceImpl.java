@@ -78,4 +78,12 @@ public class MessageServiceImpl implements MessageService {
     }
     return rst;
   }
+
+  /**
+   * Get user chat history for government to watch
+   */
+  @Override
+  public List<Message> getUserLog(String username) {
+    return api.getUserLog(username);
+  }
 }
