@@ -124,15 +124,15 @@ public final class UserController {
   /**
    * Government watches a user
    *
-   * @param id the user id
-   * @return user with updated watch status
+   * @param userId the user id
+   * @return user chatlog
    */
-  @POST
+  @GET
   @Path("/{userId}/watch")
   @Consumes(MediaType.APPLICATION_JSON)
-  public String watchUser(@PathParam("userId") int id) {
-    User u = userService.setWatched(id);
-    return new Gson().toJson(u);
+  public String watchUser(@PathParam("userId") int userId) {
+    String username = userService.findUserById(userId).getName();
+    return new Gson().toJson(messageService.getUserLog(username));
   }
 
   /**

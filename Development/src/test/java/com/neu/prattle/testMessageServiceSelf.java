@@ -1,12 +1,9 @@
 package com.neu.prattle;
 
-import com.mysql.cj.MessageBuilder;
 import com.neu.prattle.model.Message;
-import com.neu.prattle.service.MessageServiceImpl;
-import com.neu.prattle.service.UserServiceImpl;
 import com.neu.prattle.service.api.MessageAPI;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.sql.SQLException;
 

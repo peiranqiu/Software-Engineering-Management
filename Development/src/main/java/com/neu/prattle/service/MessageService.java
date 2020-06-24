@@ -28,4 +28,6 @@ public interface MessageService {
 
   boolean addMessage(Message message);
 
+  List<Message> getUserLog(String username);
+
 }
