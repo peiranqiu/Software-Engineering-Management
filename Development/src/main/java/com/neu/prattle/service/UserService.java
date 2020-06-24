@@ -59,6 +59,7 @@ public interface UserService {
 
   /**
    * Update the user's government watched control.
+   *
    * @param userId the user id
    * @return the updated user
    */

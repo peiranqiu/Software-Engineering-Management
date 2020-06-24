@@ -46,6 +46,7 @@ public class GroupController {
 
   /**
    * Set group service for the group controller
+   *
    * @param service group service
    */
   public void setGroupService(GroupService service) {
@@ -54,6 +55,7 @@ public class GroupController {
 
   /**
    * Set moderate service for the group controller
+   *
    * @param service moderate service
    */
   public void setModerateService(ModerateService service) {
@@ -62,6 +64,7 @@ public class GroupController {
 
   /**
    * Set follow service for the group controller
+   *
    * @param service follow service
    */
   public void setFollowService(FollowService service) {
@@ -183,6 +186,7 @@ public class GroupController {
     }
     return new Gson().toJson("Delete member failed");
   }
+
   /**
    * Get all groups in database
    *
@@ -233,7 +237,7 @@ public class GroupController {
   @Consumes(MediaType.APPLICATION_JSON)
   public String getGroupbyName(@PathParam("groupName") String name) {
     Optional<Group> optional = groupService.findGroupByName(name);
-    if(optional.isPresent()) {
+    if (optional.isPresent()) {
       return new Gson().toJson(optional.get());
     }
     return new Gson().toJson(null);
@@ -297,10 +301,11 @@ public class GroupController {
     List<User> list = moderateService.getMembers(group);
     return new Gson().toJson(list);
   }
+
   /**
    * Get all invitations of the group
+   *
    * @param id group id
-   * @return
    */
   @GET
   @Path("/{groupId}/getAllInvitation")

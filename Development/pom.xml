@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>java-websocket</artifactId>
 	<groupId>com.neu</groupId>
-	<version>0.0.32</version>
+	<version>0.2.0</version>
 	<name>revamped-prattle</name>
 	<packaging>war</packaging>
 	<build>
@@ -23,7 +23,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<url>http://messageapp-env.eba-wmfxiidm.us-east-1.elasticbeanstalk.com</url>
+					<url>http://cs5500team4.us-east-1.elasticbeanstalk.com</url>
 					<server>TomcatServer</server>
 					<path>/</path>
 				</configuration>

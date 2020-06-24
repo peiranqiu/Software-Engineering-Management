@@ -14,16 +14,17 @@ import java.util.logging.Logger;
 
 public class GroupServiceImpl implements GroupService {
   private static GroupService groupService;
-  private APIFactory api;
 
   static {
     groupService = new GroupServiceImpl();
   }
 
+  private APIFactory api;
+  private Logger logger = Logger.getLogger(this.getClass().getName());
+
   private GroupServiceImpl() {
     api = APIFactory.getInstance();
   }
-  private Logger logger = Logger.getLogger(this.getClass().getName());
 
   /**
    * Call this method to return an instance of this service.
@@ -37,7 +38,6 @@ public class GroupServiceImpl implements GroupService {
 
   /**
    * Set the api used by group Service.
-   *
    */
   @Override
   public void setAPI(APIFactory apiFactory) {

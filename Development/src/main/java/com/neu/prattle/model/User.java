@@ -124,11 +124,11 @@ public class User {
 
   /**
    * set is watched
-   * @param watched
    */
   public void setWatched(Boolean watched) {
     isWatched = watched;
   }
+
   /**
    * Get the user's avatar.
    */

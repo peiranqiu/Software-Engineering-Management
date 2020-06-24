@@ -26,17 +26,17 @@ public abstract class DBUtils {
       try {
         Class.forName("com.mysql.jdbc.Driver");
         String dbName = "mydb";
-        String userName = "mydb1";
-        String password = "CS5500team4";
-        String hostname = "aa6o9l8upu9q6g.cd4ztimoe6ek.us-east-1.rds.amazonaws.com";
+        String userName = "mydb";
+        String pd = "CS5500team4";
+        String hostname = "mydb.cd4ztimoe6ek.us-east-1.rds.amazonaws.com";
         String port = "3306";
-        String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" + password;
+        String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" + pd;
         con = DriverManager.getConnection(jdbcUrl);
         logger.info("Remote connection successful.");
       } catch (SQLException e) {
         logger.info(e.getMessage());
       } catch (ClassNotFoundException e) {
-        logger.info(e.getMessage());
+        logger.info("Class not found error");
       }
     }
     return con;
