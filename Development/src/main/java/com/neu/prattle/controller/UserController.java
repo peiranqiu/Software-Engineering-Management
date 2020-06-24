@@ -6,6 +6,8 @@ import com.neu.prattle.model.Group;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
+import com.neu.prattle.service.MessageService;
+import com.neu.prattle.service.MessageServiceImpl;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
@@ -33,7 +35,7 @@ public final class UserController {
   private UserService userService = UserServiceImpl.getInstance();
   private FollowService followService = FollowService.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
-
+  private MessageService messageService = MessageServiceImpl.getInstance();
   /**
    * Singleton instance for user controller
    *
@@ -234,4 +236,15 @@ public final class UserController {
     return new Gson().toJson(msg.getContent());
   }
 
+  /**
+   * Get all messages
+   *
+   * @return all messages
+   */
+  @GET
+  @Path("/getAllMessages/{from}/{to}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getAllPrivateMessages(@PathParam("from") String from, @PathParam("to") String to) {
+    return new Gson().toJson(messageService.getAllPrivateMessages(from, to));
+  }
 }

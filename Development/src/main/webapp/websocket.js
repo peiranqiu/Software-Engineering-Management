@@ -5,6 +5,7 @@ let currentUser;
 let currentGroup;
 let moderators;
 let allUsers = [];
+let allMessages = [];
 
 /**
  * Create a new user
@@ -1020,6 +1021,37 @@ async function getLanguageAPI() {
         option.text = language.text;
         select.appendChild(option);
     })
+}
+
+/**
+ * get list of all messages.
+ */
+async function getAllPrivateMessages() {
+    // addMember.append(select);
+    // addMember.append(btn);
+    // let list = generateList(response, 'getAllPrivateMessages');
+    const response = await fetch(URL + 'user/getAllMessages/' + 'Alice123' + '/' + 'Apple123',
+                                 {
+                                     method: 'GET',
+                                     headers: {
+                                         'content-type': 'application/json'
+                                     }
+                                 }).then(rs => rs.json());
+    console.log(response);
+    response.forEach(printMessage);
+
+    let select = document.getElementById('toChatLog');
+    allUsers.forEach(user=>{
+        let option = document.createElement("option");
+        option.value = user.userId;
+        option.text = user.name;
+        select.appendChild(option);
+    });
+}
+
+async function printMessage(item, index) {
+    document.getElementById("personalChatLog").innerHTML += item.from + ": " + item.message + "      $time: " + item.timeStamp;
+    document.getElementById("personalChatLog").innerHTML += "&#13;&#10";
 }
 
 
