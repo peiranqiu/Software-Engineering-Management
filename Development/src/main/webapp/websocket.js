@@ -5,6 +5,7 @@ let currentGroup;
 let moderators;
 let allUsers = [];
 let members;
+let allMessages = [];
 
 /**
  * Create a new user
@@ -113,6 +114,7 @@ async function connect() {
                 }
             }).then(rs => rs.json());
 
+            await optionsPersonChat();
             console.log(response);
         };
     } else {
@@ -995,6 +997,37 @@ async function getLanguageAPI() {
         option.text = language.text;
         select.appendChild(option);
     })
+}
+
+/**
+ * get list of all messages.
+ */
+async function getAllPrivateMessages() {
+    const response = await fetch(URL + 'user/getAllMessages/' + currentUser.name + '/' + document.getElementById('toChatLog').value,
+                                 {
+                                     method: 'GET',
+                                     headers: {
+                                         'content-type': 'application/json'
+                                     }
+                                 }).then(rs => rs.json());
+    console.log(response);
+    response.forEach(printMessage);
+}
+
+async function printMessage(item, index) {
+    document.getElementById("personalChatLog").innerHTML += item.from + ": " + item.message + "      $time: " + item.timeStamp;
+    document.getElementById("personalChatLog").innerHTML += "&#13;&#10";
+}
+
+async function optionsPersonChat() {
+    let select = document.getElementById('toChatLog');
+    allUsers.forEach(user=>{
+        let option = document.createElement("option");
+        option.value = user.name;
+        option.text = user.name;
+        select.appendChild(option);
+    });
+
 }
 
 function fillWatched(){
