@@ -1177,11 +1177,12 @@ async function optionsGroupChat() {
 }
 
 async function cleanPrivateChat() {
-    document.getElementById("personalChatLog").value = "";
+    console.log("cleaning call");
+    document.getElementById("personalChatLog").innerHTML = "";
 }
 
 async function cleanGroupChat() {
-    document.getElementById("groupChatLog").value = "";
+    document.getElementById("groupChatLog").innerHTML = "";
 }
 
 
