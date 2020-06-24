@@ -5,6 +5,7 @@ let currentUser;
 let currentGroup;
 let moderators;
 let allUsers = [];
+let members;
 let allMessages = [];
 
 /**
@@ -31,15 +32,18 @@ async function createUser() {
  */
 async function watchUser() {
     //userId to be changed to a user to watch
-    let userId = currentUser.userId;
-    const response = await fetch(URL + 'user/' + userId + '/watch',
-        {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            }
-        }).then(rs => rs.json());
-    console.log(response);
+    let userId = document.getElementById("watch").value;
+    //TODO: request to download message logs of the user
+    // const response = await fetch(URL + 'user/' + userId + '/watch',
+    //     {
+    //         method: 'POST',
+    //         headers: {
+    //             'content-type': 'application/json'
+    //         }
+    //     }).then(rs => rs.json());
+    // console.log(response);
+
+    console.log("User watched id:" + userId);
 }
 
 /**
@@ -209,6 +213,7 @@ function generateList(response, operatoin) {
         } else if (operatoin === 'getGroups') {
 
                 user.addEventListener('click', async function(event){
+                    currentGroup = u;
                     document.getElementById('toGroup').value = event.target.innerHTML;
                    await getSubGroups(u.groupId)
                        .then(()=>getGroupFollowers(u.groupId))
@@ -226,6 +231,7 @@ function generateList(response, operatoin) {
                 followGroup(u.groupId);
             });
             user.addEventListener('click', async function(){
+                currentGroup = u;
                 await getSubGroups(u.groupId)
                     .then(()=>getGroupFollowers(u.groupId))
                     .then(()=>(getGroupModerators(u.groupId)))
@@ -807,27 +813,27 @@ async function getGroupModerators(groupId) {
     list.appendChild(title);
     moderators = [];
 
-    let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 }).then(rs => rs.json());
+    // let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
+    //                              {
+    //                                  method: 'GET',
+    //                                  headers: {
+    //                                      'content-type': 'application/json'
+    //                                  }
+    //                              }).then(rs => rs.json());
 
     let isModerator = false;
-    moderators.forEach(i => {
-                           if (i.userId === currentUser.userId) {
-                               isModerator = true;
-                           }
-                       }
-    );
+    // moderators.forEach(i => {
+    //                        if (i.userId === currentUser.userId) {
+    //                            isModerator = true;
+    //                        }
+    //                    }
+    // );
 
     response.forEach(i => {
-        if(currentUser !== null && i.name === currentUser.name){
-            document.getElementById("Invitations").style.display = 'block';
-           // console.log("Is moderator!");
-        }
+        // if(currentUser !== null && i.name === currentUser.name){
+        //     isModerator = true;
+        //    // console.log("Is moderator!");
+        // }
 
        moderators.push(i.name);
         let subGroupRow = document.createElement('div');
@@ -836,7 +842,7 @@ async function getGroupModerators(groupId) {
         subGroup.innerText = i.name;
         subGroupRow.appendChild(subGroup);
 
-        if (isModerator &&(i.userId!==currentUser.userId)) {
+        if (currentUser !== null && moderators.includes(currentUser.name) &&(i.userId!==currentUser.userId)) {
             let remove = document.createElement("button");
             remove.innerText = 'DownGrade to Member';
             subGroupRow.appendChild(remove);
@@ -848,14 +854,49 @@ async function getGroupModerators(groupId) {
 
         list.appendChild(subGroupRow);
     });
+
     clearList("groupModerators");
     let cur = document.getElementById("Group Moderators");
+    cur.removeChild(cur.lastChild);
     if (cur.childNodes.length === 0) {
         cur.appendChild(list);
 
     } else {
         cur.replaceChild(list, cur.childNodes[0]);
     }
+
+    if (currentUser !== null && moderators.includes(currentUser.name)) {
+        let addModerator = document.createElement('div');
+        let select = document.createElement('select');
+        let btn = document.createElement('button');
+        btn.innerText = 'Add';
+        btn.addEventListener('click', async () => {
+            // console.log("current group:" + currentGroup.name);
+            // console.log("current group user:" + select.value);
+            await addGroupModerator(select.value)
+        });
+
+        let placeholder = document.createElement('option');
+        placeholder.hidden = true;
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        placeholder.value = "";
+
+        select.append(placeholder);
+
+        allUsers.forEach(user => {
+            let option = document.createElement("option");
+            option.value = user.userId;
+            option.text = user.name;
+            select.appendChild(option);
+        });
+        addModerator.append(select);
+        addModerator.append(btn);
+
+        cur.appendChild(addModerator);
+
+    }
+
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
 }
@@ -880,22 +921,32 @@ async function getGroupMembers(groupId) {
     title.innerText = "Group Members List:";
     list.appendChild(title);
 
-    let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 }).then(rs => rs.json());
+    // let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
+    //                              {
+    //                                  method: 'GET',
+    //                                  headers: {
+    //                                      'content-type': 'application/json'
+    //                                  }
+    //                              }).then(rs => rs.json());
 
+
+    // moderators.forEach(i => {
+    //                        if (i.userId === currentUser.userId) {
+    //                            isModerator = true;
+    //                        }
+    //                    }
+    // );
+    //
     let isModerator = false;
-    moderators.forEach(i => {
-                           if (i.userId === currentUser.userId) {
-                               isModerator = true;
-                           }
-                       }
-    );
+
+    if(moderators.includes(currentUser.name)){
+        isModerator = true;
+        // console.log("Is moderator!");
+    }
+
+    members = [];
     response.forEach(i => {
+        members.push(i.name);
 
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
@@ -914,9 +965,12 @@ async function getGroupMembers(groupId) {
         }
         list.appendChild(subGroupRow);
     });
+
+    let isMember = currentUser=== null?false:members.includes(currentUser.name);
+
     clearList("groupMembers");
     let cur = document.getElementById("Group Members");
-    cur.removeChild(cur.lastChild);
+    cur.innerHTML = "";
     if (cur.childNodes.length === 0) {
         cur.appendChild(list);
 
@@ -927,10 +981,21 @@ async function getGroupMembers(groupId) {
     let addMember = document.createElement('div');
     let select = document.createElement('select');
     let btn = document.createElement('button');
-    btn.innerText = 'Invite';
-    btn.addEventListener('click', ()=>{
-        console.log(select.value);
-    });
+    if (isModerator){
+        btn.innerText = 'Add';
+        btn.addEventListener('click', async ()=>{
+            // console.log("current group:" + currentGroup.name);
+            // console.log("current group user:" + select.value);
+            await addGroupMember(select.value)
+        });
+
+    }
+    else {
+        btn.innerText = 'Invite';
+        btn.addEventListener('click', async () => {
+            await createInvitation(currentGroup.groupId, select.value)
+        });
+    }
     let placeholder = document.createElement('option');
     placeholder.hidden = true;
     placeholder.disabled = true;
@@ -950,7 +1015,9 @@ async function getGroupMembers(groupId) {
 
 
    // cur.removeChild(cur.lastChild);
-    cur.appendChild(addMember);
+    if (isMember || isModerator){
+    cur.appendChild(addMember);}
+
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
 }
@@ -1052,6 +1119,18 @@ async function optionsPersonChat() {
         option.text = user.name;
         select.appendChild(option);
     });
+
+}
+
+function fillWatched(){
+    let select = document.getElementById("watch");
+    allUsers.forEach((user) => {
+        let option = document.createElement("option");
+        option.value = user.userId;
+        option.text = user.name;
+
+        select.appendChild(option);
+    })
 
 }
 

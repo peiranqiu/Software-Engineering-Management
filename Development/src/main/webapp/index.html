@@ -12,10 +12,16 @@
         <th scope="col"></th>
     </tr>
     <tr>
-        <td colspan="2">
+        <td colspan="1">
             <input id="username" placeholder="Username" type="text"/>
             <input id="password" placeholder="Password" type="text"/>
             <button onclick="connect();" type="button">Connect</button>
+        </td>
+        <td colspan="1">
+            <select id="watch">
+            <option disabled hidden selected value=""></option>
+            </select>
+            <button onclick="watchUser()" type="button">Watch</button>
         </td>
     </tr>
     <tr>
@@ -187,7 +193,7 @@
 <script src="websocket.js"></script>
 <script>
     window.onload=async function(){
-        await getAllUsers().then(()=>getLanguageAPI());
+        await getAllUsers().then(()=>getLanguageAPI().then(fillWatched()));
     }
 </script>
 </html>
