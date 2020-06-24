@@ -1,7 +1,6 @@
-package com.neu.prattle.service;
+package com.neu.prattle.service.api;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,20 +8,18 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 /**
  * An abstract class to connect mysql database and offer general crud for tables.
  */
 public abstract class DBUtils {
 
   private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-  protected String url = "jdbc:mysql://localhost:3306/mydb?serverTimezone=EST5EDT";
-  protected String user = "mydb";
-  protected String pd = "CS5500team4";
   protected Connection con = null;
-
-  public DBUtils() {
-    this.con = getConnection();
-  }
 
   /**
    * Connect to the db
@@ -32,14 +29,17 @@ public abstract class DBUtils {
   public Connection getConnection() {
     if (con == null) {
       try {
-        con = DriverManager.getConnection(url,user,pd);
-        return con;
+        Context initCtx = new InitialContext();
+        Context envCtx = (Context) initCtx.lookup("java:comp/env");
+        DataSource ds = (DataSource) envCtx.lookup("jdbc/mydb");
+        con = ds.getConnection();
       } catch (SQLException e) {
         LOGGER.log(Level.INFO, e.getMessage());
         System.exit(1);
+      } catch (NamingException e) {
+        LOGGER.log(Level.INFO, e.getMessage());
       }
     }
-
     return con;
   }
 
