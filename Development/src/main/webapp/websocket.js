@@ -207,6 +207,7 @@ function generateList(response, operatoin) {
         } else if (operatoin === 'getGroups') {
 
                 user.addEventListener('click', async function(event){
+                    currentGroup = u;
                     document.getElementById('toGroup').value = event.target.innerHTML;
                    await getSubGroups(u.groupId)
                        .then(()=>getGroupFollowers(u.groupId))
@@ -224,6 +225,7 @@ function generateList(response, operatoin) {
                 followGroup(u.groupId);
             });
             user.addEventListener('click', async function(){
+                currentGroup = u;
                 await getSubGroups(u.groupId)
                     .then(()=>getGroupFollowers(u.groupId))
                     .then(()=>(getGroupModerators(u.groupId)))
@@ -933,10 +935,21 @@ async function getGroupMembers(groupId) {
     let addMember = document.createElement('div');
     let select = document.createElement('select');
     let btn = document.createElement('button');
-    btn.innerText = 'Invite';
-    btn.addEventListener('click', ()=>{
-        console.log(select.value);
-    });
+    if (isModerator){
+        btn.innerText = 'Add';
+        btn.addEventListener('click', async ()=>{
+            // console.log("current group:" + currentGroup.name);
+            // console.log("current group user:" + select.value);
+            await addGroupMember(select.value)
+        });
+
+    }
+    else {
+        btn.innerText = 'Invite';
+        btn.addEventListener('click', async () => {
+            await createInvitation(currentGroup.groupId, select.value)
+        });
+    }
     let placeholder = document.createElement('option');
     placeholder.hidden = true;
     placeholder.disabled = true;
