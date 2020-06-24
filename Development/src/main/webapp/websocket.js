@@ -836,7 +836,7 @@ async function getGroupModerators(groupId) {
         subGroup.innerText = i.name;
         subGroupRow.appendChild(subGroup);
 
-        if (moderators.includes(i.name) &&(i.userId!==currentUser.userId)) {
+        if (currentUser !== null && moderators.includes(currentUser.name) &&(i.userId!==currentUser.userId)) {
             let remove = document.createElement("button");
             remove.innerText = 'DownGrade to Member';
             subGroupRow.appendChild(remove);
@@ -848,14 +848,49 @@ async function getGroupModerators(groupId) {
 
         list.appendChild(subGroupRow);
     });
+
     clearList("groupModerators");
     let cur = document.getElementById("Group Moderators");
+    cur.removeChild(cur.lastChild);
     if (cur.childNodes.length === 0) {
         cur.appendChild(list);
 
     } else {
         cur.replaceChild(list, cur.childNodes[0]);
     }
+
+    if (currentUser !== null && moderators.includes(currentUser.name)) {
+        let addModerator = document.createElement('div');
+        let select = document.createElement('select');
+        let btn = document.createElement('button');
+        btn.innerText = 'Add';
+        btn.addEventListener('click', async () => {
+            // console.log("current group:" + currentGroup.name);
+            // console.log("current group user:" + select.value);
+            await addGroupModerator(select.value)
+        });
+
+        let placeholder = document.createElement('option');
+        placeholder.hidden = true;
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        placeholder.value = "";
+
+        select.append(placeholder);
+
+        allUsers.forEach(user => {
+            let option = document.createElement("option");
+            option.value = user.userId;
+            option.text = user.name;
+            select.appendChild(option);
+        });
+        addModerator.append(select);
+        addModerator.append(btn);
+
+        cur.appendChild(addModerator);
+
+    }
+
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
 }
