@@ -5,8 +5,8 @@ let currentUser;
 let currentGroup;
 let moderators;
 let allUsers = [];
+let allGroups = []
 let members;
-let allMessages = [];
 
 /**
  * Create a new user
@@ -562,6 +562,7 @@ async function getAllGroups(event) {
             }
         }).then(rs => rs.json());
     console.log(response);
+
     let list = generateList(response, 'getAllGroups');
     openTab(event, "All Groups", list);
 }
@@ -1131,8 +1132,48 @@ function fillWatched(){
 
         select.appendChild(option);
     })
-
 }
+
+/**
+ * get list of all messages on current group.
+ */
+async function getAllGroupMessages() {
+    const response = await fetch(URL + 'group/getAllGroupMessages/' + document.getElementById('toGroupChatLog').value,
+                                 {
+                                     method: 'GET',
+                                     headers: {
+                                         'content-type': 'application/json'
+                                     }
+                                 }).then(rs => rs.json());
+    console.log(response);
+    response.forEach(printGroupMessage);
+}
+
+async function printGroupMessage(item, index) {
+    document.getElementById("groupChatLog").innerHTML += item.from + ": " + item.message + "      $time: " + item.timeStamp;
+    document.getElementById("groupChatLog").innerHTML += "&#13;&#10";
+}
+
+async function optionsGroupChat() {
+    const response = await fetch(URL + 'group/getAllGroups',
+                                 {
+                                     method: 'GET',
+                                     headers: {
+                                         'content-type': 'application/json'
+                                     }
+                                 }).then(rs => rs.json());
+    console.log(response);
+
+    let select = document.getElementById('toGroupChatLog');
+    response.forEach((group) => {
+        allGroups.push(group);
+        let option = document.createElement("option");
+        option.value = group.groupId;
+        option.text = group.name;
+        select.appendChild(option);
+    })
+}
+
 
 
 

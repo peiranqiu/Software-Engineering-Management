@@ -49,6 +49,27 @@ public class MessageAPI extends DBUtils {
     return allMessages;
   }
 
+  public List<Message> getAllGroupMessages(int groupId) throws SQLException {
+    List<Message> allGroupMessages = new ArrayList<>();
+    String sql = "SELECT * FROM Message WHERE groupId = ?";
+    try {
+      con = getConnection();
+      stmt = con.prepareStatement(sql);
+      stmt.setInt(1, groupId);
+      rs = stmt.executeQuery();
+      while (rs.next()) {
+        Message m = constructMessage(rs);
+        allGroupMessages.add(m);
+      }
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      rs.close();
+      stmt.close();
+    }
+    return allGroupMessages;
+  }
+
 //  /**
 //   * Fetch the Message with the given id from db
 //   *

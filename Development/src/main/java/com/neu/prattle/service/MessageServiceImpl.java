@@ -78,4 +78,15 @@ public class MessageServiceImpl implements MessageService {
     }
     return rst;
   }
+
+  @Override
+  public List<Message> getAllGroupMessages(int groupId) {
+    List<Message> allMessages = new ArrayList<>();
+    try {
+      allMessages = api.getAllGroupMessages(groupId);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return allMessages;
+  }
 }

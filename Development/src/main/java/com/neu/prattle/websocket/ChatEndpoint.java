@@ -263,11 +263,11 @@ public class ChatEndpoint {
         }
       }
     });
-//    message.setTimeStamp();
-//    message.setDate();
-//    message.setGroupId(currentGroupObject.getGroupId());
-//    message.setTo(currentGroupObject.getName());
-//    messageService.addMessage(message);
+    message.setTimeStamp();
+    message.setDate();
+    message.setGroupId(currentGroupObject.getGroupId());
+    message.setTo(currentGroupObject.getName());
+    messageService.addMessage(message);
   }
 }
 
