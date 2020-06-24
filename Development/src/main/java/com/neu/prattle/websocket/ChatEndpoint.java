@@ -12,6 +12,8 @@ import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.MessageService;
+import com.neu.prattle.service.MessageServiceImpl;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
@@ -65,6 +67,8 @@ public class ChatEndpoint {
 
   private ModerateService moderateService = ModerateService.getInstance();
 
+  private MessageService messageService = MessageServiceImpl.getInstance();
+
   /**
    * Broadcast.
    *
@@ -93,10 +97,11 @@ public class ChatEndpoint {
    * @param newGroupService    new group service
    * @param newModerateService new moderate service
    */
-  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
+  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService, MessageService newMessageService) {
     accountService = newAccountService;
     groupService = newGroupService;
     moderateService = newModerateService;
+    messageService = newMessageService;
   }
 
   /**
@@ -211,7 +216,7 @@ public class ChatEndpoint {
   public void sendPersonalMessage(Message message) throws IOException, EncodeException {
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
-      if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
+      if (message.getTo().equals(users.get(endpoint.session.getId()))) {
         synchronized (endpoint) {
           try {
             endpoint.session.getBasicRemote()
@@ -222,8 +227,10 @@ public class ChatEndpoint {
         }
       }
     });
-    message.storeMessage();
-    message.saveChatLogPerson();
+    message.setTimeStamp();
+    message.setDate();
+    message.setGroupId(-1);
+    messageService.addMessage(message);
   }
 
   public void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
@@ -256,7 +263,11 @@ public class ChatEndpoint {
         }
       }
     });
-    message.saveChatLogGroup(currentGroupObject, true);
+    message.setTimeStamp();
+    message.setDate();
+    message.setGroupId(currentGroupObject.getGroupId());
+    message.setTo(currentGroupObject.getName());
+    messageService.addMessage(message);
   }
 }
 

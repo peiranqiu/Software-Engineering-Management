@@ -26,8 +26,8 @@
 					<url>http://localhost:8080/manager/text</url>
 					<server>TomcatServer</server>
 					<path>/${project.artifactId}</path>
-					<username>admin</username>
-					<password>password</password>
+<!--					<username>admin</username>-->
+<!--					<password>admin</password>-->
 					<update>true</update>
 				</configuration>
 			</plugin>
@@ -129,6 +129,8 @@
 		<sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
 		<sonar.language>java</sonar.language>
 		<sonar.coverage.exclusions>
+			src/main/java/com/neu/prattle/controller/**,
+			src/main/java/com/neu/prattle/exceptions/**,
 			src/main/java/com/neu/prattle/service/api/**,
 			src/main/java/com/neu/prattle/main/**,
 			src/main/webapp/**,

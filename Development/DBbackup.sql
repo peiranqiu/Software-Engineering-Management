@@ -58,6 +58,24 @@ INSERT INTO `User` VALUES (1,'Rouni111','Password111',NULL,'en',1,NULL,0),(2,'Ro
 UNLOCK TABLES;
 
 --
+-- Table structure for table `User_follows_Group`
+--
+
+DROP TABLE IF EXISTS `User_follows_Group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `User_follows_Group` (
+  `User_User_id` int(11) NOT NULL,
+  `Group_Group_id` int(11) NOT NULL,
+  PRIMARY KEY (`User_User_id`,`Group_Group_id`),
+  KEY `fk_User_has_Group1_Group2_idx` (`Group_Group_id`),
+  KEY `fk_User_has_Group1_User2_idx` (`User_User_id`),
+  CONSTRAINT `fk_User_has_Group1_Group2` FOREIGN KEY (`Group_Group_id`) REFERENCES `Group` (`Group_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_User_has_Group1_User2` FOREIGN KEY (`User_User_id`) REFERENCES `User` (`User_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Dumping data for table `User_follows_Group`
 --
 
@@ -107,3 +125,22 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2020-06-23  0:46:02
+-- Dump completed on 2020-06-23  0:46:02
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Message`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`Message` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`Message` (
+  `Message_id` INT NOT NULL auto_increment,
+  `fromName` VARCHAR(25) NOT NULL,
+  `toName` VARCHAR(25) NOT NULL,
+  `message` VARCHAR(50) NOT NULL,
+  `messageDate` VARCHAR(15) NOT NULL,
+  `messageTimeStamp` VARCHAR(35) NOT NULL,
+  `sendToGroup` TINYINT NOT NULL DEFAULT 0,
+  `groupId` INT NOT NULL DEFAULT -1,
+  PRIMARY KEY (`Message_id`))
+ENGINE = InnoDB;
+

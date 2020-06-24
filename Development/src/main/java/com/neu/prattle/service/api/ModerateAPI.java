@@ -2,6 +2,7 @@ package com.neu.prattle.service.api;
 
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
+import com.neu.prattle.service.DBUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
