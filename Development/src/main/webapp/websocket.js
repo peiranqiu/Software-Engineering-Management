@@ -1052,6 +1052,7 @@ async function optionsPersonChat() {
         option.text = user.name;
         select.appendChild(option);
     });
+
 }
 
 
