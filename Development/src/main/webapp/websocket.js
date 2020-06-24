@@ -1028,10 +1028,7 @@ async function getLanguageAPI() {
  * get list of all messages.
  */
 async function getAllPrivateMessages() {
-    // addMember.append(select);
-    // addMember.append(btn);
-    // let list = generateList(response, 'getAllPrivateMessages');
-    const response = await fetch(URL + 'user/getAllMessages/' + 'Alice123' + '/' + document.getElementById('toChatLog').value,
+    const response = await fetch(URL + 'user/getAllMessages/' + currentUser.name + '/' + document.getElementById('toChatLog').value,
                                  {
                                      method: 'GET',
                                      headers: {
