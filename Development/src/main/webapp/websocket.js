@@ -31,15 +31,18 @@ async function createUser() {
  */
 async function watchUser() {
     //userId to be changed to a user to watch
-    let userId = currentUser.userId;
-    const response = await fetch(URL + 'user/' + userId + '/watch',
-        {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json'
-            }
-        }).then(rs => rs.json());
-    console.log(response);
+    let userId = document.getElementById("watch").value;
+    //TODO: request to download message logs of the user
+    // const response = await fetch(URL + 'user/' + userId + '/watch',
+    //     {
+    //         method: 'POST',
+    //         headers: {
+    //             'content-type': 'application/json'
+    //         }
+    //     }).then(rs => rs.json());
+    // console.log(response);
+
+    console.log("User watched id:" + userId);
 }
 
 /**
@@ -1084,6 +1087,18 @@ async function getLanguageAPI() {
         option.text = language.text;
         select.appendChild(option);
     })
+}
+
+function fillWatched(){
+    let select = document.getElementById("watch");
+    allUsers.forEach((user) => {
+        let option = document.createElement("option");
+        option.value = user.userId;
+        option.text = user.name;
+
+        select.appendChild(option);
+    })
+
 }
 
 
