@@ -227,10 +227,10 @@ public class ChatEndpoint {
         }
       }
     });
-    message.setTimeStamp();
-    message.setDate();
-    message.setGroupId(-1);
-    messageService.addMessage(message);
+//    message.setTimeStamp();
+//    message.setDate();
+//    message.setGroupId(-1);
+//    messageService.addMessage(message);
   }
 
   public void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
@@ -263,11 +263,11 @@ public class ChatEndpoint {
         }
       }
     });
-    message.setTimeStamp();
-    message.setDate();
-    message.setGroupId(currentGroupObject.getGroupId());
-    message.setTo(currentGroupObject.getName());
-    messageService.addMessage(message);
+//    message.setTimeStamp();
+//    message.setDate();
+//    message.setGroupId(currentGroupObject.getGroupId());
+//    message.setTo(currentGroupObject.getName());
+//    messageService.addMessage(message);
   }
 }
 
