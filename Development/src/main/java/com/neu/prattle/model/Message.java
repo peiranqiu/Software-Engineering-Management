@@ -1,27 +1,16 @@
 package com.neu.prattle.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -39,7 +28,7 @@ public class Message {
    * The message
    */
   @Column
-  private String message;
+  private String messageText;
 
   /**
    * The sender name should be unique.
@@ -65,15 +54,17 @@ public class Message {
   @Column(unique = true)
   private String timeStamp;
 
+  /**
+   * Whether the message is send to group
+   */
   @Column
   private boolean sendToGroup;
 
+  /**
+   * Date of the message
+   */
   @Column
-  private String Date;
-
-  public Message() {
-
-  }
+  private String messageDate;
 
   public static MessageBuilder messageBuilder() {
     return new MessageBuilder();
@@ -111,14 +102,14 @@ public class Message {
    * Retrieve message content
    */
   public String getContent() {
-    return message;
+    return messageText;
   }
 
   /***
    * Set message content
    */
   public void setContent(String message) {
-    this.message = message;
+    this.messageText = message;
   }
 
   /***
@@ -138,8 +129,8 @@ public class Message {
   /***
    * Retrieve current Date
    */
-  public String getDate() {
-    return Date;
+  public String getMessageDate() {
+    return messageDate;
   }
 
   /***
@@ -148,14 +139,14 @@ public class Message {
   public void setDate() {
     DateFormat dateFormat = new SimpleDateFormat("MMddyyyy");
     Date date = new Date();
-    this.Date = dateFormat.format(date);
+    this.messageDate = dateFormat.format(date);
   }
 
   /***
    * Set current Date
    */
-  public void setDate(String date) {
-    this.Date = date;
+  public void setMessageDate(String messageDate) {
+    this.messageDate = messageDate;
   }
 
   /***
@@ -195,14 +186,14 @@ public class Message {
     return new StringBuilder()
             .append("From: ").append(from)
             .append("To: ").append(to)
-            .append("Content: ").append(message)
+            .append("Content: ").append(messageText)
             .toString();
   }
 
   public String toStringForPrivateChatLog() {
     return new StringBuilder()
             .append(from).append(": ")
-            .append(message).append("   ")
+            .append(messageText).append("   ")
             .append(timeStamp)
             .toString();
   }
@@ -210,7 +201,7 @@ public class Message {
   public String toStringForGroupChatLog() {
     return new StringBuilder()
             .append(from).append(": ")
-            .append(message).append("   ")
+            .append(messageText).append("   ")
             .append(timeStamp)
             .toString();
   }

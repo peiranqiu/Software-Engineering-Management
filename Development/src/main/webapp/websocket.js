@@ -4,8 +4,8 @@ let currentUser;
 let currentGroup;
 let moderators;
 let allUsers = [];
+let allGroups = []
 let members;
-let allMessages = [];
 
 /**
  * Create a new user
@@ -52,6 +52,7 @@ async function getAllUsers() {
         option.text = user.name;
         select.appendChild(option);
     })
+
 }
 
 /**
@@ -104,6 +105,7 @@ async function connect() {
             }).then(rs => rs.json());
 
             await optionsPersonChat();
+            await optionsGroupChat();
             console.log(response);
         };
     } else {
@@ -123,6 +125,16 @@ function send() {
         });
     ws.send(json);
 }
+
+
+/**
+ * Send point to point message for emoji.
+ */
+function addEmoji(){
+    let msg = document.getElementById("msg").value;
+    document.getElementById("msg").value = msg + document.getElementById("emoji").value;
+}
+
 
 /**
  * Send group message
@@ -492,6 +504,7 @@ async function getAllGroups(event) {
             method: 'GET'
         }).then(rs => rs.json());
     console.log(response);
+
     let list = generateList(response, 'getAllGroups');
     openTab(event, "All Groups", list);
 }
@@ -1004,12 +1017,13 @@ async function getAllPrivateMessages() {
 }
 
 async function printMessage(item, index) {
-    document.getElementById("personalChatLog").innerHTML += item.from + ": " + item.message + "      $time: " + item.timeStamp;
+    document.getElementById("personalChatLog").innerHTML += item.from + ": " + item.messageText + "      $time: " + item.timeStamp;
     document.getElementById("personalChatLog").innerHTML += "&#13;&#10";
 }
 
 async function optionsPersonChat() {
     let select = document.getElementById('toChatLog');
+    select.innerHTML = '';
     allUsers.forEach(user=>{
         let option = document.createElement("option");
         option.value = user.name;
@@ -1028,7 +1042,75 @@ function fillWatched(){
 
         select.appendChild(option);
     })
+}
 
+/**
+ * get list of all messages on current group.
+ */
+async function getAllGroupMessages() {
+    const response = await fetch(URL + 'group/getAllGroupMessages/' + document.getElementById('toGroupChatLog').value,
+                                 {
+                                     method: 'GET',
+                                     headers: {
+                                         'content-type': 'application/json'
+                                     }
+                                 }).then(rs => rs.json());
+    console.log(response);
+    response.forEach(printGroupMessage);
+}
+
+async function printGroupMessage(item, index) {
+    document.getElementById("groupChatLog").innerHTML += item.from + ": " + item.messageText + "      $time: " + item.timeStamp;
+    document.getElementById("groupChatLog").innerHTML += "&#13;&#10";
+}
+
+async function optionsGroupChat() {
+    const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup',
+                                 {
+                                     method: 'GET',
+                                     headers: {
+                                         'content-type': 'application/json'
+                                     }
+                                 })
+        .then(rs => rs.json());
+    console.log(response);
+
+    let select = document.getElementById('toGroupChatLog');
+    select.innerHTML = '';
+    response.forEach((group) => {
+        allGroups.push(group);
+        let option = document.createElement("option");
+        option.value = group.groupId;
+        option.text = group.name;
+        select.appendChild(option);
+    })
+}
+
+async function cleanPrivateChat() {
+    console.log("cleaning call");
+    document.getElementById("personalChatLog").innerHTML = "";
+}
+
+async function cleanGroupChat() {
+    document.getElementById("groupChatLog").innerHTML = "";
+}
+
+
+async function getEmojiList() {
+    var target = document.getElementById("emoji");
+    var emojiCount = 20;
+
+    for(var index = 0; index < emojiCount; index++)
+    {
+        addEmoji(emoji[index]);
+    }
+
+    function addEmoji(code)
+    {
+        var option = document.createElement('option');
+        option.innerHTML =  code;
+        target.appendChild(option);
+    }
 }
 
 

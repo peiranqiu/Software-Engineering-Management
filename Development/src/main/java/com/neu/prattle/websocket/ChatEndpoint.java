@@ -213,7 +213,7 @@ public class ChatEndpoint {
    *
    * @param message the message to be sent
    */
-  public void sendPersonalMessage(Message message) throws IOException, EncodeException {
+  public void sendPersonalMessage(Message message) {
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
       if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
@@ -247,7 +247,7 @@ public class ChatEndpoint {
     broadcastInGroup(message, currentGroupObject);
   }
 
-  public void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
+  public void broadcastInGroup(Message message, Group currentGroupObject) {
     List<User> members = moderateService.getMembers(currentGroupObject);
     if (members.isEmpty()) return;
     chatEndpoints.forEach(endpoint0 -> {
@@ -263,11 +263,11 @@ public class ChatEndpoint {
         }
       }
     });
-//    message.setTimeStamp();
-//    message.setDate();
-//    message.setGroupId(currentGroupObject.getGroupId());
-//    message.setTo(currentGroupObject.getName());
-//    messageService.addMessage(message);
+    message.setTimeStamp();
+    message.setDate();
+    message.setGroupId(currentGroupObject.getGroupId());
+    message.setTo(currentGroupObject.getName());
+    messageService.addMessage(message);
   }
 }
 

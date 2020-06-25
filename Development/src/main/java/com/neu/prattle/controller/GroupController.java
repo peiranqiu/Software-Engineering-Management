@@ -7,6 +7,8 @@ import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.MessageService;
+import com.neu.prattle.service.MessageServiceImpl;
 import com.neu.prattle.service.ModerateService;
 
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,7 @@ public class GroupController {
   private GroupService groupService = GroupServiceImpl.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
   private FollowService followService = FollowService.getInstance();
+  private MessageService messageService = MessageServiceImpl.getInstance();
 
   /**
    * Singleton instance for group controller
@@ -364,6 +367,17 @@ public class GroupController {
     return new Gson().toJson("Invitation not approved. Please try again.");
   }
 
+  /**
+   * Get all group messages
+   *
+   * @return all group messages
+   */
+  @GET
+  @Path("/getAllGroupMessages/{groupId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getAllPrivateMessages(@PathParam("groupId") int groupId) {
+    return new Gson().toJson(messageService.getAllGroupMessages(groupId));
+  }
 }
 
 

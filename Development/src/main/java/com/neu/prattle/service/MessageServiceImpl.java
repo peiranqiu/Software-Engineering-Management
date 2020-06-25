@@ -19,12 +19,6 @@ public class MessageServiceImpl implements MessageService {
 
   private MessageAPI api = new MessageAPI();
 
-  /***
-   * MessageServiceImpl is a Singleton class.
-   */
-
-  public MessageServiceImpl() {
-  }
 
   /**
    * Call this method to return an instance of this service.
@@ -57,17 +51,6 @@ public class MessageServiceImpl implements MessageService {
     return allMessages;
   }
 
-//  @Override
-//  public boolean deleteMessage(String fromName, String toName, String timeStamp) {
-//    boolean rst = false;
-//    try {
-//      rst = api.deleteMessage(fromName, toName, timeStamp);
-//    } catch (SQLException e) {
-//      LOGGER.log(Level.WARNING, e.getMessage());
-//    }
-//    return rst;
-//  }
-
   @Override
   public boolean addMessage(Message message) {
     boolean rst = false;
@@ -77,6 +60,17 @@ public class MessageServiceImpl implements MessageService {
       LOGGER.log(Level.INFO, e.getMessage());
     }
     return rst;
+  }
+
+  @Override
+  public List<Message> getAllGroupMessages(int groupId) {
+    List<Message> allMessages = new ArrayList<>();
+    try {
+      allMessages = api.getAllGroupMessages(groupId);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return allMessages;
   }
 
   /**

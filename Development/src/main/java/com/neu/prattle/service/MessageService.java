@@ -3,7 +3,6 @@ package com.neu.prattle.service;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.service.api.MessageAPI;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /***
@@ -24,9 +23,9 @@ public interface MessageService {
 
   List<Message> getAllPrivateMessages(String fromName, String toName);
 
-//  boolean deleteMessage(String fromName, String toName, String timeStamp);
-
   boolean addMessage(Message message);
+
+  List<Message> getAllGroupMessages(int groupId);
 
   List<Message> getUserLog(String username);
 

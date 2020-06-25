@@ -29,12 +29,14 @@ public class MessageAPI extends DBUtils {
    */
   public List<Message> getAllPrivateMessages(String fromName, String toName) throws SQLException {
     List<Message> allMessages = new ArrayList<>();
-    String sql = "SELECT * FROM Message WHERE fromName = ? AND toName = ?";
+    String sql = "SELECT * FROM Message WHERE fromName IN (?,?) AND toName IN (?,?)";
     try {
       con = getConnection();
       stmt = con.prepareStatement(sql);
       stmt.setString(1, fromName);
       stmt.setString(2, toName);
+      stmt.setString(3, fromName);
+      stmt.setString(4, toName);
       rs = stmt.executeQuery();
       while (rs.next()) {
         Message m = constructMessage(rs);
@@ -49,47 +51,40 @@ public class MessageAPI extends DBUtils {
     return allMessages;
   }
 
-//  /**
-//   * Fetch the Message with the given id from db
-//   *
-//   * @param fromName  sender name
-//   * @param toName    receiver name
-//   * @param timeStamp message timestamp
-//   * @return if the Message is in the db
-//   */
-//  public boolean deleteMessage(String fromName, String toName, String timeStamp) throws SQLException {
-//    boolean b = false;
-//    con = getConnection();
-//    String sqlDelete = "DELETE FROM Message WHERE fromName = ? AND toName = ? AND timeStamp = ?";
-//    try (PreparedStatement sttmt = con.prepareStatement(sqlDelete, Statement.RETURN_GENERATED_KEYS)) {
-//      sttmt.setString(1,fromName);
-//      sttmt.setString(2, toName);
-//      sttmt.setString(3, timeStamp);
-//      sttmt.executeUpdate();
-//      ResultSet result = sttmt.getGeneratedKeys();
-//      if (result.next()) {
-//        b = true;
-//      }
-//      result.close();
-//    } catch (SQLException e) {
-//      throw new IllegalStateException("delete message failed.");
-//    }
-//    return b;
-//
-//  }
+  public List<Message> getAllGroupMessages(int groupId) throws SQLException {
+    List<Message> allGroupMessages = new ArrayList<>();
+    String sql = "SELECT * FROM Message WHERE groupId = ?";
+    try {
+      con = getConnection();
+      stmt = con.prepareStatement(sql);
+      stmt.setInt(1, groupId);
+      rs = stmt.executeQuery();
+      while (rs.next()) {
+        Message m = constructMessage(rs);
+        allGroupMessages.add(m);
+      }
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    } finally {
+      rs.close();
+      stmt.close();
+    }
+    return allGroupMessages;
+  }
 
 
   public boolean addMessage(Message message) throws SQLException {
     try {
     Connection con = getConnection();
-    String sql = "INSERT INTO Message (fromName, toName, message, messageDate, messageTimeStamp, sendToGroup) VALUES (?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO Message (fromName, toName, messageText, messageDate, messageTimeStamp, sendToGroup, groupId) VALUES (?, ?, ?, ?, ?, ?,?)";
     stmt = con.prepareStatement(sql);
     stmt.setString(1, message.getFrom());
     stmt.setString(2, message.getTo());
     stmt.setString(3, message.getContent());
-    stmt.setString(4, message.getDate());
+    stmt.setString(4, message.getMessageDate());
     stmt.setString(5, message.getTimeStamp());
     stmt.setBoolean(6, message.getSendToGroup());
+    stmt.setInt(7, message.getGroupId());
     stmt.executeUpdate();
 
   } catch (SQLException e) {
@@ -111,8 +106,8 @@ public class MessageAPI extends DBUtils {
     try {
       message.setFrom(rs.getString("fromName"));
       message.setTo(rs.getString("toName"));
-      message.setContent(rs.getString("message"));
-      message.setDate(rs.getString("messageDate"));
+      message.setContent(rs.getString("messageText"));
+      message.setMessageDate(rs.getString("messageDate"));
       message.setTimeStamp(rs.getString("messageTimeStamp"));
       message.setSendToGroup(rs.getBoolean("sendToGroup"));
       message.setGroupId(rs.getInt("groupId"));
@@ -131,9 +126,9 @@ public class MessageAPI extends DBUtils {
     List<Message> list = new ArrayList<>();
     String sql = "SELECT * FROM mydb.Message WHERE fromName = ?";
     con = getConnection();
-    try (PreparedStatement stmt = con.prepareStatement(sql)) {
-      stmt.setString(1, username);
-      rs = stmt.executeQuery();
+    try (PreparedStatement stmtTwo = con.prepareStatement(sql)) {
+      stmtTwo.setString(1, username);
+      rs = stmtTwo.executeQuery();
       while (rs.next()) {
         list.add(constructMessage(rs));
       }
