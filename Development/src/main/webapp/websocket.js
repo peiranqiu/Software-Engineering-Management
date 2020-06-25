@@ -769,7 +769,7 @@ async function addSubGroup() {
         }).then(rs => rs.json());
 
     const response = await fetch(
-        URL + 'group/' + response1.value.groupId + '/add/' + response2.value.groupId,
+        URL + 'group/' + response1.groupId + '/add/' + response2.groupId,
         {
             method: 'POST',
             headers: {
