@@ -217,8 +217,8 @@ function generateList(response, operatoin) {
                     document.getElementById('toGroup').value = event.target.innerHTML;
                    await getSubGroups(u.groupId)
                        .then(()=>getGroupFollowers(u.groupId))
-                       .then(()=>getGroupMembers(u.groupId))
                        .then(()=>(getGroupModerators(u.groupId)))
+                       .then(()=>getGroupMembers(u.groupId))
                        .then(()=>getGroupInvitations(u.groupId));
 
                     // if current user is in group moderator list, then get group invitations
@@ -234,8 +234,8 @@ function generateList(response, operatoin) {
                 currentGroup = u;
                 await getSubGroups(u.groupId)
                     .then(()=>getGroupFollowers(u.groupId))
-                    .then(()=>getGroupMembers(u.groupId))
                     .then(()=>(getGroupModerators(u.groupId)))
+                    .then(()=>getGroupMembers(u.groupId))
                     .then(()=>getGroupInvitations(u.groupId));
 
             });
@@ -846,37 +846,37 @@ async function getGroupModerators(groupId) {
         cur.replaceChild(list, cur.childNodes[0]);
     }
 
-    if (currentUser !== null && moderators.includes(currentUser.name)) {
-        let addModerator = document.createElement('div');
-        let select = document.createElement('select');
-        let btn = document.createElement('button');
-        btn.innerText = 'Add';
-        btn.addEventListener('click', async () => {
-            // console.log("current group:" + currentGroup.name);
-            // console.log("current group user:" + select.value);
-            await addGroupModerator(select.value,groupId)
-        });
-
-        let placeholder = document.createElement('option');
-        placeholder.hidden = true;
-        placeholder.disabled = true;
-        placeholder.selected = true;
-        placeholder.value = "";
-
-        select.append(placeholder);
-
-        members.forEach(user => {
-            let option = document.createElement("option");
-            option.value = user.userId;
-            option.text = user.name;
-            select.appendChild(option);
-        });
-        addModerator.append(select);
-        addModerator.append(btn);
-
-        cur.appendChild(addModerator);
-
-    }
+    // if (currentUser !== null && moderators.includes(currentUser.name)) {
+    //     let addModerator = document.createElement('div');
+    //     let select = document.createElement('select');
+    //     let btn = document.createElement('button');
+    //     btn.innerText = 'Add';
+    //     btn.addEventListener('click', async () => {
+    //         // console.log("current group:" + currentGroup.name);
+    //         // console.log("current group user:" + select.value);
+    //         await addGroupModerator(select.value,groupId)
+    //     });
+    //
+    //     let placeholder = document.createElement('option');
+    //     placeholder.hidden = true;
+    //     placeholder.disabled = true;
+    //     placeholder.selected = true;
+    //     placeholder.value = "";
+    //
+    //     select.append(placeholder);
+    //
+    //     allUsers.forEach(user => {
+    //         let option = document.createElement("option");
+    //         option.value = user.userId;
+    //         option.text = user.name;
+    //         select.appendChild(option);
+    //     });
+    //     addModerator.append(select);
+    //     addModerator.append(btn);
+    //
+    //     cur.appendChild(addModerator);
+    //
+    // }
 
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
@@ -941,6 +941,13 @@ async function getGroupMembers(groupId) {
             subGroupRow.appendChild(remove);
             remove.addEventListener('click', async (event) => {
                 await deleteGroupModerator(i.userId,groupId).then(() => deleteGroupMember(i.userId,groupId))
+
+            });
+            let upgrade = document.createElement("button");
+            upgrade.innerText = 'upgrade';
+            subGroupRow.appendChild(upgrade);
+            upgrade.addEventListener('click', async (event) => {
+                await addGroupModerator(i.userId, groupId)
 
             });
         }
