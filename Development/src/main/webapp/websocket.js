@@ -813,14 +813,7 @@ async function getGroupModerators(groupId) {
     moderators = [];
 
     response.forEach(i => {
-    <<<<<<<
-        HEAD
         moderators.push(i.name);
-    ======
-        =
-            moderators.push(i.name);
-    >>>>>>>
-        invitation
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
         subGroupRow.classList.add("panel");
