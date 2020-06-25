@@ -1115,6 +1115,7 @@ async function printMessage(item, index) {
 
 async function optionsPersonChat() {
     let select = document.getElementById('toChatLog');
+    select.innerHTML = '';
     allUsers.forEach(user=>{
         let option = document.createElement("option");
         option.value = user.name;
@@ -1167,6 +1168,7 @@ async function optionsGroupChat() {
     console.log(response);
 
     let select = document.getElementById('toGroupChatLog');
+    select.innerHTML = '';
     response.forEach((group) => {
         allGroups.push(group);
         let option = document.createElement("option");
