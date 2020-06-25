@@ -668,7 +668,7 @@ async function setGroupPassword() {
     console.log(response2);
 
     if (response2) {
-        currentGroup = response2.value;
+        currentGroup = response2;
     }
 
     const response = await fetch(URL + 'group/' + currentGroup.groupId + '/password',
@@ -767,7 +767,7 @@ async function addSubGroup() {
         }).then(rs => rs.json());
 
     const response = await fetch(
-        URL + 'group/' + response1.value.groupId + '/add/' + response2.value.groupId,
+        URL + 'group/' + response1.groupId + '/add/' + response2.groupId,
         {
             method: 'POST',
             headers: {
@@ -845,37 +845,37 @@ async function getGroupModerators(groupId) {
         cur.replaceChild(list, cur.childNodes[0]);
     }
 
-    if (currentUser !== null && moderators.includes(currentUser.name)) {
-        let addModerator = document.createElement('div');
-        let select = document.createElement('select');
-        let btn = document.createElement('button');
-        btn.innerText = 'Add';
-        btn.addEventListener('click', async () => {
-            // console.log("current group:" + currentGroup.name);
-            // console.log("current group user:" + select.value);
-            await addGroupModerator(select.value,groupId)
-        });
-
-        let placeholder = document.createElement('option');
-        placeholder.hidden = true;
-        placeholder.disabled = true;
-        placeholder.selected = true;
-        placeholder.value = "";
-
-        select.append(placeholder);
-
-        allUsers.forEach(user => {
-            let option = document.createElement("option");
-            option.value = user.userId;
-            option.text = user.name;
-            select.appendChild(option);
-        });
-        addModerator.append(select);
-        addModerator.append(btn);
-
-        cur.appendChild(addModerator);
-
-    }
+    // if (currentUser !== null && moderators.includes(currentUser.name)) {
+    //     let addModerator = document.createElement('div');
+    //     let select = document.createElement('select');
+    //     let btn = document.createElement('button');
+    //     btn.innerText = 'Add';
+    //     btn.addEventListener('click', async () => {
+    //         // console.log("current group:" + currentGroup.name);
+    //         // console.log("current group user:" + select.value);
+    //         await addGroupModerator(select.value,groupId)
+    //     });
+    //
+    //     let placeholder = document.createElement('option');
+    //     placeholder.hidden = true;
+    //     placeholder.disabled = true;
+    //     placeholder.selected = true;
+    //     placeholder.value = "";
+    //
+    //     select.append(placeholder);
+    //
+    //     allUsers.forEach(user => {
+    //         let option = document.createElement("option");
+    //         option.value = user.userId;
+    //         option.text = user.name;
+    //         select.appendChild(option);
+    //     });
+    //     addModerator.append(select);
+    //     addModerator.append(btn);
+    //
+    //     cur.appendChild(addModerator);
+    //
+    // }
 
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
@@ -933,13 +933,20 @@ async function getGroupMembers(groupId) {
         subGroup.innerText = i.name;
         subGroupRow.appendChild(subGroup);
 
-        if (isModerator) {
+        if (isModerator &&(i.userId!==currentUser.userId)) {
             let remove = document.createElement("button");
             remove.innerText = 'delete';
             subGroupRow.appendChild(remove);
             remove.addEventListener('click', async (event) => {
                 await deleteGroupModerator(i.userId, groupId)
                     .then(() => deleteGroupMember(i.userId, groupId))
+
+            });
+            let upgrade = document.createElement("button");
+            upgrade.innerText = 'upgrade';
+            subGroupRow.appendChild(upgrade);
+            upgrade.addEventListener('click', async (event) => {
+                await addGroupModerator(i.userId, groupId)
 
             });
         }
