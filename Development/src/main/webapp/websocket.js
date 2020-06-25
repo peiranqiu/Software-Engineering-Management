@@ -935,7 +935,7 @@ async function getGroupMembers(groupId) {
         subGroup.innerText = i.name;
         subGroupRow.appendChild(subGroup);
 
-        if (isModerator) {
+        if (isModerator &&(i.userId!==currentUser.userId)) {
             let remove = document.createElement("button");
             remove.innerText = 'delete';
             subGroupRow.appendChild(remove);
