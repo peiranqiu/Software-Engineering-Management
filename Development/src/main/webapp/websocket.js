@@ -217,8 +217,8 @@ function generateList(response, operatoin) {
                     document.getElementById('toGroup').value = event.target.innerHTML;
                    await getSubGroups(u.groupId)
                        .then(()=>getGroupFollowers(u.groupId))
-                       .then(()=>(getGroupModerators(u.groupId)))
                        .then(()=>getGroupMembers(u.groupId))
+                       .then(()=>(getGroupModerators(u.groupId)))
                        .then(()=>getGroupInvitations(u.groupId));
 
                     // if current user is in group moderator list, then get group invitations
@@ -234,8 +234,8 @@ function generateList(response, operatoin) {
                 currentGroup = u;
                 await getSubGroups(u.groupId)
                     .then(()=>getGroupFollowers(u.groupId))
-                    .then(()=>(getGroupModerators(u.groupId)))
                     .then(()=>getGroupMembers(u.groupId))
+                    .then(()=>(getGroupModerators(u.groupId)))
                     .then(()=>getGroupInvitations(u.groupId));
 
             });
