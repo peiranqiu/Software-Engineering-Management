@@ -865,7 +865,7 @@ async function getGroupModerators(groupId) {
 
         select.append(placeholder);
 
-        allUsers.forEach(user => {
+        members.forEach(user => {
             let option = document.createElement("option");
             option.value = user.userId;
             option.text = user.name;
