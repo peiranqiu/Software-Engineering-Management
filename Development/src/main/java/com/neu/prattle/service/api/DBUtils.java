@@ -24,12 +24,7 @@ public abstract class DBUtils {
   public Connection getConnection() {
     if (con == null) {
       try {
-        /**
-         * Class.forName("com.mysql.jdbc.Driver");
-         * catch (ClassNotFoundException e) {
-         * logger.info("Class not found error");
-         * }
-         */
+        Class.forName("com.mysql.jdbc.Driver");
         String dbName = "mydb";
         String userName = "mydb";
         String pd = "CS5500team4";
@@ -40,6 +35,8 @@ public abstract class DBUtils {
         logger.info("Remote connection successful.");
       } catch (SQLException e) {
         logger.info(e.getMessage());
+      }catch (ClassNotFoundException e) {
+         logger.info("Class not found error");
       }
     }
     return con;

@@ -1,4 +1,5 @@
 const URL = 'http://cs5500team4.us-east-1.elasticbeanstalk.com/rest/';
+
 let ws;
 let currentUser;
 let currentGroup;
@@ -29,7 +30,7 @@ async function createUser() {
  * Government watches a user
  */
 async function watchUser() {
-    window.open(URL + 'user/'+ document.getElementById("watch").value + '/watch',
+    window.open(URL + 'user/' + document.getElementById("watch").value + '/watch',
         '_blank', 'location=yes,height=400,width=600,scrollbars=yes,status=yes');
 }
 
@@ -40,16 +41,21 @@ async function getAllUsers() {
     const response = await fetch(URL + 'user/getAllUser',
         {
             method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response);
 
     let select = document.getElementById('to');
+    //let invitee = document.getElementById('invitee');
     response.forEach((user) => {
         allUsers.push(user);
         let option = document.createElement("option");
         option.value = user.name;
         option.text = user.name;
         select.appendChild(option);
+        //invitee.appendChild(option);
     })
 
 }
@@ -78,7 +84,6 @@ async function connect() {
         let host = document.location.host;
         let pathname = document.location.pathname;
 
-        console.log(pathname);
         ws = new WebSocket("ws://" + host + pathname + "chat/" + username);
 
         ws.onmessage = async function (event) {
@@ -89,19 +94,20 @@ async function connect() {
 
             let content = document.getElementById("msg").value;
             let json = JSON.stringify({
-                                          "from":currentUser.name,
+                                          "from": currentUser.name,
                                           "content": content,
                                           "to": document.getElementById('to').value
                                       });
             console.log(json);
 
-            const response0 = await fetch(URL +  'user/send', {
-                method: 'POST',
-                body: JSON.stringify(message),
-                headers: {
-                    'content-type': 'application/json'
-                }
-            }).then(rs => rs.json());
+            const response0 = await fetch(URL + 'user/send', {
+
+                                                                 method: 'POST',
+                                                                 body: JSON.stringify(message),
+                                                                 headers: {
+                                                                     'content-type': 'application/json'
+                                                                 }
+                                                             }).then(rs => rs.json());
 
             await optionsPersonChat();
             await optionsGroupChat();
@@ -125,15 +131,13 @@ function send() {
     ws.send(json);
 }
 
-
 /**
  * Send point to point message for emoji.
  */
-function addEmoji(){
+function addEmoji() {
     let msg = document.getElementById("msg").value;
     document.getElementById("msg").value = msg + document.getElementById("emoji").value;
 }
-
 
 /**
  * Send group message
@@ -156,7 +160,10 @@ async function userGetFollower(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollower',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -204,27 +211,30 @@ function generateList(response, operatoin) {
             });
         } else if (operatoin === 'getGroups') {
 
-                user.addEventListener('click', async function(event){
-                    currentGroup = u;
-                    document.getElementById('toGroup').value = event.target.innerHTML;
-                   await getSubGroups(u.groupId)
-                       .then(()=>getGroupFollowers(u.groupId))
-                       .then(()=>(getGroupModerators(u.groupId)))
-                       .then(()=>getGroupMembers(u.groupId))
-                       .then(()=>getGroupInvitations(u.groupId));
-                });
+            user.addEventListener('click', async function (event) {
+                currentGroup = u;
+                document.getElementById('toGroup').value = event.target.innerHTML;
+                await getSubGroups(u.groupId)
+                    .then(() => getGroupFollowers(u.groupId))
+                    .then(() => (getGroupModerators(u.groupId)))
+                    .then(() => getGroupMembers(u.groupId))
+                    .then(() => getGroupInvitations(u.groupId));
+
+                // if current user is in group moderator list, then get group invitations
+
+            });
         } else if (operatoin === 'getAllGroups') {
             follow.innerText = "+";
             follow.addEventListener('click', (event) => {
                 followGroup(u.groupId);
             });
-            user.addEventListener('click', async function(){
+            user.addEventListener('click', async function () {
                 currentGroup = u;
                 await getSubGroups(u.groupId)
-                    .then(()=>getGroupFollowers(u.groupId))
-                    .then(()=>(getGroupModerators(u.groupId)))
-                    .then(()=>getGroupMembers(u.groupId))
-                    .then(()=>getGroupInvitations(u.groupId));
+                    .then(() => getGroupFollowers(u.groupId))
+                    .then(() => (getGroupModerators(u.groupId)))
+                    .then(() => getGroupMembers(u.groupId))
+                    .then(() => getGroupInvitations(u.groupId));
 
             });
         } else if (operatoin === 'getFollowingGroups') {
@@ -249,7 +259,10 @@ async function userGetFollowee(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -266,7 +279,10 @@ async function getHasGroup(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -283,7 +299,10 @@ async function getFollowedGroup(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowedGroup',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -302,7 +321,10 @@ async function followUser(followeeId) {
     let followerId = currentUser.userId;
     const response = await fetch(URL + 'user/' + followerId + '/follow/' + followeeId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -315,7 +337,10 @@ async function unfollowUser(followeeId) {
     let followerId = currentUser.userId;
     const response = await fetch(URL + 'user/' + followerId + '/unfollow/' + followeeId,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -328,7 +353,10 @@ async function unfollowGroup(id) {
     let userId = currentUser.userId;
     const response = await fetch(URL + 'group/' + userId + '/unfollow/' + id,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -339,11 +367,13 @@ async function unfollowGroup(id) {
 async function createInvitation(groupId, inviteeId) {
     const response = await fetch(URL + 'group/' + groupId + '/createInvitation/' + inviteeId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
-
 
 /**
  * approve an invitation.
@@ -351,7 +381,10 @@ async function createInvitation(groupId, inviteeId) {
 async function approveInvitation(groupId, inviteeId) {
     const response = await fetch(URL + 'group/' + groupId + '/approveInvitation/' + inviteeId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -362,7 +395,10 @@ async function approveInvitation(groupId, inviteeId) {
 async function deleteInvitation(groupId, inviteeId) {
     const response = await fetch(URL + 'group/' + groupId + '/deleteInvitation/' + inviteeId,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -373,7 +409,10 @@ async function deleteInvitation(groupId, inviteeId) {
 async function getGroupInvitations(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/getAllInvitation',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response);
 
@@ -382,6 +421,7 @@ async function getGroupInvitations(groupId) {
     let title = document.createElement('h3');
     title.innerText = "Invitations";
     list.appendChild(title);
+    //debugger;
 
     response.forEach(i => {
 
@@ -390,14 +430,15 @@ async function getGroupInvitations(groupId) {
         invitationRow.classList.add("panel");
         let ok = document.createElement("button");
         let cancel = document.createElement('button');
-        ok.innerText="OK";
-        ok.addEventListener('click', ()=>{
+        ok.innerText = "OK";
+        ok.addEventListener('click', () => {
             console.log(invitation.innerText);
             list.removeChild(invitationRow);
             approveInvitation(groupId, i.userId);
+            // deleteInvitation(groupId, i.userId);
         });
         cancel.innerText = "Cancel";
-        cancel.addEventListener('click', ()=>{
+        cancel.addEventListener('click', () => {
             list.removeChild(invitationRow);
             deleteInvitation(groupId, i.userId);
         });
@@ -416,9 +457,10 @@ async function getGroupInvitations(groupId) {
         cur.replaceChild(list, cur.childNodes[0]);
     }
 
-    if (moderators.includes(currentUser.name)){
-    cur.style.display = "block";
-    cur.style.backgroundColor = "Gainsboro"}
+    if (moderators.includes(currentUser.name)) {
+        cur.style.display = "block";
+        cur.style.backgroundColor = "Gainsboro"
+    }
     else {
         cur.style.display = "none";
     }
@@ -427,11 +469,14 @@ async function getGroupInvitations(groupId) {
 /**
  * add a group moderator.
  */
-async function addGroupModerator(userId) {
+async function addGroupModerator(userId,groupId) {
     const response = await fetch(
-        URL + 'group/' + userId + '/moderate/' + currentGroup.groupId,
+        URL + 'group/' + userId + '/moderate/' + groupId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -440,10 +485,13 @@ async function addGroupModerator(userId) {
 /**
  * delete a group moderator.
  */
-async function deleteGroupModerator(userId,groupId) {
+async function deleteGroupModerator(userId, groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/deleteModerator/' + userId,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -451,11 +499,14 @@ async function deleteGroupModerator(userId,groupId) {
 /**
  * add a group member.
  */
-async function addGroupMember(userId) {
+async function addGroupMember(userId,groupId) {
     const response = await fetch(
-        URL + 'group/' + userId + '/member/' + currentGroup.groupId,
+        URL + 'group/' + userId + '/member/' + groupId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -464,10 +515,13 @@ async function addGroupMember(userId) {
 /**
  * delelte a group member.
  */
-async function deleteGroupMember(userId,groupId) {
+async function deleteGroupMember(userId, groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/deleteMember/' + userId,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -500,7 +554,10 @@ function openTab(evt, tabName, content) {
 async function getAllGroups(event) {
     const response = await fetch(URL + 'group/getAllGroups',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response);
 
@@ -526,15 +583,19 @@ async function createGroup() {
 
     const response2 = await fetch(URL + 'group/' + markers.name,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response2);
 
     if (response2) {
-        currentGroup = response2.value;
+        currentGroup = response2;
     }
-    addGroupModerator(currentUser.userId);
-    addGroupMember(currentUser.userId);
+
+    addGroupModerator(currentUser.userId,response2.groupId);
+    addGroupMember(currentUser.userId,response2.groupId);
 
 }
 
@@ -546,7 +607,10 @@ async function createGroup() {
 async function getSubGroups(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/getSubGroups',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     let list = document.createElement('ul');
@@ -596,7 +660,10 @@ async function setGroupPassword() {
 
     const response2 = await fetch(URL + 'group/' + groupName,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response2);
 
@@ -625,7 +692,10 @@ async function setGroupPassword() {
 async function getGroupFollowers(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/followers',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
@@ -682,18 +752,27 @@ async function addSubGroup() {
     console.log(SuperGroupName);
     const response1 = await fetch(URL + 'group/' + SuperGroupName,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
 
     const response2 = await fetch(URL + 'group/' + SubGroupName,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
 
     const response = await fetch(
         URL + 'group/' + response1.value.groupId + '/add/' + response2.value.groupId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -705,7 +784,10 @@ async function addSubGroup() {
 async function findGroupByName(name) {
     const response = await fetch(URL + 'group/' + name,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response);
 }
@@ -718,7 +800,10 @@ async function findGroupByName(name) {
 async function getGroupModerators(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/moderators',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
 
     let list = document.createElement('ul');
@@ -727,24 +812,22 @@ async function getGroupModerators(groupId) {
     title.innerText = "Group Moderators List:";
     list.appendChild(title);
     moderators = [];
-    response.forEach(i => {
-        if(i.name === currentUser.name){
-            document.getElementById("Invitations").style.display = 'block';
-        }
 
-       moderators.push(i.name);
+    response.forEach(i => {
+        moderators.push(i.name);
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
         subGroupRow.classList.add("panel");
         subGroup.innerText = i.name;
         subGroupRow.appendChild(subGroup);
 
-        if (currentUser !== null && moderators.includes(currentUser.name) &&(i.userId!==currentUser.userId)) {
+        if (currentUser !== null && moderators.includes(currentUser.name) && (i.userId
+                                                                              !== currentUser.userId)) {
             let remove = document.createElement("button");
             remove.innerText = 'DownGrade to Member';
             subGroupRow.appendChild(remove);
             remove.addEventListener('click', async (event) => {
-                await deleteGroupModerator(i.userId,groupId)
+                await deleteGroupModerator(i.userId, groupId)
 
             });
         }
@@ -770,7 +853,7 @@ async function getGroupModerators(groupId) {
         btn.addEventListener('click', async () => {
             // console.log("current group:" + currentGroup.name);
             // console.log("current group user:" + select.value);
-            await addGroupModerator(select.value)
+            await addGroupModerator(select.value,groupId)
         });
 
         let placeholder = document.createElement('option');
@@ -806,7 +889,10 @@ async function getGroupModerators(groupId) {
 async function getGroupMembers(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/members',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
 
     let list = document.createElement('ul');
@@ -823,7 +909,6 @@ async function getGroupMembers(groupId) {
     //                                  }
     //                              }).then(rs => rs.json());
 
-
     // moderators.forEach(i => {
     //                        if (i.userId === currentUser.userId) {
     //                            isModerator = true;
@@ -833,7 +918,7 @@ async function getGroupMembers(groupId) {
     //
     let isModerator = false;
 
-    if(moderators.includes(currentUser.name)){
+    if (moderators.includes(currentUser.name)) {
         isModerator = true;
         // console.log("Is moderator!");
     }
@@ -853,14 +938,15 @@ async function getGroupMembers(groupId) {
             remove.innerText = 'delete';
             subGroupRow.appendChild(remove);
             remove.addEventListener('click', async (event) => {
-                await deleteGroupModerator(i.userId,groupId).then(() => deleteGroupMember(i.userId,groupId))
+                await deleteGroupModerator(i.userId, groupId)
+                    .then(() => deleteGroupMember(i.userId, groupId))
 
             });
         }
         list.appendChild(subGroupRow);
     });
 
-    let isMember = currentUser=== null?false:members.includes(currentUser.name);
+    let isMember = currentUser === null ? false : members.includes(currentUser.name);
 
     clearList("groupMembers");
     let cur = document.getElementById("Group Members");
@@ -875,12 +961,12 @@ async function getGroupMembers(groupId) {
     let addMember = document.createElement('div');
     let select = document.createElement('select');
     let btn = document.createElement('button');
-    if (isModerator){
+    if (isModerator) {
         btn.innerText = 'Add';
-        btn.addEventListener('click', async ()=>{
+        btn.addEventListener('click', async () => {
             // console.log("current group:" + currentGroup.name);
             // console.log("current group user:" + select.value);
-            await addGroupMember(select.value)
+            await addGroupMember(select.value,groupId)
         });
 
     }
@@ -898,7 +984,7 @@ async function getGroupMembers(groupId) {
 
     select.append(placeholder);
 
-    allUsers.forEach(user=>{
+    allUsers.forEach(user => {
         let option = document.createElement("option");
         option.value = user.userId;
         option.text = user.name;
@@ -907,10 +993,10 @@ async function getGroupMembers(groupId) {
     addMember.append(select);
     addMember.append(btn);
 
-
-   // cur.removeChild(cur.lastChild);
-    if (isMember || isModerator){
-    cur.appendChild(addMember);}
+    // cur.removeChild(cur.lastChild);
+    if (isMember || isModerator) {
+        cur.appendChild(addMember);
+    }
 
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
@@ -919,6 +1005,8 @@ async function getGroupMembers(groupId) {
 async function translateMessage() {
     let toLanguage = document.getElementById('language').value;
     let parseXml;
+// create xml parsing functions
+// the next if/else block is from the following thread
     if (typeof window.DOMParser != "undefined") {
         parseXml = function (content) {
             return ( new window.DOMParser() ).parseFromString(content, "text/xml");
@@ -987,26 +1075,28 @@ async function getLanguageAPI() {
  * get list of all messages.
  */
 async function getAllPrivateMessages() {
-    const response = await fetch(URL + 'user/getAllMessages/' + currentUser.name + '/' + document.getElementById('toChatLog').value,
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 }).then(rs => rs.json());
+    const response = await fetch(URL + 'user/getAllMessages/' + currentUser.name + '/'
+                                 + document.getElementById('toChatLog').value,
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
     response.forEach(printMessage);
 }
 
 async function printMessage(item, index) {
-    document.getElementById("personalChatLog").innerHTML += item.from + ": " + item.messageText + "      $time: " + item.timeStamp;
+    document.getElementById("personalChatLog").innerHTML +=
+        item.from + ": " + item.messageText + "      $time: " + item.timeStamp;
     document.getElementById("personalChatLog").innerHTML += "&#13;&#10";
 }
 
 async function optionsPersonChat() {
     let select = document.getElementById('toChatLog');
     select.innerHTML = '';
-    allUsers.forEach(user=>{
+    allUsers.forEach(user => {
         let option = document.createElement("option");
         option.value = user.name;
         option.text = user.name;
@@ -1015,7 +1105,7 @@ async function optionsPersonChat() {
 
 }
 
-function fillWatched(){
+function fillWatched() {
     let select = document.getElementById("watch");
     allUsers.forEach((user) => {
         let option = document.createElement("option");
@@ -1030,30 +1120,32 @@ function fillWatched(){
  * get list of all messages on current group.
  */
 async function getAllGroupMessages() {
-    const response = await fetch(URL + 'group/getAllGroupMessages/' + document.getElementById('toGroupChatLog').value,
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 }).then(rs => rs.json());
+    const response = await fetch(URL + 'group/getAllGroupMessages/' + document.getElementById(
+        'toGroupChatLog').value,
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
     response.forEach(printGroupMessage);
 }
 
 async function printGroupMessage(item, index) {
-    document.getElementById("groupChatLog").innerHTML += item.from + ": " + item.messageText + "      $time: " + item.timeStamp;
+    document.getElementById("groupChatLog").innerHTML +=
+        item.from + ": " + item.messageText + "      $time: " + item.timeStamp;
     document.getElementById("groupChatLog").innerHTML += "&#13;&#10";
 }
 
 async function optionsGroupChat() {
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup',
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 })
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 
@@ -1076,20 +1168,17 @@ async function cleanGroupChat() {
     document.getElementById("groupChatLog").innerHTML = "";
 }
 
-
 async function getEmojiList() {
     var target = document.getElementById("emoji");
     var emojiCount = 20;
 
-    for(var index = 0; index < emojiCount; index++)
-    {
+    for (var index = 0; index < emojiCount; index++) {
         addemoji(emoji[index]);
     }
 
-    function addemoji(code)
-    {
+    function addemoji(code) {
         var option = document.createElement('option');
-        option.innerHTML =  code;
+        option.innerHTML = code;
         target.appendChild(option);
     }
 }
