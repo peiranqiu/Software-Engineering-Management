@@ -469,9 +469,9 @@ async function getGroupInvitations(groupId) {
 /**
  * add a group moderator.
  */
-async function addGroupModerator(userId) {
+async function addGroupModerator(userId,groupId) {
     const response = await fetch(
-        URL + 'group/' + userId + '/moderate/' + currentGroup.groupId,
+        URL + 'group/' + userId + '/moderate/' + groupId,
         {
             method: 'POST',
             headers: {
@@ -499,9 +499,9 @@ async function deleteGroupModerator(userId, groupId) {
 /**
  * add a group member.
  */
-async function addGroupMember(userId) {
+async function addGroupMember(userId,groupId) {
     const response = await fetch(
-        URL + 'group/' + userId + '/member/' + currentGroup.groupId,
+        URL + 'group/' + userId + '/member/' + groupId,
         {
             method: 'POST',
             headers: {
@@ -591,10 +591,11 @@ async function createGroup() {
     console.log(response2);
 
     if (response2) {
-        currentGroup = response2.value;
+        currentGroup = response2;
     }
-    addGroupModerator(currentUser.userId);
-    addGroupMember(currentUser.userId);
+
+    addGroupModerator(currentUser.userId,response2.groupId);
+    addGroupMember(currentUser.userId,response2.groupId);
 
 }
 
@@ -852,7 +853,7 @@ async function getGroupModerators(groupId) {
         btn.addEventListener('click', async () => {
             // console.log("current group:" + currentGroup.name);
             // console.log("current group user:" + select.value);
-            await addGroupModerator(select.value)
+            await addGroupModerator(select.value,groupId)
         });
 
         let placeholder = document.createElement('option');
@@ -965,7 +966,7 @@ async function getGroupMembers(groupId) {
         btn.addEventListener('click', async () => {
             // console.log("current group:" + currentGroup.name);
             // console.log("current group user:" + select.value);
-            await addGroupMember(select.value)
+            await addGroupMember(select.value,groupId)
         });
 
     }
