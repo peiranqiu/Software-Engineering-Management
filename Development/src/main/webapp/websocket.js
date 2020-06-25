@@ -4,7 +4,6 @@ let currentUser;
 let currentGroup;
 let moderators;
 let allUsers = [];
-let allGroups = []
 let members;
 
 /**
@@ -96,7 +95,7 @@ async function connect() {
                                       });
             console.log(json);
 
-            const response = await fetch(URL +  'user/send', {
+            const response0 = await fetch(URL +  'user/send', {
                 method: 'POST',
                 body: JSON.stringify(message),
                 headers: {
@@ -106,7 +105,7 @@ async function connect() {
 
             await optionsPersonChat();
             await optionsGroupChat();
-            console.log(response);
+            console.log(response0);
         };
     } else {
         console.log("Log in failed.")
@@ -728,23 +727,6 @@ async function getGroupModerators(groupId) {
     title.innerText = "Group Moderators List:";
     list.appendChild(title);
     moderators = [];
-
-    // let moderators = await fetch(URL + 'group/' + groupId + '/moderators',
-    //                              {
-    //                                  method: 'GET',
-    //                                  headers: {
-    //                                      'content-type': 'application/json'
-    //                                  }
-    //                              }).then(rs => rs.json());
-
-    let isModerator = false;
-    // moderators.forEach(i => {
-    //                        if (i.userId === currentUser.userId) {
-    //                            isModerator = true;
-    //                        }
-    //                    }
-    // );
-
     response.forEach(i => {
         if(i.name === currentUser.name){
             document.getElementById("Invitations").style.display = 'block';
@@ -1078,7 +1060,6 @@ async function optionsGroupChat() {
     let select = document.getElementById('toGroupChatLog');
     select.innerHTML = '';
     response.forEach((group) => {
-        allGroups.push(group);
         let option = document.createElement("option");
         option.value = group.groupId;
         option.text = group.name;
@@ -1102,10 +1083,10 @@ async function getEmojiList() {
 
     for(var index = 0; index < emojiCount; index++)
     {
-        addEmoji(emoji[index]);
+        addemoji(emoji[index]);
     }
 
-    function addEmoji(code)
+    function addemoji(code)
     {
         var option = document.createElement('option');
         option.innerHTML =  code;

@@ -1,7 +1,6 @@
 package com.neu.prattle.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.Message;
@@ -13,7 +12,6 @@ import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -134,18 +132,11 @@ public final class UserController {
   @Consumes(MediaType.APPLICATION_JSON)
   public String watchUser(@PathParam("userId") int userId) {
     String username = userService.findUserById(userId).getName();
-    List<Message> list = messageService.getUserLog(username);
     StringBuilder sb = new StringBuilder();
     sb.append("Logs for user @" + username + " ");
-    for(Message m: list) {
-      sb.append("[sent to ");
-      sb.append(m.getSendToGroup()? "group " : "user ");
-      sb.append(m.getTo());
-      sb.append(" at ");
-      sb.append(m.getTimeStamp());
-      sb.append(": \"");
-      sb.append(m.getContent());
-      sb.append("\"] ");
+    for(Message m: messageService.getUserLog(username)) {
+      String s = m.getSendToGroup()? "group " : "user ";
+      sb.append("[sent to " + s + m.getTo() + " at " + m.getTimeStamp() + ": \"" + m.getContent() + "\"] ");
     }
     return sb.toString();
   }
