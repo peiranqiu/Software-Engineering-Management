@@ -7,6 +7,7 @@ import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
+import com.neu.prattle.service.api.APIFactory;
 import com.neu.prattle.service.api.UserAPI;
 
 import org.junit.Before;
@@ -43,7 +44,7 @@ public class UserMockitoTest {
   private UserService userService;
 
   @Mock
-  private UserAPI api;
+  private APIFactory api;
 
   private User user1;
   private User user2;
@@ -52,7 +53,8 @@ public class UserMockitoTest {
   @Before
   public void setUp() {
     userService = UserServiceImpl.getInstance();
-    api = mock(UserAPI.class);
+    api = APIFactory.getInstance();
+    api = mock(APIFactory.class);
 
     user1 = new User("HarryPotter" + getRandom());
     user1.setPassword("Password" + getRandom());
@@ -70,7 +72,7 @@ public class UserMockitoTest {
    */
   @Test
   public void testCreateUser() {
-    when(api.addUser(any(User.class))).thenReturn(true);
+    when(api.create(any(User.class))).thenReturn(true);
     userService.setAPI(api);
     assertTrue(userService.addUser(user1));
   }
@@ -80,7 +82,7 @@ public class UserMockitoTest {
    */
   @Test(expected = UserAlreadyPresentException.class)
   public void testCreateUserAlreadyExist() {
-    when(api.addUser(any(User.class))).thenThrow(UserAlreadyPresentException.class);
+    when(api.create(any(User.class))).thenThrow(UserAlreadyPresentException.class);
     userService.setAPI(api);
     userService.addUser(user1);
   }
@@ -89,21 +91,19 @@ public class UserMockitoTest {
    * Test failure of user creation because of invalid username.
    */
   @Test(expected = UserNameInvalidException.class)
-  public void testCreateUserInvalidName() {
+  public void testCreateUserInvalidName1() {
     userService.setAPI(api);
     user2.setName("123456nfkgfkgsdfhdjfdkekgfhsdfk");
     userService.addUser(user2);
+  }
 
+  /**
+   * Test failure of user creation because of invalid username.
+   */
+  @Test(expected = UserNameInvalidException.class)
+  public void testCreateUserInvalidName2() {
+    userService.setAPI(api);
     user2.setName("-1");
-    userService.addUser(user2);
-
-    user2.setName("GOODGOODGOOD123");
-    userService.addUser(user2);
-
-    user2.setName("goodgoodgood");
-    userService.addUser(user2);
-
-    user2.setName("GoodgoodGood");
     userService.addUser(user2);
   }
 
@@ -111,24 +111,22 @@ public class UserMockitoTest {
    * Test failure of user creation because of invalid password.
    */
   @Test(expected = PasswordInvalidException.class)
-  public void testCreateUserInvalidPassword() {
+  public void testCreateUserInvalidPassword1() {
     userService.setAPI(api);
     user2.setPassword("-1");
     userService.addUser(user2);
-
-    user2.setPassword("-112v456nfkgfkgsdfhdjfdkekgfhsd3");
-    userService.addUser(user2);
-
-    user2.setPassword("GOODGOODGOOD123");
-    userService.addUser(user2);
-
-    user2.setPassword("goodgoodgood");
-    userService.addUser(user2);
-
-    user2.setPassword("GoodgoodGood");
-    userService.addUser(user2);
   }
 
+
+  /**
+   * Test failure of user creation because of invalid password.
+   */
+  @Test(expected = PasswordInvalidException.class)
+  public void testCreateUserInvalidPassword2() {
+    userService.setAPI(api);
+    user2.setPassword("-112v456nfkgfkgsdfhdjfdkekgfhsd3");
+    userService.addUser(user2);
+  }
   /**
    * Test timeout for adding a large number of users.
    */
@@ -137,7 +135,7 @@ public class UserMockitoTest {
     for (int i = 0; i < 100; i++) {
       User user = new User("RobsUsername" + i);
       user.setPassword("RobsPassword" + i);
-      when(api.addUser(any(User.class))).thenReturn(true);
+      when(api.create(any(User.class))).thenReturn(true);
       userService.setAPI(api);
       assertTrue(userService.addUser(user));
     }
@@ -148,11 +146,11 @@ public class UserMockitoTest {
    */
   @Test
   public void testFindUserByName() throws SQLException {
-    when(api.getUserByName(anyString())).thenReturn(user1);
+    when(api.getUser(anyString())).thenReturn(user1);
     userService.setAPI(api);
     assertEquals(userService.findUserByName("HarryPotter1").get(), user1);
 
-    when(api.getUserByName(anyString())).thenReturn(null);
+    when(api.getUser(anyString())).thenReturn(null);
     userService.setAPI(api);
     assertFalse(userService.findUserByName("EllenDeGeneres").isPresent());
   }
@@ -162,11 +160,11 @@ public class UserMockitoTest {
    */
   @Test
   public void testFindUserById() throws SQLException {
-    when(api.getUserById(anyInt())).thenReturn(user1);
+    when(api.getUser(anyInt())).thenReturn(user1);
     userService.setAPI(api);
     assertEquals(userService.findUserById(user1.getUserId()), user1);
 
-    when(api.getUserById(anyInt())).thenReturn(null);
+    when(api.getUser(anyInt())).thenReturn(null);
     userService.setAPI(api);
     assertNull(userService.findUserById(-1));
   }
@@ -194,7 +192,7 @@ public class UserMockitoTest {
    */
   @Test
   public void testRetrieveInformationForCurrentUser() {
-    when(api.addUser(any(User.class))).thenReturn(true);
+    when(api.create(any(User.class))).thenReturn(true);
     userService.setAPI(api);
     assertTrue(userService.addUser(user3));
     assertEquals("Kale12345", user3.getName());
@@ -207,8 +205,8 @@ public class UserMockitoTest {
   @Test
   public void testUpdatePassword() throws SQLException {
     User newUser = new User("Hhhhhhh123", "Hhhhhhh123");
-    when(api.addUser(any(User.class))).thenReturn(true);
-    when(api.getUserByName(anyString())).thenReturn(newUser);
+    when(api.create(any(User.class))).thenReturn(true);
+    when(api.getUser(anyString())).thenReturn(newUser);
     when(api.updateUser(any(User.class), anyString(), anyString())).thenReturn(newUser);
     userService.setAPI(api);
     assertTrue(userService.addUser(newUser));
@@ -223,14 +221,15 @@ public class UserMockitoTest {
   @Test
   public void testUpdateAvatar() throws SQLException {
     User newUser = new User("Hhhhhhh323", "Hhhhhhh123");
-    when(api.addUser(any(User.class))).thenReturn(true);
-    when(api.getUserByName(anyString())).thenReturn(newUser);
+    when(api.create(any(User.class))).thenReturn(true);
+    when(api.getUser(anyString())).thenReturn(newUser);
     when(api.updateUser(any(User.class), anyString(), anyString())).thenReturn(newUser);
     userService.setAPI(api);
     assertTrue(userService.addUser(newUser));
 
     newUser.setAvatar("newPassword123");
     assertEquals(userService.updateUser(newUser, "avatar").getName(), newUser.getName());
+    assertNull(userService.updateUser(newUser, "avatar0"));
   }
 
   /**
@@ -262,23 +261,37 @@ public class UserMockitoTest {
   }
 
   @Test
-  public void testSQLExcpetion() throws SQLException {
-    when(api.getUserByName(anyString())).thenThrow(SQLException.class);
-    when(api.getUserById(anyInt())).thenThrow(SQLException.class);
+  public void testSQLException() throws SQLException {
+    when(api.getUser(anyString())).thenThrow(SQLException.class);
+    when(api.getUser(anyInt())).thenThrow(SQLException.class);
     when(api.getAllUsers()).thenThrow(SQLException.class);
     when(api.setModerator(any(User.class))).thenThrow(SQLException.class);
+    when(api.setWatched(anyInt())).thenThrow(SQLException.class);
     userService.setAPI(api);
     assertFalse(userService.findUserByName("name").isPresent());
     userService.findUserById(1);
     userService.getAllUsers();
     userService.setModerator(new User("NewUser13", "NewPassword1"));
+    userService.setWatched(user1.getUserId());
     userService.updateUser(new User("NewUser11", "NewPassword1"), "avatar");
   }
 
   @Test(expected = UserAlreadyPresentException.class)
-  public void testIllegalStateExcpetion() throws SQLException {
-    when(api.addUser(any(User.class))).thenThrow(IllegalStateException.class);
+  public void testIllegalStateException() throws SQLException {
+    when(api.create(any(User.class))).thenThrow(IllegalStateException.class);
     userService.setAPI(api);
     userService.addUser(new User("User1111", "Password1111"));
+  }
+
+  @Test
+  public void testWatched() throws SQLException {
+    User newUser = new User("Hhhhhhh333", "Hhhhhhh133");
+    when(api.create(any(User.class))).thenReturn(true);
+    when(api.setWatched(anyInt())).thenReturn(newUser);
+    userService.setAPI(api);
+    assertTrue(userService.addUser(newUser));
+
+    newUser.setWatched(true);
+    assertTrue(userService.setWatched(newUser.getUserId()).getWatched());
   }
 }

@@ -12,6 +12,8 @@ import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.MessageService;
+import com.neu.prattle.service.MessageServiceImpl;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
@@ -65,6 +67,8 @@ public class ChatEndpoint {
 
   private ModerateService moderateService = ModerateService.getInstance();
 
+  private MessageService messageService = MessageServiceImpl.getInstance();
+
   /**
    * Broadcast.
    *
@@ -93,10 +97,11 @@ public class ChatEndpoint {
    * @param newGroupService    new group service
    * @param newModerateService new moderate service
    */
-  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService) {
+  public void setService(UserService newAccountService, GroupService newGroupService, ModerateService newModerateService, MessageService newMessageService) {
     accountService = newAccountService;
     groupService = newGroupService;
     moderateService = newModerateService;
+    messageService = newMessageService;
   }
 
   /**
@@ -208,7 +213,7 @@ public class ChatEndpoint {
    *
    * @param message the message to be sent
    */
-  public void sendPersonalMessage(Message message) throws IOException, EncodeException {
+  public void sendPersonalMessage(Message message) {
     chatEndpoints.forEach(endpoint0 -> {
       final ChatEndpoint endpoint = endpoint0;
       if (message.getFrom().equals(users.get(endpoint.session.getId())) || message.getTo().equals(users.get(endpoint.session.getId()))) {
@@ -222,8 +227,10 @@ public class ChatEndpoint {
         }
       }
     });
-    message.storeMessage();
-    message.saveChatLogPerson();
+    message.setTimeStamp();
+    message.setDate();
+    message.setGroupId(-1);
+    messageService.addMessage(message);
   }
 
   public void sendGroupMessage(Message message, String groupName, Session session) throws IOException, EncodeException {
@@ -240,7 +247,7 @@ public class ChatEndpoint {
     broadcastInGroup(message, currentGroupObject);
   }
 
-  public void broadcastInGroup(Message message, Group currentGroupObject) throws IOException {
+  public void broadcastInGroup(Message message, Group currentGroupObject) {
     List<User> members = moderateService.getMembers(currentGroupObject);
     if (members.isEmpty()) return;
     chatEndpoints.forEach(endpoint0 -> {
@@ -256,7 +263,11 @@ public class ChatEndpoint {
         }
       }
     });
-    message.saveChatLogGroup(currentGroupObject, true);
+    message.setTimeStamp();
+    message.setDate();
+    message.setGroupId(currentGroupObject.getGroupId());
+    message.setTo(currentGroupObject.getName());
+    messageService.addMessage(message);
   }
 }
 

@@ -2,17 +2,19 @@ package com.neu.prattle.controller;
 
 import com.google.gson.Gson;
 
-import com.neu.prattle.exceptions.GroupAlreadyPresentException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.MessageService;
+import com.neu.prattle.service.MessageServiceImpl;
 import com.neu.prattle.service.ModerateService;
 
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ws.rs.Consumes;
@@ -34,6 +36,7 @@ public class GroupController {
   private GroupService groupService = GroupServiceImpl.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
   private FollowService followService = FollowService.getInstance();
+  private MessageService messageService = MessageServiceImpl.getInstance();
 
   /**
    * Singleton instance for group controller
@@ -42,6 +45,33 @@ public class GroupController {
    */
   public static GroupController getInstance() {
     return groupController;
+  }
+
+  /**
+   * Set group service for the group controller
+   *
+   * @param service group service
+   */
+  public void setGroupService(GroupService service) {
+    groupService = service;
+  }
+
+  /**
+   * Set moderate service for the group controller
+   *
+   * @param service moderate service
+   */
+  public void setModerateService(ModerateService service) {
+    moderateService = service;
+  }
+
+  /**
+   * Set follow service for the group controller
+   *
+   * @param service follow service
+   */
+  public void setFollowService(FollowService service) {
+    followService = service;
   }
 
   /***
@@ -54,12 +84,8 @@ public class GroupController {
   @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
   public String createGroup(Group group) {
-    try {
-      if (groupService.addGroup(group)) {
-        return new Gson().toJson(group);
-      }
-    } catch (GroupAlreadyPresentException e) {
-      return new Gson().toJson("Group Already Present");
+    if (groupService.addGroup(group)) {
+      return new Gson().toJson(group);
     }
     return null;
   }
@@ -115,6 +141,23 @@ public class GroupController {
   }
 
   /**
+   * delete group moderator
+   *
+   * @param userId  moderator id
+   * @param groupId group id
+   */
+  @DELETE
+  @Path("/{groupId}/deleteModerator/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String deleteModerator(@PathParam("userId") int userId, @PathParam("groupId") int groupId) {
+
+    if (moderateService.deleteGroupModerator(groupId, userId)) {
+      return new Gson().toJson("Delete moderator succeed");
+    }
+    return new Gson().toJson("Delete moderator failed");
+  }
+
+  /**
    * add group member
    *
    * @param userId  user id
@@ -130,6 +173,22 @@ public class GroupController {
     return new Gson().toJson("Add member failed");
   }
 
+  /**
+   * delete group member
+   *
+   * @param userId  member id
+   * @param groupId group id
+   */
+  @DELETE
+  @Path("/{groupId}/deleteMember/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String deleteMember(@PathParam("userId") int userId, @PathParam("groupId") int groupId) {
+
+    if (moderateService.deleteGroupMember(groupId, userId)) {
+      return new Gson().toJson("Delete member succeed");
+    }
+    return new Gson().toJson("Delete member failed");
+  }
 
   /**
    * Get all groups in database
@@ -140,8 +199,7 @@ public class GroupController {
   @Path("/getAllGroups")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getAllGroups() {
-    List<Group> list = groupService.getAllGroups();
-    return new Gson().toJson(list);
+    return new Gson().toJson(groupService.getAllGroups());
   }
 
   /**
@@ -153,8 +211,7 @@ public class GroupController {
   @Path("/{groupId}/getSubGroups")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getSubGroups(@PathParam("groupId") int id) {
-    List<Group> list = groupService.getSubGroupList(id);
-    return new Gson().toJson(list);
+    return new Gson().toJson(groupService.getSubGroupList(id));
   }
 
   /**
@@ -182,8 +239,11 @@ public class GroupController {
   @Path("/{groupName}")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getGroupbyName(@PathParam("groupName") String name) {
-    Optional<Group> group = groupService.findGroupByName(name);
-    return new Gson().toJson(group);
+    Optional<Group> optional = groupService.findGroupByName(name);
+    if (optional.isPresent()) {
+      return new Gson().toJson(optional.get());
+    }
+    return new Gson().toJson(null);
   }
 
   /**
@@ -245,6 +305,79 @@ public class GroupController {
     return new Gson().toJson(list);
   }
 
+  /**
+   * Get all invitations of the group
+   *
+   * @param id group id
+   */
+  @GET
+  @Path("/{groupId}/getAllInvitation")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getGroupInvitations(@PathParam("groupId") int id) {
+    Map<User, Boolean> invitations = moderateService.getGroupInvitations(id);
+    return new Gson().toJson(invitations.keySet());
+  }
+
+  /***
+   * create an invitation
+   *
+   * @param groupId the group id
+   * @param userId the invitee id
+   * @return the created invitation
+   */
+  @POST
+  @Path("/{groupId}/createInvitation/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String createInvitation(@PathParam("groupId") int groupId, @PathParam("userId") int userId) {
+    if (moderateService.createInvitation(groupId, userId)) {
+      return new Gson().toJson("Invitation created successfully");
+    }
+    return new Gson().toJson("Creating invitation failed");
+  }
+
+  /***
+   * delete an invitation
+   *
+   * @param groupId the group id
+   * @param userId the invitee id
+   */
+  @DELETE
+  @Path("/{groupId}/deleteInvitation/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String deleteInvitation(@PathParam("groupId") int groupId, @PathParam("userId") int userId) {
+    if (moderateService.deleteInvitation(groupId, userId)) {
+      return new Gson().toJson("Invitation deleted successfully");
+    }
+    return new Gson().toJson("Deleting invitation failed");
+  }
+
+  /***
+   * approve an invitation
+   *
+   * @param groupId the group id
+   * @param userId the invitee id
+   */
+  @POST
+  @Path("/{groupId}/approveInvitation/{userId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String approveInvitation(@PathParam("groupId") int groupId, @PathParam("userId") int userId) {
+    if (moderateService.approveInvitation(groupId, userId)) {
+      return new Gson().toJson("Invitation approved");
+    }
+    return new Gson().toJson("Invitation not approved. Please try again.");
+  }
+
+  /**
+   * Get all group messages
+   *
+   * @return all group messages
+   */
+  @GET
+  @Path("/getAllGroupMessages/{groupId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getAllPrivateMessages(@PathParam("groupId") int groupId) {
+    return new Gson().toJson(messageService.getAllGroupMessages(groupId));
+  }
 }
 
 

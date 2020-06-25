@@ -1,9 +1,5 @@
 package com.neu.prattle.model;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -11,10 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /***
@@ -54,48 +46,9 @@ public class User {
   private Boolean isModerator = false;
 
   /**
-   * Groups the user is in.
+   * Set government watched.
    */
-  @ManyToMany(mappedBy = "user")
-  private List<Group> hasGroups = new ArrayList<>();
-
-  /**
-   * The groups the user moderates.
-   */
-  @ManyToMany(mappedBy = "user")
-  private List<Group> moderateGroups = new ArrayList<>();
-
-  /**
-   * The following list.
-   */
-  @OneToMany(targetEntity = User.class)
-  @JoinTable(name = "user_follows_user", joinColumns = {
-          @JoinColumn(name = "FOLLOWEE_ID", referencedColumnName = "ID"),
-          @JoinColumn(name = "FOLLOWER_ID", referencedColumnName = "ID")})
-  @JsonIgnore
-  private List<User> followedUser = new ArrayList<>();
-
-  /**
-   * The follower list.
-   */
-  @OneToMany(targetEntity = User.class)
-  @JoinTable(name = "user_follows_user",
-          joinColumns = {
-                  @JoinColumn(name = "FOLLOWEE_ID", referencedColumnName = "ID"),},
-          inverseJoinColumns = {
-                  @JoinColumn(name = "FOLLOWER_ID", referencedColumnName = "ID")})
-  @JsonIgnore
-  private List<User> follower = new ArrayList<>();
-
-  /**
-   * The list of group that the user is following.
-   */
-  @OneToMany(targetEntity = Group.class)
-  @JoinTable(name = "user_follows_group", joinColumns = {
-          @JoinColumn(name = "USER_ID", referencedColumnName = "ID"),
-          @JoinColumn(name = "GROUP_ID", referencedColumnName = "ID")})
-  @JsonIgnore
-  private List<Group> followedGroup = new ArrayList<>();
+  private Boolean isWatched = false;
 
   /**
    * Initiate a new user.
@@ -163,6 +116,20 @@ public class User {
   }
 
   /**
+   * Get is watched
+   */
+  public Boolean getWatched() {
+    return isWatched;
+  }
+
+  /**
+   * set is watched
+   */
+  public void setWatched(Boolean watched) {
+    isWatched = watched;
+  }
+
+  /**
    * Get the user's avatar.
    */
   public String getAvatar() {
@@ -174,62 +141,6 @@ public class User {
    */
   public void setAvatar(String avatar) {
     this.avatar = avatar;
-  }
-
-  /**
-   * Get the list of user the user is following.
-   */
-  public List<User> getFollowedUser() {
-    return followedUser;
-  }
-
-  /**
-   * Set the user's following list.
-   */
-  public void setFollowedUser(List<User> followedUser) {
-    this.followedUser = followedUser;
-  }
-
-  /**
-   * Get the user's follower list.
-   */
-  public List<User> getFollower() {
-    return follower;
-  }
-
-  /**
-   * Set the user's follower list.
-   */
-  public void setFollower(List<User> follower) {
-    this.follower = follower;
-  }
-
-  /**
-   * Get the user's hasGroups.
-   */
-  public List<Group> getHasGroups() {
-    return hasGroups;
-  }
-
-  /**
-   * Set the user's hasGroups.
-   */
-  public void setHasGroups(List<Group> hasGroups) {
-    this.hasGroups = hasGroups;
-  }
-
-  /**
-   * Get the user's followed hasGroups.
-   */
-  public List<Group> getFollowedGroup() {
-    return followedGroup;
-  }
-
-  /**
-   * Set the hasGroups that the user is following.
-   */
-  public void setFollowedGroup(List<Group> followedGroup) {
-    this.followedGroup = followedGroup;
   }
 
   /**

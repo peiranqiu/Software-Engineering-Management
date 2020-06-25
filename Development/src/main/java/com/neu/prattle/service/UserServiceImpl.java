@@ -5,11 +5,10 @@ import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.exceptions.UserNameInvalidException;
 import com.neu.prattle.exceptions.UserNotFoundException;
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.api.UserAPI;
+import com.neu.prattle.service.api.APIFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -26,13 +25,13 @@ public class UserServiceImpl implements UserService {
     userService = new UserServiceImpl();
   }
 
-  private UserAPI api;
+  private APIFactory api;
 
   /***
    * UserServiceImpl is a Singleton class.
    */
   private UserServiceImpl() {
-    api = new UserAPI();
+    api = APIFactory.getInstance();
   }
 
   /**
@@ -46,20 +45,18 @@ public class UserServiceImpl implements UserService {
 
   /**
    * Set the api useed by user Service.
-   *
-   * @param userAPI user api
    */
   @Override
-  public void setAPI(UserAPI userAPI) {
-    api = userAPI;
+  public void setAPI(APIFactory newAPIFactory) {
+    api = newAPIFactory;
   }
 
   @Override
   public Optional<User> findUserByName(String name) {
     Optional<User> optional = Optional.empty();
     try {
-      if (api.getUserByName(name) != null) {
-        optional = Optional.of(api.getUserByName(name));
+      if (api.getUser(name) != null) {
+        optional = Optional.of(api.getUser(name));
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -71,7 +68,7 @@ public class UserServiceImpl implements UserService {
   public User findUserById(int id) {
     User user = new User();
     try {
-      user = api.getUserById(id);
+      user = api.getUser(id);
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
     }
@@ -102,7 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     try {
-      api.addUser(user);
+      api.create(user);
       return true;
     } catch (IllegalStateException e) {
       throw new UserAlreadyPresentException(String.format("User already present with name: %s", user.getName()));
@@ -113,17 +110,15 @@ public class UserServiceImpl implements UserService {
   public User updateUser(User user, String field) {
     User u = null;
     try {
-      User newUser = api.getUserByName(user.getName());
+      User newUser = api.getUser(user.getName());
       if (newUser == null) {
         throw new UserNotFoundException(String.format("User %s not found.", user.getName()));
       }
       newUser.setPassword(user.getPassword());
       if (field.equals("password")) {
-        String value = user.getPassword();
-        u = api.updateUser(newUser, field, value);
+        u = api.updateUser(newUser, field, user.getPassword());
       } else if (field.equals("avatar")) {
-        String value = user.getAvatar();
-        u = api.updateUser(newUser, field, value);
+        u = api.updateUser(newUser, field, user.getAvatar());
       }
     } catch (SQLException e) {
       LOGGER.log(Level.INFO, e.getMessage());
@@ -141,6 +136,17 @@ public class UserServiceImpl implements UserService {
     return user;
   }
 
+  @Override
+  public User setWatched(int userId) {
+    User user = null;
+    try {
+      user = api.setWatched(userId);
+    } catch (SQLException e) {
+      LOGGER.log(Level.INFO, e.getMessage());
+    }
+    return user;
+  }
+
   /**
    * Check if the username is valid based on the requirement.
    *
@@ -148,9 +154,7 @@ public class UserServiceImpl implements UserService {
    * @return Returns true if username is valid
    */
   public boolean isValidUsername(User user) {
-    HashMap<String, Boolean> usernameCheck = checkRequirement(user.getName());
-    return !(!usernameCheck.get("low") || !usernameCheck.get("cap") || !usernameCheck.get("num") || user.getName().length() > 20 ||
-            user.getName().length() < 4);
+    return !(user.getName().length() > 20 || user.getName().length() < 4);
   }
 
   /**
@@ -160,38 +164,7 @@ public class UserServiceImpl implements UserService {
    * @return Returns true if password is valid
    */
   public boolean isValidPassword(User user) {
-    HashMap<String, Boolean> passwordCheck = checkRequirement(user.getPassword());
-    return !(!passwordCheck.get("low") || !passwordCheck.get("cap") || !passwordCheck.get("num") || user.getPassword().length() > 20 ||
-            user.getPassword().length() < 4);
-  }
-
-  /**
-   * Check if a given string meets all the requirement.
-   *
-   * @param string the string to be checked
-   * @return Returns true if it is valid
-   * @author CS5500 Teaching staff
-   */
-  private HashMap<String, Boolean> checkRequirement(String string) {
-    char character;
-    HashMap<String, Boolean> booleanHashMap = new HashMap<>();
-    booleanHashMap.put("cap", false);
-    booleanHashMap.put("low", false);
-    booleanHashMap.put("num", false);
-    for (int i = 0; i < string.length(); i++) {
-      character = string.charAt(i);
-      if (Character.isDigit(character)) {
-        booleanHashMap.replace("num", true);
-      } else if (Character.isUpperCase(character)) {
-        booleanHashMap.replace("cap", true);
-      } else if (Character.isLowerCase(character)) {
-        booleanHashMap.replace("low", true);
-      }
-      if (Boolean.TRUE.equals(booleanHashMap.get("num")) && Boolean.TRUE.equals(booleanHashMap.get("cap")) && Boolean.TRUE.equals(booleanHashMap.get("low"))) {
-        break;
-      }
-    }
-    return booleanHashMap;
+    return !(user.getPassword().length() > 20 || user.getPassword().length() < 4);
   }
 
 }

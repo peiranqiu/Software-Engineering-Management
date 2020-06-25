@@ -20,10 +20,6 @@ public class UserAPI extends DBUtils {
   private PreparedStatement stmt = null;
   private ResultSet rs = null;
 
-  public UserAPI() {
-    super();
-  }
-
   /**
    * Get all users.
    */
@@ -168,6 +164,18 @@ public class UserAPI extends DBUtils {
   public User setModerator(User user) throws SQLException {
     String sql = "UPDATE User SET isModerator = ? WHERE name = ?";
     return executeUpdate(sql, user, null, user.getModerator());
+  }
+
+  /**
+   * Update user watched by government
+   *
+   * @param userId the user id
+   * @return updated user
+   */
+  public User setWatched(int userId) throws SQLException {
+    String sql = "UPDATE User SET watched = ? WHERE name = ?";
+    User user = getUserById(userId);
+    return executeUpdate(sql, user, null, true);
   }
 
   /**

@@ -192,6 +192,24 @@ CREATE TABLE IF NOT EXISTS `mydb`.`User_follows_Group` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+-- -----------------------------------------------------
+-- Table `mydb`.`Message`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `mydb`.`Message` ;
+
+CREATE TABLE IF NOT EXISTS `mydb`.`Message` (
+  `Message_id` INT NOT NULL auto_increment,
+  `fromName` VARCHAR(25) NOT NULL,
+  `toName` VARCHAR(25) NOT NULL,
+  `message` VARCHAR(50) NOT NULL,
+  `messageDate` VARCHAR(15) NOT NULL,
+  `timeStamp` VARCHAR(15) NOT NULL,
+  `sendToGroup` TINYINT NOT NULL DEFAULT 0,
+  `groupId` INT NOT NULL DEFAULT -1,
+  PRIMARY KEY (`Message_id`))
+ENGINE = InnoDB;
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

@@ -5,8 +5,6 @@ import com.neu.prattle.model.User;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static junit.framework.TestCase.assertFalse;
@@ -43,54 +41,10 @@ public class UserEntityTest {
     assertEquals("picture.png", user.getAvatar());
   }
 
-  /**
-   * Test set and get user's following users list.
-   */
   @Test
-  public void testFollowUser() {
-    List<User> followedUser = new ArrayList<>();
-    followedUser.add(user2);
-    followedUser.add(user3);
-    followedUser.add(user1);
-    user.setFollowedUser(followedUser);
-    assertEquals(user.getFollowedUser(), followedUser);
-  }
-
-  /**
-   * Test set and get user's follower list.
-   */
-  @Test
-  public void testUsersFollower() {
-    List<User> follower = new ArrayList<>();
-    follower.add(user2);
-    follower.add(user3);
-    follower.add(user1);
-    user.setFollower(follower);
-    assertEquals(user.getFollower(), follower);
-  }
-
-  /**
-   * Test set and get user's group list.
-   */
-  @Test
-  public void testUsersGroup() {
-    List<Group> groups = new ArrayList<>();
-    groups.add(group1);
-    groups.add(group2);
-    user.setHasGroups(groups);
-    assertEquals(user.getHasGroups(), groups);
-  }
-
-  /**
-   * Test set and get user's followed group list.
-   */
-  @Test
-  public void testUserFollowGroup() {
-    List<Group> followedGroups = new ArrayList<>();
-    followedGroups.add(group1);
-    followedGroups.add(group2);
-    user.setFollowedGroup(followedGroups);
-    assertEquals(user.getFollowedGroup(), followedGroups);
+  public void testPassword() {
+    user.setPassword("passWord1");
+    assertEquals("passWord1", user.getPassword());
   }
 
   /**

@@ -5,8 +5,6 @@
     <link href="style.css" rel="stylesheet">
 </head>
 
-<body onload="getAllUsers()">
-
 <table>
     <caption>Table</caption>
     <tr>
@@ -14,10 +12,16 @@
         <th scope="col"></th>
     </tr>
     <tr>
-        <td colspan="2">
+        <td colspan="1">
             <input id="username" placeholder="Username" type="text"/>
             <input id="password" placeholder="Password" type="text"/>
             <button onclick="connect();" type="button">Connect</button>
+        </td>
+        <td colspan="1">
+            <select id="watch">
+            <option disabled hidden selected value=""></option>
+            </select>
+            <button onclick="watchUser()" type="button">Watch</button>
         </td>
     </tr>
     <tr>
@@ -75,6 +79,9 @@
             <div class="groupMembers" id="Group Members">
             </div>
 
+            <div class="invitations" id="Invitations">
+            </div>
+
 
         </td>
     </tr>
@@ -84,15 +91,22 @@
                 <option disabled hidden selected value="">To</option>
             </select>
 
-            <input id="msg" placeholder="Message" size="51" type="text"/>
+            <input id="msg" placeholder="Message" size="48" type="text"/>
+            <select id="emoji" onchange="addEmoji()">
+            <option disabled hidden selected value="">Emoji</option>
+
+            </select>
+
             <button onclick="send();" type="button">Send</button>
 
         </td>
     </tr>
+
+
     <tr>
         <td>
-            <input id="toGroup" placeholder="To Group" size="15"/>
-            <input id="groupMsg" placeholder="Message" size="51" type="text"/>
+            <input id="toGroup" placeholder="To Group" size="10"/>
+            <input id="groupMsg" placeholder="Message" size="48" type="text"/>
             <button onclick="sendGroup();" type="button">Send</button>
 
         </td>
@@ -132,9 +146,70 @@
 
     </tr>
 
+    <tr>
+
+        <td>
+            <input id ='messageToTranslate' type ='text' placeholder="Message waiting for translation"/>
+            <select id='language'>
+                <option disabled hidden selected value="getLanguageList">Language Options</option>
+            </select>
+
+            <button onclick="translateMessage()"> Translate </button>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <textarea readonly="true" rows="3" cols="60" id="translated"></textarea>
+        </td>
+
+    </tr>
+
+    <tr>
+        <td>
+            <select id="toChatLog">
+                <option disabled hidden selected value="">User</option>
+            </select>
+
+            <button onclick="getAllPrivateMessages()">Check Private Chat History</button>
+            <button onclick="cleanPrivateChat()">Clear Chat History</button>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td>
+            <textarea cols="60" id="personalChatLog" rows="30"></textarea>
+        </td>
+    </tr>
+
+    <tr>
+        <td>
+            <select id="toGroupChatLog">
+                <option disabled hidden selected value="">Group Name</option>
+            </select>
+
+            <button onclick="getAllGroupMessages()">Check Group Chat History</button>
+            <button onclick="cleanGroupChat()">Clear Chat History</button>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td>
+            <textarea cols="60" id="groupChatLog" rows="30"></textarea>
+        </td>
+    </tr>
+
+
+
 </table>
 </body>
 <script src="websocket.js"></script>
-
-
+<script>
+    window.onload=async function(){
+        await getAllUsers().then(()=>getLanguageAPI()).then(()=>fillWatched()).then(()=>getEmojiList());
+    }
+</script>
+<script src="https://rawgit.com/theraot/emoji/master/emoji.js" charset="utf-8"></script>
 </html>

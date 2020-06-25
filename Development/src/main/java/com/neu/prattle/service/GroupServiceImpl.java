@@ -3,8 +3,7 @@ package com.neu.prattle.service;
 
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
-import com.neu.prattle.service.api.FollowAPI;
-import com.neu.prattle.service.api.GroupAPI;
+import com.neu.prattle.service.api.APIFactory;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,16 +19,11 @@ public class GroupServiceImpl implements GroupService {
     groupService = new GroupServiceImpl();
   }
 
-  private GroupAPI api = new GroupAPI();
-  private FollowAPI followAPI = new FollowAPI();
+  private APIFactory api;
   private Logger logger = Logger.getLogger(this.getClass().getName());
 
-  /***
-   * UserServiceImpl is a Singleton class.
-   */
-
   private GroupServiceImpl() {
-
+    api = APIFactory.getInstance();
   }
 
   /**
@@ -43,18 +37,11 @@ public class GroupServiceImpl implements GroupService {
   }
 
   /**
-   * Set the api useed by group Service.
-   *
-   * @param groupAPI group api
+   * Set the api used by group Service.
    */
   @Override
-  public void setAPI(GroupAPI groupAPI) {
-    api = groupAPI;
-  }
-
-  @Override
-  public void setFollowAPI(FollowAPI newFollowAPI) {
-    followAPI = newFollowAPI;
+  public void setAPI(APIFactory apiFactory) {
+    api = apiFactory;
   }
 
   /***
@@ -87,7 +74,8 @@ public class GroupServiceImpl implements GroupService {
    */
   @Override
   public boolean addGroup(Group group) {
-    return api.addGroup(group);
+
+    return api.create(group);
   }
 
   /***
@@ -98,15 +86,14 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public boolean setPasswordforGroup(int groupId, String password) {
     try {
-      api.setPasswordforGroup(groupId, password);
-
+      api.setGroupPassword(groupId, password);
+      List<User> followers = api.groupGetFollowers(groupId);
+      for (User u : followers) {
+        api.unfollowGroup(u.getUserId(), groupId);
+      }
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in set psw for group");
       return false;
-    }
-    List<User> followers = followAPI.groupGetFollowers(groupId);
-    for (User u : followers) {
-      followAPI.userUnfollowGroup(u.getUserId(), groupId);
     }
     return true;
   }
@@ -121,7 +108,7 @@ public class GroupServiceImpl implements GroupService {
   @Override
   public boolean addSubgroupIntoGroup(int groupId, int subGroupId) {
     try {
-      api.addSubgroupIntoGroup(groupId, subGroupId);
+      api.addSubgroup(groupId, subGroupId);
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in add subgroup for group");
     }
@@ -137,7 +124,7 @@ public class GroupServiceImpl implements GroupService {
   public List<Group> getSubGroupList(int groupId) {
     List<Group> groups = new ArrayList<>();
     try {
-      groups = api.getSubGroupList(groupId);
+      groups = api.getAllSubgroups(groupId);
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in get subgroup for group");
     }
@@ -154,7 +141,7 @@ public class GroupServiceImpl implements GroupService {
   public Group getGroupById(int id) {
     Group group = null;
     try {
-      group = api.getGroupById(id);
+      group = api.getGroup(id);
     } catch (SQLException e) {
       logger.log(Level.INFO, "failed in get id for group");
     }

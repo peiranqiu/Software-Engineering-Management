@@ -2,10 +2,12 @@ package com.neu.prattle.controller;
 
 import com.google.gson.Gson;
 
-import com.neu.prattle.exceptions.UserAlreadyPresentException;
 import com.neu.prattle.model.Group;
+import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
+import com.neu.prattle.service.MessageService;
+import com.neu.prattle.service.MessageServiceImpl;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
@@ -33,7 +35,7 @@ public final class UserController {
   private UserService userService = UserServiceImpl.getInstance();
   private FollowService followService = FollowService.getInstance();
   private ModerateService moderateService = ModerateService.getInstance();
-
+  private MessageService messageService = MessageServiceImpl.getInstance();
   /**
    * Singleton instance for user controller
    *
@@ -41,6 +43,34 @@ public final class UserController {
    */
   public static UserController getInstance() {
     return userController;
+  }
+
+
+  /**
+   * Set user service for the user controller
+   *
+   * @param service user service
+   */
+  public void setUserService(UserService service) {
+    userService = service;
+  }
+
+  /**
+   * Set moderate service for the user controller
+   *
+   * @param service moderate service
+   */
+  public void setModerateService(ModerateService service) {
+    moderateService = service;
+  }
+
+  /**
+   * Set follow service for the user controller
+   *
+   * @param service follow service
+   */
+  public void setFollowService(FollowService service) {
+    followService = service;
   }
 
   /***
@@ -53,12 +83,8 @@ public final class UserController {
   @Path("/create")
   @Consumes(MediaType.APPLICATION_JSON)
   public String createUserAccount(User user) {
-    try {
-      if (userService.addUser(user)) {
-        return new Gson().toJson(user);
-      }
-    } catch (UserAlreadyPresentException e) {
-      return new Gson().toJson("User Already Present");
+    if (userService.addUser(user)) {
+      return new Gson().toJson(user);
     }
     return null;
   }
@@ -72,8 +98,7 @@ public final class UserController {
   @Path("/getAllUser")
   @Consumes(MediaType.APPLICATION_JSON)
   public String getAllUsers() {
-    List<User> list = userService.getAllUsers();
-    return new Gson().toJson(list);
+    return new Gson().toJson(userService.getAllUsers());
   }
 
   /**
@@ -94,6 +119,26 @@ public final class UserController {
       }
     }
     return new Gson().toJson(null);
+  }
+
+  /**
+   * Government watches a user
+   *
+   * @param userId the user id
+   * @return user chatlog
+   */
+  @GET
+  @Path("/{userId}/watch")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String watchUser(@PathParam("userId") int userId) {
+    String username = userService.findUserById(userId).getName();
+    StringBuilder sb = new StringBuilder();
+    sb.append("Logs for user @" + username + " ");
+    for(Message m: messageService.getUserLog(username)) {
+      String s = m.getSendToGroup()? "group " : "user ";
+      sb.append("[sent to " + s + m.getTo() + " at " + m.getTimeStamp() + ": \"" + m.getContent() + "\"] ");
+    }
+    return sb.toString();
   }
 
   /**
@@ -184,4 +229,28 @@ public final class UserController {
     return new Gson().toJson("Unfollow failed");
   }
 
+
+  /**
+   * Send a message to a user
+   *
+   * @param msg the message to ben sent
+   */
+  @POST
+  @Path("/send")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String sendToUser(Message msg) {
+    return new Gson().toJson(msg.getContent());
+  }
+
+  /**
+   * Get all messages
+   *
+   * @return all messages
+   */
+  @GET
+  @Path("/getAllMessages/{from}/{to}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public String getAllPrivateMessages(@PathParam("from") String from, @PathParam("to") String to) {
+    return new Gson().toJson(messageService.getAllPrivateMessages(from, to));
+  }
 }

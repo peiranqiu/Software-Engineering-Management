@@ -10,6 +10,7 @@ import com.neu.prattle.model.Message;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.GroupService;
 import com.neu.prattle.service.GroupServiceImpl;
+import com.neu.prattle.service.MessageService;
 import com.neu.prattle.service.ModerateService;
 import com.neu.prattle.service.UserService;
 import com.neu.prattle.service.UserServiceImpl;
@@ -22,13 +23,10 @@ import org.junit.runners.MethodSorters;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Scanner;
 
 import javax.websocket.EncodeException;
 import javax.websocket.RemoteEndpoint.Basic;
@@ -52,7 +50,6 @@ public class ChatEndpointMockitoTest {
   private static User testUser3 = new User("testName3", "User3Password");
   private Message message;
   private Group group1 = new Group("testChatGroup1");
-  private Group group2 = new Group("testChatGroup2");
 
 
   // Mocking Session to connect with websocket
@@ -72,6 +69,9 @@ public class ChatEndpointMockitoTest {
 
   @Mock
   private ModerateService moderateService;
+
+  @Mock
+  private MessageService messageService;
 
   // To capture messages sent by Websockets
   private ArgumentCaptor<Object> valueCapture;
@@ -110,12 +110,13 @@ public class ChatEndpointMockitoTest {
     groupService = mock(GroupService.class);
     moderateService = ModerateService.getInstance();
     moderateService = mock(ModerateService.class);
+    messageService = mock(MessageService.class);
   }
 
   @Test
   public void testOnOpen() throws IOException, EncodeException {
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    chatEndpoint1.setService(userService, groupService, moderateService);
+    chatEndpoint1.setService(userService, groupService, moderateService, messageService);
     chatEndpoint1.onOpen(session1, testUser1.getName());
 
     // Finding the message with content 'Connected!'
@@ -134,7 +135,7 @@ public class ChatEndpointMockitoTest {
   @Test
   public void testOnOpen1() throws IOException, EncodeException {
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
-    chatEndpoint1.setService(userService, groupService, moderateService);
+    chatEndpoint1.setService(userService, groupService, moderateService, messageService);
     chatEndpoint1.onOpen(session1, testUser3.getName());
 
     // Finding the message with content 'Connected!'
@@ -150,7 +151,7 @@ public class ChatEndpointMockitoTest {
   @Test
   public void testOnOpen2() throws IOException, EncodeException {
     when(userService.findUserByName(anyString())).thenReturn(Optional.empty());
-    chatEndpoint1.setService(userService, groupService, moderateService);
+    chatEndpoint1.setService(userService, groupService, moderateService, messageService);
     assertFalse(chatEndpoint1.onOpen(session1, "name"));
   }
 
@@ -166,18 +167,18 @@ public class ChatEndpointMockitoTest {
     when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
     when(moderateService.addGroupModerator(any(Group.class), any(User.class), any(User.class))).thenReturn(testUser1);
     when(moderateService.getModerators(any(Group.class))).thenReturn(new ArrayList<>());
-    chatEndpoint1.setService(userService, groupService, moderateService);
-    chatEndpoint2.setService(userService, groupService, moderateService);
+    chatEndpoint1.setService(userService, groupService, moderateService, messageService);
+    chatEndpoint2.setService(userService, groupService, moderateService, messageService);
     moderateService.addGroupModerator(group1, testUser1, testUser1);
 
     when(moderateService.getModerators(any(Group.class))).thenReturn(Arrays.asList(testUser1));
     when(moderateService.getMembers(any(Group.class))).thenReturn(new ArrayList<>());
-    chatEndpoint1.setService(userService, groupService, moderateService);
-    chatEndpoint2.setService(userService, groupService, moderateService);
+    chatEndpoint1.setService(userService, groupService, moderateService, messageService);
+    chatEndpoint2.setService(userService, groupService, moderateService, messageService);
 
     chatEndpoint1.onOpen(session1, testUser1.getName());
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
-    chatEndpoint2.setService(userService, groupService, moderateService);
+    chatEndpoint2.setService(userService, groupService, moderateService, messageService);
     chatEndpoint2.onOpen(session2, testUser2.getName());
 
     chatEndpoint1.onClose(session1);
@@ -199,14 +200,16 @@ public class ChatEndpointMockitoTest {
   public void testOnMessage() throws IOException, EncodeException {
 
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    chatEndpoint1.setService(userService, groupService, moderateService);
+    chatEndpoint1.setService(userService, groupService, moderateService, messageService);
     chatEndpoint1.onOpen(session1, testUser1.getName());
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
-    chatEndpoint2.setService(userService, groupService, moderateService);
+    chatEndpoint2.setService(userService, groupService, moderateService, messageService);
     chatEndpoint2.onOpen(session2, testUser2.getName());
 
     message.setTo(testUser2.getName());
     message.setContent("Hey");
+    message.setMessageDate(message.getMessageDate());
+    message.setTimeStamp(message.getTimeStamp());
 
     // Sending a message using onMessage method
     chatEndpoint1.onMessage(session1, message);
@@ -228,14 +231,14 @@ public class ChatEndpointMockitoTest {
   public void testOnMessageGroup() throws IOException, EncodeException {
 
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    chatEndpoint1.setService(userService, groupService, moderateService);
+    chatEndpoint1.setService(userService, groupService, moderateService, messageService);
     chatEndpoint1.onOpen(session1, testUser1.getName());
 
     when(moderateService.addGroupModerator(any(Group.class), any(User.class), any(User.class))).thenReturn(testUser1);
     moderateService.addGroupModerator(group1, testUser1, testUser1);
 
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
-    chatEndpoint2.setService(userService, groupService, moderateService);
+    chatEndpoint2.setService(userService, groupService, moderateService, messageService);
     chatEndpoint2.onOpen(session2, testUser2.getName());
 
 
@@ -261,22 +264,16 @@ public class ChatEndpointMockitoTest {
   @Test
   public void testSendPersonalMessage() throws IOException, EncodeException {
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    chatEndpoint1.setService(userService, groupService, moderateService);
+    chatEndpoint1.setService(userService, groupService, moderateService, messageService);
     User user1 = userService.findUserByName("testName1").get();
     when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
-    chatEndpoint2.setService(userService, groupService, moderateService);
+    chatEndpoint2.setService(userService, groupService, moderateService, messageService);
     User user2 = userService.findUserByName("testName2").get();
     chatEndpoint1.onOpen(session1, user1.getName());
     chatEndpoint2.onOpen(session2, user2.getName());
     message.setFrom(user1.getName());
     message.setTo(user2.getName());
-    message.setFromID(user1.getUserId());
-    message.setToID(user2.getUserId());
     message.setContent("Hey");
-    message.setMessageID();
-    message.setMessagePath();
-    message.setTimeStamp();
-    message.setCurrDate();
     // Sending a message using onMessage method
     chatEndpoint1.sendPersonalMessage(message);
 
@@ -286,175 +283,8 @@ public class ChatEndpointMockitoTest {
             .filter(msg -> msg.getContent().equals("Hey")).findAny();
 
     if (m.isPresent()) {
-      String messagePath = message.getMessagePath();
-      System.out.println(messagePath);
-      File file = new File(messagePath + "/PrivateChatHistory" + "/" + message.getFromID() + "_" + message.getToID() + "_" + message.getCurrDate() + ".txt");
-      assertEquals(true, checkLogHasMessage("testName1: Hey   " + message.getTimeStamp(), file));
-    } else {
-      fail();
-    }
-  }
-
-  @Test
-  public void testSendGroupMessage() throws IOException, EncodeException {
-    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>() {{
-      add(testUser1);
-      add(testUser2);
-    }});
-    chatEndpoint1.setService(userService, groupService, moderateService);
-    User user1 = userService.findUserByName("testName1").get();
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
-    chatEndpoint2.setService(userService, groupService, moderateService);
-    User user2 = userService.findUserByName("testName2").get();
-    chatEndpoint1.onOpen(session1, user1.getName());
-    chatEndpoint2.onOpen(session2, user2.getName());
-    message.setFrom(user1.getName());
-    message.setTo("testChatGroup1");
-    message.setFromID(user1.getUserId());
-    message.setToID(user2.getUserId());
-    message.setContent("Welcome to this group!");
-    message.setMessageID();
-    message.setMessagePath();
-    message.setMessagePath();
-    message.setTimeStamp();
-    // Sending a message using onMessage method
-    chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
-
-    // Finding messages with content hey
-    Optional<Message> m = valueCapture.getAllValues().stream()
-            .map(val -> (Message) val)
-            .filter(msg -> msg.getContent().equals("Welcome to this group!")).findAny();
-
-    if (m.isPresent()) {
-      String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
-      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group!   " + message.getTimeStamp(), file));
-    } else {
-      fail();
-    }
-  }
-
-  @Test
-  public void testSendGroupMessage2() throws IOException, EncodeException {
-    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>() {{
-      add(testUser1);
-      add(testUser2);
-    }});
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    chatEndpoint1.setService(userService, groupService, moderateService);
-    User user1 = userService.findUserByName("testName1").get();
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
-    chatEndpoint2.setService(userService, groupService, moderateService);
-    User user2 = userService.findUserByName("testName2").get();
-    chatEndpoint1.onOpen(session1, user1.getName());
-    chatEndpoint2.onOpen(session2, user2.getName());
-    message.setFrom(user1.getName());
-    message.setTo("testChatGroup1");
-    message.setFromID(user1.getUserId());
-    message.setToID(user2.getUserId());
-    message.setContent("Welcome to this group again!");
-    message.setMessageID();
-    message.setMessagePath();
-    message.setTimeStamp();
-    // Sending a message using onMessage method
-    chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
-
-    // Finding messages with content hey
-    Optional<Message> m = valueCapture.getAllValues().stream()
-            .map(val -> (Message) val)
-            .filter(msg -> msg.getContent().equals("Welcome to this group again!")).findAny();
-
-    if (m.isPresent()) {
-      String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
-      assertEquals(true, checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
-    } else {
-      fail();
-    }
-  }
-
-  public boolean checkLogHasMessage(String msgSent, File file) {
-    try {
-      Scanner scanner = new Scanner(file);
-      int lineNum = 0;
-      while (scanner.hasNextLine()) {
-        String line = scanner.nextLine();
-        lineNum++;
-        if (line.equals(msgSent)) {
-          return true;
-        }
-      }
-    } catch (FileNotFoundException e) {
-      return false;
-    }
-    return false;
-  }
-
-  @Test
-  public void testbroadcastInGroupFails() throws IOException, EncodeException {
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    chatEndpoint1.setService(userService, groupService, moderateService);
-    User user1 = userService.findUserByName("testName1").get();
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
-    chatEndpoint2.setService(userService, groupService, moderateService);
-    User user2 = userService.findUserByName("testName2").get();
-    chatEndpoint1.onOpen(session1, user1.getName());
-    chatEndpoint2.onOpen(session2, user2.getName());
-    message.setFrom(user1.getName());
-    message.setTo("testChatGroup1");
-    message.setFromID(user1.getUserId());
-    message.setToID(user2.getUserId());
-    message.setContent("Welcome to this group again!");
-    message.setMessageID();
-    message.setMessagePath();
-    Group groupEmpty = new Group();
-    chatEndpoint1.broadcastInGroup(message, groupEmpty);
-    assertFalse(user1.equals(user2));
-  }
-
-  @Test
-  public void testDeleteGroupMessage() throws IOException, EncodeException {
-    when(groupService.findGroupByName(anyString())).thenReturn(Optional.of(group1));
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    when(moderateService.getMembers(group1)).thenReturn(new ArrayList<User>() {{
-      add(testUser1);
-      add(testUser2);
-    }});
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser1));
-    chatEndpoint1.setService(userService, groupService, moderateService);
-    User user1 = userService.findUserByName("testName1").get();
-    when(userService.findUserByName(anyString())).thenReturn(Optional.of(testUser2));
-    chatEndpoint2.setService(userService, groupService, moderateService);
-    User user2 = userService.findUserByName("testName2").get();
-    chatEndpoint1.onOpen(session1, user1.getName());
-    chatEndpoint2.onOpen(session2, user2.getName());
-    message.setFrom(user1.getName());
-    message.setTo("testChatGroup1");
-    message.setFromID(user1.getUserId());
-    message.setToID(user2.getUserId());
-    message.setContent("Welcome to this group!");
-    message.setMessageID();
-    message.setMessagePath();
-    message.setMessagePath();
-    message.setTimeStamp();
-    message.setCurrDate();
-    // Sending a message using onMessage method
-    chatEndpoint1.sendGroupMessage(message, "testChatGroup1", session1);
-
-    // Finding messages with content hey
-    Optional<Message> m = valueCapture.getAllValues().stream()
-            .map(val -> (Message) val)
-            .filter(msg -> msg.getContent().equals("Welcome to this group!")).findAny();
-
-    if (m.isPresent()) {
-      String messagePath = message.getMessagePath();
-      File file = new File(messagePath + "/Group" + "/" + group1.getGroupId() + "_" + message.getCurrDate() + ".txt");
-      message.deleteGroupMessage(group1);
-      assertFalse(checkLogHasMessage("testName1: Welcome to this group again!   " + message.getTimeStamp(), file));
+      messageService.addMessage(message);
+      assertTrue(true);
     } else {
       fail();
     }
