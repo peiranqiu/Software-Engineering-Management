@@ -126,9 +126,9 @@ public class MessageAPI extends DBUtils {
     List<Message> list = new ArrayList<>();
     String sql = "SELECT * FROM mydb.Message WHERE fromName = ?";
     con = getConnection();
-    try (PreparedStatement stmt = con.prepareStatement(sql)) {
-      stmt.setString(1, username);
-      rs = stmt.executeQuery();
+    try (PreparedStatement stmtTwo = con.prepareStatement(sql)) {
+      stmtTwo.setString(1, username);
+      rs = stmtTwo.executeQuery();
       while (rs.next()) {
         list.add(constructMessage(rs));
       }

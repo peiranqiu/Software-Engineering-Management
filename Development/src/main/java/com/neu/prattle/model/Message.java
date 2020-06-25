@@ -66,13 +66,6 @@ public class Message {
   @Column
   private String messageDate;
 
-  /**
-   * Message Constructor
-   */
-  public Message() {
-
-  }
-
   public static MessageBuilder messageBuilder() {
     return new MessageBuilder();
   }

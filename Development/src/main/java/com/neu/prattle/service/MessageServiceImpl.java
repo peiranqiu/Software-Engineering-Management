@@ -19,12 +19,6 @@ public class MessageServiceImpl implements MessageService {
 
   private MessageAPI api = new MessageAPI();
 
-  /***
-   * MessageServiceImpl is a Singleton class.
-   */
-
-  public MessageServiceImpl() {
-  }
 
   /**
    * Call this method to return an instance of this service.

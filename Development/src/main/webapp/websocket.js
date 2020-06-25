@@ -1109,7 +1109,7 @@ async function getAllPrivateMessages() {
 }
 
 async function printMessage(item, index) {
-    document.getElementById("personalChatLog").innerHTML += item.from + ": " + item.message + "      $time: " + item.timeStamp;
+    document.getElementById("personalChatLog").innerHTML += item.from + ": " + item.messageText + "      $time: " + item.timeStamp;
     document.getElementById("personalChatLog").innerHTML += "&#13;&#10";
 }
 
@@ -1151,7 +1151,7 @@ async function getAllGroupMessages() {
 }
 
 async function printGroupMessage(item, index) {
-    document.getElementById("groupChatLog").innerHTML += item.from + ": " + item.message + "      $time: " + item.timeStamp;
+    document.getElementById("groupChatLog").innerHTML += item.from + ": " + item.messageText + "      $time: " + item.timeStamp;
     document.getElementById("groupChatLog").innerHTML += "&#13;&#10";
 }
 
