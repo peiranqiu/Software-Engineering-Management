@@ -6,10 +6,6 @@ import com.neu.prattle.exceptions.NoPrivilegeException;
 import com.neu.prattle.model.Group;
 import com.neu.prattle.model.User;
 import com.neu.prattle.service.FollowService;
-import com.neu.prattle.service.GroupService;
-import com.neu.prattle.service.GroupServiceImpl;
-import com.neu.prattle.service.UserService;
-import com.neu.prattle.service.UserServiceImpl;
 import com.neu.prattle.service.api.APIFactory;
 
 import org.junit.Before;
@@ -26,7 +22,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

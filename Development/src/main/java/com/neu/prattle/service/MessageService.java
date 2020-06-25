@@ -3,7 +3,6 @@ package com.neu.prattle.service;
 import com.neu.prattle.model.Message;
 import com.neu.prattle.service.api.MessageAPI;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /***

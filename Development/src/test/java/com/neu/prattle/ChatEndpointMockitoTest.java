@@ -23,13 +23,10 @@ import org.junit.runners.MethodSorters;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.Scanner;
 
 import javax.websocket.EncodeException;
 import javax.websocket.RemoteEndpoint.Basic;
@@ -211,7 +208,7 @@ public class ChatEndpointMockitoTest {
 
     message.setTo(testUser2.getName());
     message.setContent("Hey");
-    message.setDate(message.getDate());
+    message.setMessageDate(message.getMessageDate());
     message.setTimeStamp(message.getTimeStamp());
 
     // Sending a message using onMessage method

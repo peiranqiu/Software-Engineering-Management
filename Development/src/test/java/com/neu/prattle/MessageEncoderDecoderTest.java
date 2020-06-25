@@ -1,17 +1,22 @@
 package com.neu.prattle;
+
 import com.neu.prattle.model.Message;
 import com.neu.prattle.websocket.MessageDecoder;
 import com.neu.prattle.websocket.MessageEncoder;
+
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+
 import java.io.IOException;
+
 import javax.websocket.EncodeException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
- import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

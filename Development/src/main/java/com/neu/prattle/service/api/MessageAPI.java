@@ -76,12 +76,12 @@ public class MessageAPI extends DBUtils {
   public boolean addMessage(Message message) throws SQLException {
     try {
     Connection con = getConnection();
-    String sql = "INSERT INTO Message (fromName, toName, message, messageDate, messageTimeStamp, sendToGroup, groupId) VALUES (?, ?, ?, ?, ?, ?,?)";
+    String sql = "INSERT INTO Message (fromName, toName, messageText, messageDate, messageTimeStamp, sendToGroup, groupId) VALUES (?, ?, ?, ?, ?, ?,?)";
     stmt = con.prepareStatement(sql);
     stmt.setString(1, message.getFrom());
     stmt.setString(2, message.getTo());
     stmt.setString(3, message.getContent());
-    stmt.setString(4, message.getDate());
+    stmt.setString(4, message.getMessageDate());
     stmt.setString(5, message.getTimeStamp());
     stmt.setBoolean(6, message.getSendToGroup());
     stmt.setInt(7, message.getGroupId());
@@ -106,8 +106,8 @@ public class MessageAPI extends DBUtils {
     try {
       message.setFrom(rs.getString("fromName"));
       message.setTo(rs.getString("toName"));
-      message.setContent(rs.getString("message"));
-      message.setDate(rs.getString("messageDate"));
+      message.setContent(rs.getString("messageText"));
+      message.setMessageDate(rs.getString("messageDate"));
       message.setTimeStamp(rs.getString("messageTimeStamp"));
       message.setSendToGroup(rs.getBoolean("sendToGroup"));
       message.setGroupId(rs.getInt("groupId"));
