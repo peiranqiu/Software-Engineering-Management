@@ -1,4 +1,5 @@
 const URL = 'http://cs5500team4.us-east-1.elasticbeanstalk.com/rest/';
+
 let ws;
 let currentUser;
 let currentGroup;
@@ -40,16 +41,21 @@ async function getAllUsers() {
     const response = await fetch(URL + 'user/getAllUser',
         {
             method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response);
 
     let select = document.getElementById('to');
+    //let invitee = document.getElementById('invitee');
     response.forEach((user) => {
         allUsers.push(user);
         let option = document.createElement("option");
         option.value = user.name;
         option.text = user.name;
         select.appendChild(option);
+        //invitee.appendChild(option);
     })
 
 }
@@ -78,7 +84,6 @@ async function connect() {
         let host = document.location.host;
         let pathname = document.location.pathname;
 
-        console.log(pathname);
         ws = new WebSocket("ws://" + host + pathname + "chat/" + username);
 
         ws.onmessage = async function (event) {
@@ -96,12 +101,12 @@ async function connect() {
             console.log(json);
 
             const response0 = await fetch(URL +  'user/send', {
-                method: 'POST',
-                body: JSON.stringify(message),
-                headers: {
-                    'content-type': 'application/json'
-                }
-            }).then(rs => rs.json());
+                                                                  method: 'POST',
+                                                                  body: JSON.stringify(message),
+                                                                  headers: {
+                                                                      'content-type': 'application/json'
+                                                                  }
+                                                              }).then(rs => rs.json());
 
             await optionsPersonChat();
             await optionsGroupChat();
@@ -156,7 +161,10 @@ async function userGetFollower(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollower',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -204,15 +212,19 @@ function generateList(response, operatoin) {
             });
         } else if (operatoin === 'getGroups') {
 
-                user.addEventListener('click', async function(event){
-                    currentGroup = u;
-                    document.getElementById('toGroup').value = event.target.innerHTML;
-                   await getSubGroups(u.groupId)
-                       .then(()=>getGroupFollowers(u.groupId))
-                       .then(()=>(getGroupModerators(u.groupId)))
-                       .then(()=>getGroupMembers(u.groupId))
-                       .then(()=>getGroupInvitations(u.groupId));
-                });
+            user.addEventListener('click', async function(event){
+                currentGroup = u;
+                document.getElementById('toGroup').value = event.target.innerHTML;
+                await getSubGroups(u.groupId)
+                    .then(()=>getGroupFollowers(u.groupId))
+                    .then(()=>(getGroupModerators(u.groupId)))
+                    .then(()=>getGroupMembers(u.groupId))
+                    .then(()=>getGroupInvitations(u.groupId));
+
+                // if current user is in group moderator list, then get group invitations
+
+
+            });
         } else if (operatoin === 'getAllGroups') {
             follow.innerText = "+";
             follow.addEventListener('click', (event) => {
@@ -249,7 +261,10 @@ async function userGetFollowee(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowee',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -266,7 +281,10 @@ async function getHasGroup(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -283,7 +301,10 @@ async function getFollowedGroup(evt) {
     console.log(currentUser);
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getFollowedGroup',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -302,7 +323,10 @@ async function followUser(followeeId) {
     let followerId = currentUser.userId;
     const response = await fetch(URL + 'user/' + followerId + '/follow/' + followeeId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -315,7 +339,10 @@ async function unfollowUser(followeeId) {
     let followerId = currentUser.userId;
     const response = await fetch(URL + 'user/' + followerId + '/unfollow/' + followeeId,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -328,7 +355,10 @@ async function unfollowGroup(id) {
     let userId = currentUser.userId;
     const response = await fetch(URL + 'group/' + userId + '/unfollow/' + id,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -339,7 +369,10 @@ async function unfollowGroup(id) {
 async function createInvitation(groupId, inviteeId) {
     const response = await fetch(URL + 'group/' + groupId + '/createInvitation/' + inviteeId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -351,7 +384,10 @@ async function createInvitation(groupId, inviteeId) {
 async function approveInvitation(groupId, inviteeId) {
     const response = await fetch(URL + 'group/' + groupId + '/approveInvitation/' + inviteeId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -362,7 +398,10 @@ async function approveInvitation(groupId, inviteeId) {
 async function deleteInvitation(groupId, inviteeId) {
     const response = await fetch(URL + 'group/' + groupId + '/deleteInvitation/' + inviteeId,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -373,7 +412,10 @@ async function deleteInvitation(groupId, inviteeId) {
 async function getGroupInvitations(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/getAllInvitation',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response);
 
@@ -382,6 +424,7 @@ async function getGroupInvitations(groupId) {
     let title = document.createElement('h3');
     title.innerText = "Invitations";
     list.appendChild(title);
+    //debugger;
 
     response.forEach(i => {
 
@@ -395,6 +438,7 @@ async function getGroupInvitations(groupId) {
             console.log(invitation.innerText);
             list.removeChild(invitationRow);
             approveInvitation(groupId, i.userId);
+            // deleteInvitation(groupId, i.userId);
         });
         cancel.innerText = "Cancel";
         cancel.addEventListener('click', ()=>{
@@ -417,8 +461,8 @@ async function getGroupInvitations(groupId) {
     }
 
     if (moderators.includes(currentUser.name)){
-    cur.style.display = "block";
-    cur.style.backgroundColor = "Gainsboro"}
+        cur.style.display = "block";
+        cur.style.backgroundColor = "Gainsboro"}
     else {
         cur.style.display = "none";
     }
@@ -431,7 +475,10 @@ async function addGroupModerator(userId) {
     const response = await fetch(
         URL + 'group/' + userId + '/moderate/' + currentGroup.groupId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -443,7 +490,10 @@ async function addGroupModerator(userId) {
 async function deleteGroupModerator(userId,groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/deleteModerator/' + userId,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -455,7 +505,10 @@ async function addGroupMember(userId) {
     const response = await fetch(
         URL + 'group/' + userId + '/member/' + currentGroup.groupId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -467,7 +520,10 @@ async function addGroupMember(userId) {
 async function deleteGroupMember(userId,groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/deleteMember/' + userId,
         {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'content-type': 'application/json'
+            }
         });
     console.log(response);
 }
@@ -500,7 +556,10 @@ function openTab(evt, tabName, content) {
 async function getAllGroups(event) {
     const response = await fetch(URL + 'group/getAllGroups',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response);
 
@@ -526,7 +585,10 @@ async function createGroup() {
 
     const response2 = await fetch(URL + 'group/' + markers.name,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response2);
 
@@ -546,7 +608,10 @@ async function createGroup() {
 async function getSubGroups(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/getSubGroups',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     let list = document.createElement('ul');
@@ -596,7 +661,10 @@ async function setGroupPassword() {
 
     const response2 = await fetch(URL + 'group/' + groupName,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response2);
 
@@ -625,7 +693,10 @@ async function setGroupPassword() {
 async function getGroupFollowers(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/followers',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     let list = document.createElement('ul');
     list.id = 'subGroup-list';
@@ -682,18 +753,27 @@ async function addSubGroup() {
     console.log(SuperGroupName);
     const response1 = await fetch(URL + 'group/' + SuperGroupName,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
 
     const response2 = await fetch(URL + 'group/' + SubGroupName,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
 
     const response = await fetch(
         URL + 'group/' + response1.value.groupId + '/add/' + response2.value.groupId,
         {
-            method: 'POST'
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            }
         })
         .then(rs => rs.json());
     console.log(response);
@@ -705,7 +785,10 @@ async function addSubGroup() {
 async function findGroupByName(name) {
     const response = await fetch(URL + 'group/' + name,
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
     console.log(response);
 }
@@ -718,7 +801,10 @@ async function findGroupByName(name) {
 async function getGroupModerators(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/moderators',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
 
     let list = document.createElement('ul');
@@ -727,12 +813,9 @@ async function getGroupModerators(groupId) {
     title.innerText = "Group Moderators List:";
     list.appendChild(title);
     moderators = [];
-    response.forEach(i => {
-        if(i.name === currentUser.name){
-            document.getElementById("Invitations").style.display = 'block';
-        }
 
-       moderators.push(i.name);
+    response.forEach(i => {
+        moderators.push(i.name);
         let subGroupRow = document.createElement('div');
         let subGroup = document.createElement("p");
         subGroupRow.classList.add("panel");
@@ -806,7 +889,10 @@ async function getGroupModerators(groupId) {
 async function getGroupMembers(groupId) {
     const response = await fetch(URL + 'group/' + groupId + '/members',
         {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(rs => rs.json());
 
     let list = document.createElement('ul');
@@ -908,9 +994,9 @@ async function getGroupMembers(groupId) {
     addMember.append(btn);
 
 
-   // cur.removeChild(cur.lastChild);
+    // cur.removeChild(cur.lastChild);
     if (isMember || isModerator){
-    cur.appendChild(addMember);}
+        cur.appendChild(addMember);}
 
     cur.style.display = "block";
     cur.style.backgroundColor = "Gainsboro"
@@ -919,6 +1005,8 @@ async function getGroupMembers(groupId) {
 async function translateMessage() {
     let toLanguage = document.getElementById('language').value;
     let parseXml;
+// create xml parsing functions
+// the next if/else block is from the following thread
     if (typeof window.DOMParser != "undefined") {
         parseXml = function (content) {
             return ( new window.DOMParser() ).parseFromString(content, "text/xml");
@@ -988,12 +1076,12 @@ async function getLanguageAPI() {
  */
 async function getAllPrivateMessages() {
     const response = await fetch(URL + 'user/getAllMessages/' + currentUser.name + '/' + document.getElementById('toChatLog').value,
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 }).then(rs => rs.json());
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
     response.forEach(printMessage);
 }
@@ -1031,12 +1119,12 @@ function fillWatched(){
  */
 async function getAllGroupMessages() {
     const response = await fetch(URL + 'group/getAllGroupMessages/' + document.getElementById('toGroupChatLog').value,
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 }).then(rs => rs.json());
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(rs => rs.json());
     console.log(response);
     response.forEach(printGroupMessage);
 }
@@ -1048,12 +1136,12 @@ async function printGroupMessage(item, index) {
 
 async function optionsGroupChat() {
     const response = await fetch(URL + 'user/' + currentUser.userId + '/getHasGroup',
-                                 {
-                                     method: 'GET',
-                                     headers: {
-                                         'content-type': 'application/json'
-                                     }
-                                 })
+        {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        })
         .then(rs => rs.json());
     console.log(response);
 
