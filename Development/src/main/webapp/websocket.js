@@ -670,7 +670,7 @@ async function setGroupPassword() {
     console.log(response2);
 
     if (response2) {
-        currentGroup = response2.value;
+        currentGroup = response2;
     }
 
     const response = await fetch(URL + 'group/' + currentGroup.groupId + '/password',
