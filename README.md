@@ -1,4 +1,6 @@
 # Messaging App
-A message application built with tomcat.
+A messaging application built with tomcat, used several software development mangement tools to manage the development process.
 
-Collaborators: [@daniehao](https://github.ccs.neu.edu/daniehao)  [@yinrouni](https://github.ccs.neu.edu/yinrouni)  [@qjgong](https://github.ccs.neu.edu/qjgong)  [@peggypeggyq](https://github.ccs.neu.edu/peggypeggyq)
+Techniques Used:
+
+Jenkins, CI/CD, SonarQube, Mockito, Github Project, Maven, MySQL, REST, AWS
