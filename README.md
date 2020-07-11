@@ -1,6 +1,6 @@
 # Messaging App
 
-Collaborators: @daniehao @yinrouni @qjgong @peggypeggyq
+Collaborators: @daniehao @yinrouni @qjgong @peiranqiu
 
 A messaging application built with tomcat, used several software development mangement tools to manage the development process.
 
